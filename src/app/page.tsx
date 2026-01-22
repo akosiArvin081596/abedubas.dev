@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { HeroAnimation } from "./HeroAnimation";
 import { TypeWriter } from "@/components";
 
@@ -93,99 +94,119 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative mx-auto flex min-h-[calc(100vh-200px)] max-w-6xl flex-col items-center justify-center px-4 py-20">
         <HeroAnimation>
-          <div className="text-center">
-            {/* Status Badge */}
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card/50 px-4 py-2 backdrop-blur-sm">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
-              </span>
-              <span className="text-sm font-medium text-muted-foreground">
-                Available for new projects
-              </span>
-            </div>
-
-            {/* Main Heading */}
-            <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
-              Hi, I&apos;m{" "}
-              <span className="relative">
-                <TypeWriter
-                  text="Arvin Baghari Edubas"
-                  delay={100}
-                  deleteDelay={40}
-                  pauseDelay={2000}
-                  loop={true}
-                  className="bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] bg-clip-text text-transparent animate-[gradient_3s_linear_infinite]"
+          <div className="flex flex-col items-center gap-12 lg:flex-row lg:items-center lg:gap-16">
+            {/* Profile Image */}
+            <div className="relative flex-shrink-0">
+              {/* Decorative ring */}
+              <div className="absolute -inset-4 rounded-full bg-gradient-to-br from-primary via-accent to-primary opacity-20 blur-xl animate-pulse" />
+              <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-primary via-accent to-primary animate-[spin_8s_linear_infinite]" />
+              {/* Image container */}
+              <div className="relative h-56 w-56 overflow-hidden rounded-full border-4 border-background shadow-2xl sm:h-64 sm:w-64 lg:h-72 lg:w-72">
+                <Image
+                  src="/images/profile_picture.jpg"
+                  alt="Arvin Baghari Edubas"
+                  fill
+                  className="object-cover transition-transform duration-500 hover:scale-110"
+                  priority
                 />
-              </span>
-            </h1>
-
-            {/* Subtitle */}
-            <p className="mb-4 text-xl font-medium text-foreground/80 sm:text-2xl">
-              Web Developer & Software Engineer
-            </p>
-
-            {/* Description */}
-            <p className="mx-auto mb-8 max-w-2xl text-base text-muted-foreground sm:text-lg">
-              Clean code, intuitive user experiences, and scalable,
-              enterprise-ready architecture—brought together to build modern web
-              applications. Open to collaborating on something meaningful.
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="mb-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Link
-                href="/projects"
-                className="group inline-flex items-center justify-center rounded-lg bg-primary px-8 py-4 text-sm font-medium text-white shadow-lg shadow-primary/25 transition-all hover:bg-primary-hover hover:shadow-xl hover:shadow-primary/30"
-              >
-                View My Work
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                  stroke="currentColor"
-                  className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-                  />
-                </svg>
-              </Link>
-              <Link
-                href="/contact"
-                className="group inline-flex items-center justify-center rounded-lg border border-border bg-background/50 px-8 py-4 text-sm font-medium text-foreground backdrop-blur-sm transition-all hover:border-primary hover:bg-muted"
-              >
-                Get in Touch
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                  stroke="currentColor"
-                  className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"
-                  />
-                </svg>
-              </Link>
+              </div>
             </div>
 
-            {/* Tech Stack */}
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              {techStack.map((tech) => (
-                <span
-                  key={tech}
-                  className="rounded-full border border-border bg-card/50 px-4 py-2 text-sm font-medium text-muted-foreground backdrop-blur-sm transition-colors hover:border-primary hover:text-primary"
-                >
-                  {tech}
+            {/* Content */}
+            <div className="text-center lg:text-left">
+              {/* Status Badge */}
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card/50 px-4 py-2 backdrop-blur-sm">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
                 </span>
-              ))}
+                <span className="text-sm font-medium text-muted-foreground">
+                  Available for new projects
+                </span>
+              </div>
+
+              {/* Main Heading */}
+              <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl">
+                Hi, I&apos;m{" "}
+                <span className="relative">
+                  <TypeWriter
+                    text="Arvin Baghari Edubas"
+                    delay={100}
+                    deleteDelay={40}
+                    pauseDelay={2000}
+                    loop={true}
+                    className="bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] bg-clip-text text-transparent animate-[gradient_3s_linear_infinite]"
+                  />
+                </span>
+              </h1>
+
+              {/* Subtitle */}
+              <p className="mb-4 text-xl font-medium text-foreground/80 sm:text-2xl">
+                Web Developer & Software Engineer
+              </p>
+
+              {/* Description */}
+              <p className="mb-8 max-w-2xl text-base text-muted-foreground sm:text-lg">
+                Clean code, intuitive user experiences, and scalable,
+                enterprise-ready architecture—brought together to build modern web
+                applications. Open to collaborating on something meaningful.
+              </p>
+
+              {/* CTA Buttons */}
+              <div className="mb-8 flex flex-col items-center justify-center gap-4 sm:flex-row lg:justify-start">
+                <Link
+                  href="/projects"
+                  className="group inline-flex items-center justify-center rounded-lg bg-primary px-8 py-4 text-sm font-medium text-white shadow-lg shadow-primary/25 transition-all hover:bg-primary-hover hover:shadow-xl hover:shadow-primary/30"
+                >
+                  View My Work
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                    />
+                  </svg>
+                </Link>
+                <Link
+                  href="/contact"
+                  className="group inline-flex items-center justify-center rounded-lg border border-border bg-background/50 px-8 py-4 text-sm font-medium text-foreground backdrop-blur-sm transition-all hover:border-primary hover:bg-muted"
+                >
+                  Get in Touch
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"
+                    />
+                  </svg>
+                </Link>
+              </div>
+
+              {/* Tech Stack */}
+              <div className="flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+                {techStack.map((tech) => (
+                  <span
+                    key={tech}
+                    className="rounded-full border border-border bg-card/50 px-4 py-2 text-sm font-medium text-muted-foreground backdrop-blur-sm transition-colors hover:border-primary hover:text-primary"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </HeroAnimation>
