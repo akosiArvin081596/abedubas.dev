@@ -60,9 +60,9 @@ export function TypeWriter({
   }, [tick, isDeleting, delay, deleteDelay]);
 
   return (
-    <span className={className}>
+    <span className={`${className} relative`}>
       {displayText}
-      <span className="inline-block w-[0.5em] h-[4px] bg-primary animate-blink rounded-sm" />
+      <span className="absolute bottom-[0.1em] ml-1 h-[0.08em] w-[0.5em] bg-primary animate-blink" />
     </span>
   );
 }
