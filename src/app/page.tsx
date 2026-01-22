@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { HeroAnimation } from "./HeroAnimation";
+import { ParallaxHero, ParallaxImage } from "./ParallaxHero";
 import { TypeWriter } from "@/components";
 
 const techStack = [
@@ -83,20 +84,14 @@ const services = [
 
 export default function HomePage() {
   return (
-    <div className="relative overflow-hidden">
-      {/* Background Decoration */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -left-40 -top-40 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
-        <div className="absolute -right-40 top-20 h-80 w-80 rounded-full bg-accent/10 blur-3xl" />
-        <div className="absolute -bottom-40 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-primary/5 blur-3xl" />
-      </div>
+    <ParallaxHero>
 
       {/* Hero Section */}
       <section className="relative mx-auto flex min-h-[calc(100vh-200px)] max-w-6xl flex-col items-center justify-center px-4 py-20">
         <HeroAnimation>
           <div className="flex flex-col items-center gap-12 lg:flex-row lg:items-center lg:gap-16">
             {/* Profile Image */}
-            <div className="relative flex-shrink-0">
+            <ParallaxImage>
               {/* Decorative ring */}
               <div className="absolute -inset-4 rounded-full bg-gradient-to-br from-primary via-accent to-primary opacity-20 blur-xl animate-pulse" />
               <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-primary via-accent to-primary animate-[spin_8s_linear_infinite]" />
@@ -110,7 +105,7 @@ export default function HomePage() {
                   priority
                 />
               </div>
-            </div>
+            </ParallaxImage>
 
             {/* Content */}
             <div className="text-center lg:text-left">
@@ -300,6 +295,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-    </div>
+    </ParallaxHero>
   );
 }
