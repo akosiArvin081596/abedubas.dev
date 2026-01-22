@@ -1,0 +1,137 @@
+---
+title: "Building Scalable REST APIs: Patterns and Practices"
+description: "Learn essential patterns for building REST APIs that scale well, handle errors gracefully, and provide a great developer experience."
+date: "2024-10-05"
+tags: ["API Design", "Node.js", "Backend", "Architecture"]
+---
+
+Building APIs that scale requires careful planning and adherence to proven patterns. In this post, I'll share the practices I follow when designing and implementing REST APIs.
+
+## API Design Principles
+
+Good API design starts with clear principles:
+
+1. **Consistency** - Use consistent naming conventions and response formats
+2. **Simplicity** - Make common operations easy
+3. **Predictability** - Follow REST conventions so developers know what to expect
+4. **Documentation** - Provide clear, comprehensive documentation
+
+## Resource Naming Conventions
+
+Use plural nouns for resources and follow a hierarchical structure:
+
+```
+GET    /users              # List all users
+GET    /users/:id          # Get a specific user
+POST   /users              # Create a new user
+PUT    /users/:id          # Update a user
+DELETE /users/:id          # Delete a user
+
+GET    /users/:id/orders   # List orders for a user
+POST   /users/:id/orders   # Create an order for a user
+```
+
+## Consistent Response Structure
+
+Always return responses in a consistent format:
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "123",
+    "name": "John Doe",
+    "email": "john@example.com"
+  },
+  "meta": {
+    "timestamp": "2024-10-05T12:00:00Z"
+  }
+}
+```
+
+For errors:
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Email is required",
+    "details": [
+      {
+        "field": "email",
+        "message": "Email is required"
+      }
+    ]
+  }
+}
+```
+
+## Pagination
+
+For list endpoints, implement cursor-based pagination for better performance:
+
+```json
+{
+  "success": true,
+  "data": [...],
+  "pagination": {
+    "cursor": "eyJpZCI6MTAwfQ==",
+    "hasMore": true,
+    "limit": 20
+  }
+}
+```
+
+## Rate Limiting
+
+Protect your API from abuse with rate limiting. Return helpful headers:
+
+```
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-RateLimit-Reset: 1696512000
+```
+
+## Error Handling
+
+Implement a centralized error handling mechanism:
+
+```typescript
+class AppError extends Error {
+  constructor(
+    public statusCode: number,
+    public code: string,
+    message: string
+  ) {
+    super(message);
+  }
+}
+
+// Usage
+throw new AppError(404, "USER_NOT_FOUND", "User not found");
+```
+
+## Versioning
+
+Version your API from the start to allow for future changes:
+
+```
+/api/v1/users
+/api/v2/users
+```
+
+## Caching
+
+Use appropriate cache headers to improve performance:
+
+```typescript
+res.set("Cache-Control", "public, max-age=3600");
+res.set("ETag", calculateETag(data));
+```
+
+## Conclusion
+
+Building scalable APIs is about following established patterns and being consistent. Focus on the developer experience, and your API will be a joy to use.
+
+In future posts, I'll cover specific implementations using Node.js and explore topics like authentication, database optimization, and microservices architecture.

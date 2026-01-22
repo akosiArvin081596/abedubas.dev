@@ -1,0 +1,130 @@
+---
+title: "TypeScript Best Practices for Clean, Maintainable Code"
+description: "Essential TypeScript patterns and practices that will help you write cleaner, more maintainable code in your projects."
+date: "2024-11-20"
+tags: ["TypeScript", "JavaScript", "Best Practices", "Clean Code"]
+---
+
+TypeScript has revolutionized how we write JavaScript applications. With its powerful type system, we can catch errors early, improve code documentation, and enhance the developer experience. Here are some best practices I follow when writing TypeScript code.
+
+## Use Strict Mode
+
+Always enable strict mode in your `tsconfig.json`. This catches more potential errors and enforces better coding practices:
+
+```json
+{
+  "compilerOptions": {
+    "strict": true
+  }
+}
+```
+
+## Prefer Interfaces Over Type Aliases for Objects
+
+While both can define object shapes, interfaces are more extensible and provide better error messages:
+
+```typescript
+// Prefer this
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+// Over this
+type User = {
+  id: string;
+  name: string;
+  email: string;
+};
+```
+
+Interfaces can be extended and merged, making them more flexible for complex applications.
+
+## Use Type Guards for Runtime Safety
+
+Type guards help TypeScript understand the type of a variable at runtime:
+
+```typescript
+function isString(value: unknown): value is string {
+  return typeof value === "string";
+}
+
+function processValue(value: unknown) {
+  if (isString(value)) {
+    // TypeScript knows value is a string here
+    console.log(value.toUpperCase());
+  }
+}
+```
+
+## Leverage Utility Types
+
+TypeScript provides many useful utility types. Here are some I use frequently:
+
+```typescript
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+}
+
+// Pick specific properties
+type PublicUser = Pick<User, "id" | "name">;
+
+// Omit specific properties
+type UserWithoutPassword = Omit<User, "password">;
+
+// Make all properties optional
+type PartialUser = Partial<User>;
+
+// Make all properties required
+type RequiredUser = Required<User>;
+```
+
+## Avoid Using `any`
+
+The `any` type defeats the purpose of TypeScript. Instead, use `unknown` when you don't know the type:
+
+```typescript
+// Avoid this
+function processData(data: any) {
+  return data.someProperty; // No type safety
+}
+
+// Prefer this
+function processData(data: unknown) {
+  if (typeof data === "object" && data !== null && "someProperty" in data) {
+    return (data as { someProperty: unknown }).someProperty;
+  }
+  throw new Error("Invalid data");
+}
+```
+
+## Use Const Assertions
+
+Const assertions help TypeScript infer more specific types:
+
+```typescript
+// Without const assertion - type is string[]
+const colors = ["red", "green", "blue"];
+
+// With const assertion - type is readonly ["red", "green", "blue"]
+const colors = ["red", "green", "blue"] as const;
+```
+
+## Define Return Types Explicitly
+
+While TypeScript can infer return types, explicit return types serve as documentation and prevent accidental changes:
+
+```typescript
+// Explicit return type
+function calculateTotal(items: Item[]): number {
+  return items.reduce((sum, item) => sum + item.price, 0);
+}
+```
+
+## Conclusion
+
+These practices have helped me write more maintainable TypeScript code. The key is to leverage the type system to catch errors early and make your code self-documenting. Remember, the goal is to make your code easier to understand and maintain, not to satisfy the compiler.

@@ -1,0 +1,75 @@
+---
+title: "Getting Started with Next.js 15: A Complete Guide"
+description: "Learn how to build modern web applications with Next.js 15, including the App Router, Server Components, and best practices for production-ready apps."
+date: "2024-12-15"
+tags: ["Next.js", "React", "Web Development", "Tutorial"]
+---
+
+Next.js has become the go-to framework for building React applications, and version 15 brings exciting new features that make development even more enjoyable. In this guide, I'll walk you through setting up a Next.js project and share some best practices I've learned from building production applications.
+
+## Why Next.js?
+
+Next.js provides an excellent developer experience with features like:
+
+- **Server-Side Rendering (SSR)** - Improved SEO and faster initial page loads
+- **Static Site Generation (SSG)** - Pre-rendered pages for optimal performance
+- **API Routes** - Build your backend alongside your frontend
+- **File-based Routing** - Intuitive routing based on your file structure
+- **Built-in Optimizations** - Automatic image optimization, code splitting, and more
+
+## Setting Up Your First Project
+
+Getting started with Next.js is straightforward. Open your terminal and run:
+
+```bash
+npx create-next-app@latest my-app
+cd my-app
+npm run dev
+```
+
+This creates a new Next.js project with TypeScript, ESLint, and Tailwind CSS configured out of the box.
+
+## Understanding the App Router
+
+Next.js 15 uses the App Router by default, which introduces several powerful concepts:
+
+### Server Components
+
+By default, all components in the `app` directory are Server Components. This means they render on the server and send HTML to the client, resulting in faster page loads and better SEO.
+
+```tsx
+// This is a Server Component by default
+export default function Page() {
+  return <h1>Hello from the server!</h1>;
+}
+```
+
+### Client Components
+
+When you need interactivity, use the `"use client"` directive:
+
+```tsx
+"use client";
+
+import { useState } from "react";
+
+export default function Counter() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>Count: {count}</button>;
+}
+```
+
+## Best Practices
+
+Here are some tips I've learned from building production Next.js applications:
+
+1. **Keep Server Components where possible** - Only use Client Components when you need browser APIs or React hooks
+2. **Use the Image component** - It provides automatic optimization and lazy loading
+3. **Leverage Static Generation** - Pre-render pages at build time when data doesn't change frequently
+4. **Implement proper error handling** - Use error boundaries and the built-in error pages
+
+## Conclusion
+
+Next.js 15 is a powerful framework that makes building modern web applications a breeze. Whether you're building a simple blog or a complex enterprise application, Next.js has the tools you need to succeed.
+
+In future posts, I'll dive deeper into specific topics like data fetching, authentication, and deploying to production. Stay tuned!
