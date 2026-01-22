@@ -43,6 +43,20 @@ const timeline = [
     description:
       "Completed my degree with a solid foundation in programming, database management, networking, and systems analysis. This education equipped me with the technical knowledge and problem-solving mindset that continues to guide my professional journey.",
   },
+  {
+    year: "2015 - 2016",
+    title: "Software Developer Intern",
+    company: "Philippine Long Distance Telephone Company (PLDT)",
+    description:
+      "Gained hands-on experience in software development during my internship at one of the Philippines' largest telecommunications companies. Worked alongside experienced developers, contributing to internal tools and learning industry-standard practices in a corporate environment.",
+  },
+  {
+    year: "2013 - 2016",
+    title: "Freelance Web Developer",
+    company: "OnlineJobs.ph",
+    description:
+      "Worked as a freelance web developer while pursuing my degree, building websites and web applications for international clients. This experience taught me self-discipline, client communication, and time management—balancing real-world projects with academic responsibilities to support my studies.",
+  },
 ];
 
 export default function AboutPage() {

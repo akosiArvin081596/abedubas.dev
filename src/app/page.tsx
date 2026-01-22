@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { HeroAnimation } from "./HeroAnimation";
 import { ParallaxHero } from "./ParallaxHero";
-import { TypeWriter, ScrollReveal } from "@/components";
+import { TypeWriter, ScrollReveal, TagBadge } from "@/components";
 
 const techStack = [
   "Vue",
@@ -102,13 +102,16 @@ export default function HomePage() {
                 applications. Open to collaborating on something meaningful.
               </p>
 
-              {/* CTA Buttons */}
-              <div className="mb-8 flex flex-col items-center justify-center gap-4 sm:flex-row lg:justify-start">
+              {/* CTA Links */}
+              <div className="mb-8 flex flex-col items-center justify-center gap-6 sm:flex-row lg:justify-start">
                 <Link
                   href="/projects"
-                  className="group inline-flex items-center justify-center rounded-lg bg-primary px-8 py-4 text-sm font-medium text-white shadow-lg shadow-primary/25 transition-all hover:bg-primary-hover hover:shadow-xl hover:shadow-primary/30"
+                  className="group relative inline-flex items-center text-base font-medium text-foreground transition-colors hover:text-primary"
                 >
-                  View My Work
+                  <span className="relative">
+                    View My Work
+                    <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
+                  </span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -126,9 +129,12 @@ export default function HomePage() {
                 </Link>
                 <Link
                   href="/contact"
-                  className="group inline-flex items-center justify-center rounded-lg border border-border bg-background/50 px-8 py-4 text-sm font-medium text-foreground backdrop-blur-sm transition-all hover:border-primary hover:bg-muted"
+                  className="group relative inline-flex items-center text-base font-medium text-muted-foreground transition-colors hover:text-primary"
                 >
-                  Get in Touch
+                  <span className="relative">
+                    Get in Touch
+                    <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
+                  </span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -140,7 +146,7 @@ export default function HomePage() {
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"
+                      d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
                     />
                   </svg>
                 </Link>
@@ -149,12 +155,7 @@ export default function HomePage() {
               {/* Tech Stack */}
               <div className="flex flex-wrap items-center justify-center gap-3 lg:justify-start">
                 {techStack.map((tech) => (
-                  <span
-                    key={tech}
-                    className="rounded-full border border-border bg-card/50 px-4 py-2 text-sm font-medium text-muted-foreground backdrop-blur-sm transition-colors hover:border-primary hover:text-primary"
-                  >
-                    {tech}
-                  </span>
+                  <TagBadge key={tech} tag={tech} size="md" />
                 ))}
               </div>
             </div>
@@ -286,30 +287,28 @@ export default function HomePage() {
           </ScrollReveal>
 
           <ScrollReveal animation="zoom-in" duration={800} delay={1200} easing="elastic">
-            {/* Enhanced button */}
             <Link
               href="/contact"
-              className="group/btn relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-primary to-accent px-10 py-5 text-base font-semibold text-white shadow-lg shadow-primary/25 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/40"
+              className="group relative inline-flex items-center text-lg font-medium text-foreground transition-colors hover:text-primary"
             >
-              {/* Button shine effect */}
-              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover/btn:translate-x-[200%] transition-transform duration-700" />
-              <span className="relative flex items-center gap-2">
+              <span className="relative">
                 Let&apos;s Talk
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2.5}
-                  stroke="currentColor"
-                  className="h-5 w-5 transition-transform group-hover/btn:translate-x-1"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-                  />
-                </svg>
+                <span className="absolute -bottom-1 left-0 h-0.5 w-full bg-primary/30 transition-all duration-300 group-hover:bg-primary" />
               </span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                />
+              </svg>
             </Link>
           </ScrollReveal>
 

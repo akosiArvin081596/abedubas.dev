@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { BlogPostMeta } from "@/types";
+import { TagBadge } from "./TagBadge";
 
 interface BlogCardProps {
   post: BlogPostMeta;
@@ -27,12 +28,7 @@ export function BlogCard({ post }: BlogCardProps) {
       <p className="mb-4 text-sm text-muted-foreground">{post.description}</p>
       <div className="flex flex-wrap gap-2">
         {post.tags.map((tag) => (
-          <span
-            key={tag}
-            className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground"
-          >
-            {tag}
-          </span>
+          <TagBadge key={tag} tag={tag} />
         ))}
       </div>
     </article>

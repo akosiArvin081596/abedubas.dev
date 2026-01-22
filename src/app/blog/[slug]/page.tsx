@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getPostBySlug, getAllPostSlugs } from "@/lib/blog";
 import { mdxComponents } from "@/components/MDXComponents";
+import { TagBadge } from "@/components/TagBadge";
 import Link from "next/link";
 
 interface BlogPostPageProps {
@@ -89,12 +90,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         {post.tags.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
             {post.tags.map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground"
-              >
-                {tag}
-              </span>
+              <TagBadge key={tag} tag={tag} />
             ))}
           </div>
         )}

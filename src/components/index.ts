@@ -4,6 +4,7 @@ export { Footer } from "./Footer";
 export { ProjectCard } from "./ProjectCard";
 export { SkillBadge } from "./SkillBadge";
 export { BlogCard } from "./BlogCard";
+export { TagBadge } from "./TagBadge";
 export { mdxComponents } from "./MDXComponents";
 export { TypeWriter } from "./TypeWriter";
 export { ScrollReveal } from "./ScrollReveal";
