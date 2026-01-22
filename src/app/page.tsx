@@ -18,67 +18,22 @@ const techStack = [
 
 const services = [
   {
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        className="h-8 w-8"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z"
-        />
-      </svg>
-    ),
+    number: "01",
     title: "Frontend Development",
     description:
-      "Building responsive, performant user interfaces with React, Next.js, and modern CSS frameworks.",
+      "Building responsive, performant user interfaces with React, Next.js, Vue, Nuxt.js, and modern CSS frameworks. Focused on creating seamless experiences across all devices.",
   },
   {
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        className="h-8 w-8"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z"
-        />
-      </svg>
-    ),
+    number: "02",
     title: "Backend Development",
     description:
-      "Designing scalable APIs and server architectures with Node.js, databases, and cloud services.",
+      "Designing scalable APIs and server architectures with Laravel, Node.js, and various databases. Building secure, reliable systems that power modern applications.",
   },
   {
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={1.5}
-        stroke="currentColor"
-        className="h-8 w-8"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42"
-        />
-      </svg>
-    ),
-    title: "UI/UX Design",
+    number: "03",
+    title: "Full-Stack Solutions",
     description:
-      "Creating intuitive, accessible interfaces that delight users and drive engagement.",
+      "End-to-end development from concept to deployment. Combining frontend expertise with backend knowledge to deliver complete, production-ready applications.",
   },
 ];
 
@@ -233,36 +188,42 @@ export default function HomePage() {
       {/* Services Section */}
       <section className="relative mx-auto max-w-6xl px-4 py-24">
         <ScrollReveal animation="blur-in" duration={800} easing="ease-out">
-          <div className="mb-12 text-center">
-            <h2 className="mb-4 text-3xl font-bold text-foreground sm:text-4xl">
-              What I Do
+          <div className="mb-16 text-center">
+            <span className="mb-4 inline-block text-sm font-medium uppercase tracking-widest text-primary">
+              Services
+            </span>
+            <h2 className="mb-4 text-3xl font-bold text-foreground sm:text-4xl md:text-5xl">
+              What I <span className="text-primary">Do</span>
             </h2>
-            <p className="mx-auto max-w-2xl text-muted-foreground">
-              I specialize in building end-to-end web solutions that are fast,
-              accessible, and built to scale.
+            <div className="mx-auto mt-4 h-1 w-24 bg-gradient-to-r from-transparent via-primary to-transparent" />
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
+              Building end-to-end web solutions that are fast, accessible, and built to scale.
             </p>
           </div>
         </ScrollReveal>
 
-        <div className="grid gap-8 md:grid-cols-3">
+        <div className="grid gap-12 md:grid-cols-3">
           {services.map((service, index) => {
             const animations = ["slide-right", "slide-up", "slide-left"] as const;
             return (
               <ScrollReveal
                 key={index}
                 animation={animations[index]}
-                delay={index * 300}
+                delay={index * 200}
                 easing="bounce"
                 duration={800}
               >
-                <div className="group rounded-2xl border border-border bg-card p-8 transition-all hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-2 h-full">
-                  <div className="mb-4 inline-flex rounded-xl bg-primary/10 p-3 text-primary transition-transform group-hover:scale-110 group-hover:rotate-3">
-                    {service.icon}
+                <div className="group relative text-center md:text-left">
+                  <div className="mb-6 flex flex-col items-center md:items-start">
+                    <span className="text-7xl font-black text-primary/15 group-hover:text-primary/30 transition-colors leading-none">
+                      {service.number}
+                    </span>
+                    <span className="mt-2 h-12 w-px bg-gradient-to-b from-primary/50 to-transparent group-hover:from-primary transition-colors" />
                   </div>
-                  <h3 className="mb-2 text-xl font-semibold text-card-foreground">
+                  <h3 className="mb-3 text-2xl font-bold text-foreground group-hover:text-primary transition-colors">
                     {service.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-muted-foreground leading-relaxed">
                     {service.description}
                   </p>
                 </div>
