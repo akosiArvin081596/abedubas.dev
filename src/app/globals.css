@@ -139,6 +139,28 @@ html {
   animation: blink 1s infinite;
 }
 
+/* Float animation for CTA section */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+}
+
+/* Sparkle animation for dots */
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+}
+
 /* Flip animation utilities */
 .perspective-800 {
   perspective: 800px;

@@ -251,9 +251,9 @@ export default function HomePage() {
               <ScrollReveal
                 key={index}
                 animation={animations[index]}
-                delay={index * 200}
+                delay={index * 300}
                 easing="bounce"
-                duration={900}
+                duration={800}
               >
                 <div className="group rounded-2xl border border-border bg-card p-8 transition-all hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-2 h-full">
                   <div className="mb-4 inline-flex rounded-xl bg-primary/10 p-3 text-primary transition-transform group-hover:scale-110 group-hover:rotate-3">
@@ -273,30 +273,74 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative mx-auto max-w-6xl px-4 pb-24">
-        <ScrollReveal animation="zoom-in" easing="elastic" duration={1000}>
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-accent p-12 text-center text-white md:p-16">
-            <div className="pointer-events-none absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMtNi42MjcgMC0xMiA1LjM3My0xMiAxMnM1LjM3MyAxMiAxMiAxMiAxMi01LjM3MyAxMi0xMi01LjM3My0xMi0xMi0xMnptMCAxOGMtMy4zMTQgMC02LTIuNjg2LTYtNnMyLjY4Ni02IDYtNiA2IDIuNjg2IDYgNi0yLjY4NiA2LTYgNnoiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iLjA1Ii8+PC9nPjwvc3ZnPg==')] opacity-30" />
-            <div className="relative">
-              <h2 className="mb-4 text-3xl font-bold sm:text-4xl">
-                Ready to Start a Project?
-              </h2>
-              <p className="mx-auto mb-8 max-w-xl text-white/80">
-                I&apos;m always excited to work on new challenges. Let&apos;s
-                discuss how I can help bring your ideas to life.
-              </p>
-              <Link
-                href="/contact"
-                className="inline-flex items-center justify-center rounded-lg bg-white px-8 py-4 text-sm font-medium text-primary shadow-lg transition-all hover:bg-white/90 hover:shadow-xl"
+      <section className="relative overflow-hidden border-t border-border py-24">
+        {/* Background effects */}
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-20 left-1/4 h-64 w-64 rounded-full bg-primary/10 blur-3xl animate-[float_8s_ease-in-out_infinite]" />
+          <div className="absolute -bottom-20 right-1/4 h-72 w-72 rounded-full bg-accent/10 blur-3xl animate-[float_10s_ease-in-out_infinite_reverse]" />
+
+          {/* Sparkle dots */}
+          <div className="absolute top-16 left-[10%] h-2 w-2 rounded-full bg-primary/40 animate-[sparkle_3s_ease-in-out_infinite]" />
+          <div className="absolute top-32 right-[15%] h-1.5 w-1.5 rounded-full bg-accent/50 animate-[sparkle_4s_ease-in-out_infinite_0.5s]" />
+          <div className="absolute bottom-24 left-[20%] h-2 w-2 rounded-full bg-primary/30 animate-[sparkle_3.5s_ease-in-out_infinite_1s]" />
+          <div className="absolute bottom-16 right-[25%] h-1.5 w-1.5 rounded-full bg-accent/40 animate-[sparkle_2.5s_ease-in-out_infinite_0.3s]" />
+        </div>
+
+        <div className="relative mx-auto max-w-4xl px-4 text-center">
+          <ScrollReveal animation="fade-up" duration={800} delay={900}>
+            {/* Icon */}
+            <div className="mb-6 inline-flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent p-4 text-white shadow-lg shadow-primary/25">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="h-8 w-8"
               >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"
+                />
+              </svg>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal animation="fade-up" duration={800} delay={1000}>
+            <h2 className="mb-4 text-3xl font-bold text-foreground sm:text-4xl md:text-5xl">
+              Ready to Start a{" "}
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                Project
+              </span>
+              ?
+            </h2>
+          </ScrollReveal>
+
+          <ScrollReveal animation="fade-up" duration={800} delay={1100}>
+            <p className="mx-auto mb-10 max-w-xl text-lg text-muted-foreground">
+              I&apos;m always excited to work on new challenges. Let&apos;s
+              discuss how I can help bring your ideas to life.
+            </p>
+          </ScrollReveal>
+
+          <ScrollReveal animation="zoom-in" duration={800} delay={1200} easing="elastic">
+            {/* Enhanced button */}
+            <Link
+              href="/contact"
+              className="group/btn relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-primary to-accent px-10 py-5 text-base font-semibold text-white shadow-lg shadow-primary/25 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/40"
+            >
+              {/* Button shine effect */}
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-200%] group-hover/btn:translate-x-[200%] transition-transform duration-700" />
+              <span className="relative flex items-center gap-2">
                 Let&apos;s Talk
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  strokeWidth={2}
+                  strokeWidth={2.5}
                   stroke="currentColor"
-                  className="ml-2 h-4 w-4"
+                  className="h-5 w-5 transition-transform group-hover/btn:translate-x-1"
                 >
                   <path
                     strokeLinecap="round"
@@ -304,10 +348,34 @@ export default function HomePage() {
                     d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
                   />
                 </svg>
-              </Link>
+              </span>
+            </Link>
+          </ScrollReveal>
+
+          <ScrollReveal animation="fade-up" duration={800} delay={1300}>
+            {/* Trust indicators */}
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
+              <span className="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-4 w-4 text-primary">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
+                Quick Response
+              </span>
+              <span className="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-4 w-4 text-primary">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
+                Free Consultation
+              </span>
+              <span className="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-4 w-4 text-primary">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
+                No Commitment
+              </span>
             </div>
-          </div>
-        </ScrollReveal>
+          </ScrollReveal>
+        </div>
       </section>
     </ParallaxHero>
   );
