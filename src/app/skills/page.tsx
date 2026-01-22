@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SkillBadge } from "@/components";
+import { SkillBadge, ScrollReveal } from "@/components";
 
 export const metadata: Metadata = {
   title: "Skills",
@@ -99,63 +99,79 @@ export default function SkillsPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-16">
       {/* Header */}
-      <div className="mb-12 text-center">
-        <h1 className="mb-4 text-4xl font-bold text-foreground">
-          Skills & Expertise
-        </h1>
-        <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-          A comprehensive toolkit built over years of professional experience
-          across various technologies and domains
-        </p>
-      </div>
+      <ScrollReveal animation="fade-down" duration={800}>
+        <div className="mb-12 text-center">
+          <h1 className="mb-4 text-4xl font-bold text-foreground">
+            Skills & Expertise
+          </h1>
+          <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+            A comprehensive toolkit built over years of professional experience
+            across various technologies and domains
+          </p>
+        </div>
+      </ScrollReveal>
 
       {/* Core Strengths */}
       <section className="mb-16">
-        <h2 className="mb-6 text-2xl font-semibold text-foreground">
-          Core Strengths
-        </h2>
+        <ScrollReveal animation="blur-in" duration={800}>
+          <h2 className="mb-6 text-2xl font-semibold text-foreground">
+            Core Strengths
+          </h2>
+        </ScrollReveal>
         <div className="grid gap-6 md:grid-cols-2">
-          {coreStrengths.map((strength) => (
-            <div
+          {coreStrengths.map((strength, index) => (
+            <ScrollReveal
               key={strength.title}
-              className="rounded-lg border border-border bg-card p-6"
+              animation="bounce-in"
+              delay={index * 150}
+              duration={700}
+              easing="elastic"
             >
-              <h3 className="mb-2 text-lg font-medium text-card-foreground">
-                {strength.title}
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                {strength.description}
-              </p>
-            </div>
+              <div className="rounded-lg border border-border bg-card p-6 h-full transition-all hover:-translate-y-1 hover:shadow-lg hover:border-primary/50">
+                <h3 className="mb-2 text-lg font-medium text-card-foreground">
+                  {strength.title}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {strength.description}
+                </p>
+              </div>
+            </ScrollReveal>
           ))}
         </div>
       </section>
 
       {/* Technical Skills */}
       <section>
-        <h2 className="mb-6 text-2xl font-semibold text-foreground">
-          Technical Skills
-        </h2>
+        <ScrollReveal animation="blur-in" duration={800}>
+          <h2 className="mb-6 text-2xl font-semibold text-foreground">
+            Technical Skills
+          </h2>
+        </ScrollReveal>
         <div className="space-y-8">
-          {skillCategories.map((category) => (
-            <div
+          {skillCategories.map((category, index) => (
+            <ScrollReveal
               key={category.category}
-              className="rounded-lg border border-border bg-card p-6"
+              animation={index % 2 === 0 ? "slide-right" : "slide-left"}
+              delay={index * 100}
+              duration={800}
+              easing="bounce"
             >
-              <div className="mb-4">
-                <h3 className="text-xl font-semibold text-card-foreground">
-                  {category.category}
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  {category.description}
-                </p>
+              <div className="rounded-lg border border-border bg-card p-6 transition-all hover:border-primary/50 hover:shadow-lg">
+                <div className="mb-4">
+                  <h3 className="text-xl font-semibold text-card-foreground">
+                    {category.category}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {category.description}
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {category.skills.map((skill) => (
+                    <SkillBadge key={skill} name={skill} />
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-wrap gap-3">
-                {category.skills.map((skill) => (
-                  <SkillBadge key={skill} name={skill} />
-                ))}
-              </div>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </section>

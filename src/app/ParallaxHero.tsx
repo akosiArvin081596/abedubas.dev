@@ -15,16 +15,16 @@ export function ParallaxHero({ children }: ParallaxHeroProps) {
       {/* Parallax Background Decoration */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div
-          className="absolute -left-40 -top-40 h-80 w-80 rounded-full bg-primary/10 blur-3xl"
-          style={{ transform: `translateY(${scrollY * 0.3}px)` }}
+          className="absolute -left-20 -top-20 h-96 w-96 rounded-full bg-primary/20 blur-3xl"
+          style={{ transform: `translateY(${scrollY * 0.5}px) translateX(${scrollY * 0.1}px)` }}
         />
         <div
-          className="absolute -right-40 top-20 h-80 w-80 rounded-full bg-accent/10 blur-3xl"
-          style={{ transform: `translateY(${scrollY * 0.2}px)` }}
+          className="absolute -right-20 top-40 h-96 w-96 rounded-full bg-accent/20 blur-3xl"
+          style={{ transform: `translateY(${scrollY * 0.35}px) translateX(${scrollY * -0.1}px)` }}
         />
         <div
-          className="absolute -bottom-40 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-primary/5 blur-3xl"
-          style={{ transform: `translateY(${scrollY * -0.15}px)` }}
+          className="absolute bottom-0 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-primary/15 blur-3xl"
+          style={{ transform: `translateY(${scrollY * -0.25}px)` }}
         />
       </div>
       {children}
@@ -41,8 +41,8 @@ export function ParallaxImage({ children }: ParallaxImageProps) {
 
   return (
     <div
-      className="relative flex-shrink-0 transition-transform duration-100"
-      style={{ transform: `translateY(${scrollY * 0.1}px)` }}
+      className="relative flex-shrink-0"
+      style={{ transform: `translateY(${scrollY * -0.15}px)` }}
     >
       {children}
     </div>

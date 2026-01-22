@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ProjectCard } from "@/components";
+import { ProjectCard, ScrollReveal } from "@/components";
 import type { Project } from "@/types";
 
 export const metadata: Metadata = {
@@ -60,37 +60,49 @@ export default function ProjectsPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-16">
       {/* Header */}
-      <div className="mb-12 text-center">
-        <h1 className="mb-4 text-4xl font-bold text-foreground">Projects</h1>
-        <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-          A selection of projects I&apos;ve worked on, showcasing my expertise
-          in full-stack development and system design
-        </p>
-      </div>
+      <ScrollReveal animation="fade-down" duration={800}>
+        <div className="mb-12 text-center">
+          <h1 className="mb-4 text-4xl font-bold text-foreground">Projects</h1>
+          <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+            A selection of projects I&apos;ve worked on, showcasing my expertise
+            in full-stack development and system design
+          </p>
+        </div>
+      </ScrollReveal>
 
       {/* Projects Grid */}
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {projects.map((project) => (
-          <ProjectCard key={project.title} project={project} />
+        {projects.map((project, index) => (
+          <ScrollReveal
+            key={project.title}
+            animation="zoom-in"
+            delay={index * 100}
+            duration={700}
+            easing="elastic"
+          >
+            <ProjectCard project={project} />
+          </ScrollReveal>
         ))}
       </div>
 
       {/* CTA Section */}
       <section className="mt-16 text-center">
-        <div className="rounded-lg border border-border bg-card p-8">
-          <h2 className="mb-4 text-2xl font-semibold text-card-foreground">
-            Interested in working together?
-          </h2>
-          <p className="mb-6 text-muted-foreground">
-            I&apos;m always open to discussing new projects and opportunities.
-          </p>
-          <a
-            href="/contact"
-            className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-primary-hover"
-          >
-            Get in Touch
-          </a>
-        </div>
+        <ScrollReveal animation="fade-up" duration={800} easing="bounce">
+          <div className="rounded-lg border border-border bg-card p-8 transition-all hover:shadow-lg hover:border-primary/50">
+            <h2 className="mb-4 text-2xl font-semibold text-card-foreground">
+              Interested in working together?
+            </h2>
+            <p className="mb-6 text-muted-foreground">
+              I&apos;m always open to discussing new projects and opportunities.
+            </p>
+            <a
+              href="/contact"
+              className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-primary-hover"
+            >
+              Get in Touch
+            </a>
+          </div>
+        </ScrollReveal>
       </section>
     </div>
   );

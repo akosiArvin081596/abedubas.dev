@@ -6,3 +6,4 @@ export { SkillBadge } from "./SkillBadge";
 export { BlogCard } from "./BlogCard";
 export { mdxComponents } from "./MDXComponents";
 export { TypeWriter } from "./TypeWriter";
+export { ScrollReveal } from "./ScrollReveal";

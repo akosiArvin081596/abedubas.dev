@@ -138,3 +138,30 @@ html {
 .animate-blink {
   animation: blink 1s infinite;
 }
+
+/* Flip animation utilities */
+.perspective-800 {
+  perspective: 800px;
+}
+
+.rotateX-90 {
+  transform: rotateX(90deg);
+}
+
+.rotateX-0 {
+  transform: rotateX(0deg);
+}
+
+.rotateY-90 {
+  transform: rotateY(90deg);
+}
+
+.rotateY-0 {
+  transform: rotateY(0deg);
+}
+
+/* Smooth reveal animations */
+.reveal-animate {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}

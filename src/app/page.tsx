@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { HeroAnimation } from "./HeroAnimation";
-import { ParallaxHero, ParallaxImage } from "./ParallaxHero";
-import { TypeWriter } from "@/components";
+import { ParallaxHero } from "./ParallaxHero";
+import { TypeWriter, ScrollReveal } from "@/components";
 
 const techStack = [
   "Vue",
@@ -91,7 +91,7 @@ export default function HomePage() {
         <HeroAnimation>
           <div className="flex flex-col items-center gap-12 lg:flex-row lg:items-center lg:gap-16">
             {/* Profile Image */}
-            <ParallaxImage>
+            <div className="relative flex-shrink-0">
               {/* Decorative ring */}
               <div className="absolute -inset-4 rounded-full bg-gradient-to-br from-primary via-accent to-primary opacity-20 blur-xl animate-pulse" />
               <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-primary via-accent to-primary animate-[spin_8s_linear_infinite]" />
@@ -105,7 +105,7 @@ export default function HomePage() {
                   priority
                 />
               </div>
-            </ParallaxImage>
+            </div>
 
             {/* Content */}
             <div className="text-center lg:text-left">
@@ -216,84 +216,98 @@ export default function HomePage() {
             { value: "20+", label: "Technologies" },
             { value: "100%", label: "Client Satisfaction" },
           ].map((stat, index) => (
-            <div key={index} className="text-center">
-              <div className="mb-2 text-4xl font-bold text-primary md:text-5xl">
-                {stat.value}
+            <ScrollReveal key={index} animation="bounce-in" delay={index * 150} easing="elastic" duration={800}>
+              <div className="text-center">
+                <div className="mb-2 text-4xl font-bold text-primary md:text-5xl">
+                  {stat.value}
+                </div>
+                <div className="text-sm font-medium text-muted-foreground">
+                  {stat.label}
+                </div>
               </div>
-              <div className="text-sm font-medium text-muted-foreground">
-                {stat.label}
-              </div>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </section>
 
       {/* Services Section */}
       <section className="relative mx-auto max-w-6xl px-4 py-24">
-        <div className="mb-12 text-center">
-          <h2 className="mb-4 text-3xl font-bold text-foreground sm:text-4xl">
-            What I Do
-          </h2>
-          <p className="mx-auto max-w-2xl text-muted-foreground">
-            I specialize in building end-to-end web solutions that are fast,
-            accessible, and built to scale.
-          </p>
-        </div>
+        <ScrollReveal animation="blur-in" duration={800} easing="ease-out">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-3xl font-bold text-foreground sm:text-4xl">
+              What I Do
+            </h2>
+            <p className="mx-auto max-w-2xl text-muted-foreground">
+              I specialize in building end-to-end web solutions that are fast,
+              accessible, and built to scale.
+            </p>
+          </div>
+        </ScrollReveal>
 
         <div className="grid gap-8 md:grid-cols-3">
-          {services.map((service, index) => (
-            <div
-              key={index}
-              className="group rounded-2xl border border-border bg-card p-8 transition-all hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5"
-            >
-              <div className="mb-4 inline-flex rounded-xl bg-primary/10 p-3 text-primary">
-                {service.icon}
-              </div>
-              <h3 className="mb-2 text-xl font-semibold text-card-foreground">
-                {service.title}
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                {service.description}
-              </p>
-            </div>
-          ))}
+          {services.map((service, index) => {
+            const animations = ["slide-right", "slide-up", "slide-left"] as const;
+            return (
+              <ScrollReveal
+                key={index}
+                animation={animations[index]}
+                delay={index * 200}
+                easing="bounce"
+                duration={900}
+              >
+                <div className="group rounded-2xl border border-border bg-card p-8 transition-all hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-2 h-full">
+                  <div className="mb-4 inline-flex rounded-xl bg-primary/10 p-3 text-primary transition-transform group-hover:scale-110 group-hover:rotate-3">
+                    {service.icon}
+                  </div>
+                  <h3 className="mb-2 text-xl font-semibold text-card-foreground">
+                    {service.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {service.description}
+                  </p>
+                </div>
+              </ScrollReveal>
+            );
+          })}
         </div>
       </section>
 
       {/* CTA Section */}
       <section className="relative mx-auto max-w-6xl px-4 pb-24">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-accent p-12 text-center text-white md:p-16">
-          <div className="pointer-events-none absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMtNi42MjcgMC0xMiA1LjM3My0xMiAxMnM1LjM3MyAxMiAxMiAxMiAxMi01LjM3MyAxMi0xMi01LjM3My0xMi0xMi0xMnptMCAxOGMtMy4zMTQgMC02LTIuNjg2LTYtNnMyLjY4Ni02IDYtNiA2IDIuNjg2IDYgNi0yLjY4NiA2LTYgNnoiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iLjA1Ii8+PC9nPjwvc3ZnPg==')] opacity-30" />
-          <div className="relative">
-            <h2 className="mb-4 text-3xl font-bold sm:text-4xl">
-              Ready to Start a Project?
-            </h2>
-            <p className="mx-auto mb-8 max-w-xl text-white/80">
-              I&apos;m always excited to work on new challenges. Let&apos;s
-              discuss how I can help bring your ideas to life.
-            </p>
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center rounded-lg bg-white px-8 py-4 text-sm font-medium text-primary shadow-lg transition-all hover:bg-white/90 hover:shadow-xl"
-            >
-              Let&apos;s Talk
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="ml-2 h-4 w-4"
+        <ScrollReveal animation="zoom-in" easing="elastic" duration={1000}>
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-accent p-12 text-center text-white md:p-16">
+            <div className="pointer-events-none absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMtNi42MjcgMC0xMiA1LjM3My0xMiAxMnM1LjM3MyAxMiAxMiAxMiAxMi01LjM3MyAxMi0xMi01LjM3My0xMi0xMi0xMnptMCAxOGMtMy4zMTQgMC02LTIuNjg2LTYtNnMyLjY4Ni02IDYtNiA2IDIuNjg2IDYgNi0yLjY4NiA2LTYgNnoiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iLjA1Ii8+PC9nPjwvc3ZnPg==')] opacity-30" />
+            <div className="relative">
+              <h2 className="mb-4 text-3xl font-bold sm:text-4xl">
+                Ready to Start a Project?
+              </h2>
+              <p className="mx-auto mb-8 max-w-xl text-white/80">
+                I&apos;m always excited to work on new challenges. Let&apos;s
+                discuss how I can help bring your ideas to life.
+              </p>
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center rounded-lg bg-white px-8 py-4 text-sm font-medium text-primary shadow-lg transition-all hover:bg-white/90 hover:shadow-xl"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-                />
-              </svg>
-            </Link>
+                Let&apos;s Talk
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                  className="ml-2 h-4 w-4"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                  />
+                </svg>
+              </Link>
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
       </section>
     </ParallaxHero>
   );
