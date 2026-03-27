@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arvin Baghari Edubas - Resume</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  @page { margin: 0; size: letter; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+    color: #1e293b;
+    font-size: 9.2pt;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    position: relative;
+  }
+
+  /* Subtle dot pattern overlay */
+  body::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: radial-gradient(#cbd5e1 0.5px, transparent 0.5px);
+    background-size: 16px 16px;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  /* ── Resume Container ── */
+  #resume-content {
+    max-width: 8.5in;
+    margin: 0 auto;
+    background: #fff;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+  }
+
+  /* ── Header ── */
+  .header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1e40af 100%);
+    color: #fff;
+    padding: 32px 48px 26px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.3);
+  }
+
+  /* Decorative circles */
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: 80px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(147, 197, 253, 0.05));
+    filter: blur(1px);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    top: 20px; right: -30px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(96, 165, 250, 0.2), transparent);
+  }
+
+  /* Additional decorative element */
+  .header-decor {
+    position: absolute;
+    bottom: -40px; left: 30%;
+    width: 200px; height: 80px;
+    border-radius: 50%;
+    background: rgba(59, 130, 246, 0.08);
+    filter: blur(2px);
+  }
+
+  /* Accent line at bottom of header */
+  .header-accent {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa, #93c5fd, #60a5fa, #3b82f6);
+  }
+  .header h1 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 26pt;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .header .subtitle {
+    font-size: 11pt;
+    font-weight: 500;
+    color: #93c5fd;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+    position: relative;
+    z-index: 1;
+    text-transform: uppercase;
+  }
+  .contact-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    font-size: 8.5pt;
+    color: #cbd5e1;
+    position: relative;
+    z-index: 1;
+  }
+  .contact-row a {
+    color: #93c5fd;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  .contact-row a:hover {
+    color: #fff;
+  }
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .contact-item svg {
+    width: 12px; height: 12px;
+    fill: #60a5fa;
+    flex-shrink: 0;
+  }
+
+  /* ── Body ── */
+  .body {
+    padding: 24px 48px 30px;
+    position: relative;
+    background: #ffffff;
+    margin: 0;
+    box-shadow: inset 0 10px 30px -10px rgba(15, 23, 42, 0.05);
+  }
+
+  /* Decorative sidebar accent */
+  .body::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%);
+  }
+
+  /* ── Section titles ── */
+  h2 {
+    font-size: 9pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #0f172a;
+    margin-top: 24px;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+  }
+  h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #0f172a 0%, #3b82f6 50%, transparent 100%);
+  }
+  h2 .accent {
+    width: 10px; height: 10px;
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    border-radius: 2px;
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+  }
+  h2:first-child { margin-top: 0; }
+
+  /* ── Summary ── */
+  .summary {
+    color: #475569;
+    line-height: 1.65;
+    font-size: 9.2pt;
+    margin-bottom: 8px;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-left: 3px solid #3b82f6;
+    border-radius: 0 6px 6px 0;
+  }
+
+  /* ── Two-column layout ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 0 32px;
+  }
+
+  /* ── Jobs ── */
+  .job {
+    margin-bottom: 12px;
+    padding-left: 16px;
+    border-left: 2px solid;
+    border-image: linear-gradient(180deg, #3b82f6 0%, #e2e8f0 100%) 1;
+    position: relative;
+    padding-bottom: 2px;
+  }
+  .job::before {
+    content: '';
+    position: absolute;
+    left: -6px; top: 4px;
+    width: 10px; height: 10px;
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px #fff, 0 2px 4px rgba(59, 130, 246, 0.3);
+  }
+  .job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .job-title { font-weight: 700; font-size: 9.5pt; color: #0f172a; }
+  .job-date {
+    font-size: 7.5pt;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    padding: 2px 10px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.25);
+  }
+  .job-company {
+    font-weight: 600;
+    color: #64748b;
+    font-size: 8.5pt;
+    margin-bottom: 3px;
+    font-style: italic;
+  }
+  .job ul { margin-left: 14px; color: #475569; }
+  .job li { margin-bottom: 2px; font-size: 8.8pt; }
+
+  /* ── Skills ── */
+  .skills-section { margin-top: 0; }
+  .skill-category {
+    margin-bottom: 12px;
+    padding: 8px 10px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+  }
+  .skill-label {
+    font-weight: 700;
+    font-size: 7.5pt;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #3b82f6;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .skill-label::before {
+    content: '';
+    width: 4px; height: 4px;
+    background: #3b82f6;
+    border-radius: 50%;
+  }
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .skill-tag {
+    font-size: 7.5pt;
+    background: #fff;
+    color: #334155;
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    font-weight: 500;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+
+  /* ── Education ── */
+  .edu-block {
+    padding: 10px 12px;
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border-radius: 8px;
+    border-left: 3px solid #3b82f6;
+    position: relative;
+  }
+  .edu-degree { font-weight: 700; font-size: 9.2pt; color: #0f172a; }
+  .edu-school { color: #64748b; font-size: 8.5pt; font-weight: 500; margin-top: 1px; }
+  .edu-year {
+    font-size: 7.5pt;
+    color: #fff;
+    font-weight: 600;
+    display: inline-block;
+    margin-top: 4px;
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  /* ── Projects ── */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 16px;
+  }
+  .project-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 14px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  }
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa, #93c5fd);
+  }
+  .project-name {
+    font-weight: 700;
+    font-size: 9pt;
+    color: #0f172a;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .project-name::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .project-desc {
+    font-size: 8pt;
+    color: #64748b;
+    line-height: 1.45;
+    margin-bottom: 6px;
+  }
+  .project-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed #e2e8f0;
+  }
+  .tech-pill {
+    font-size: 7pt;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 12px;
+    display: inline-block;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  }
+  .tech-pill.laravel { background: linear-gradient(135deg, #fef2f2, #fee2e2); color: #dc2626; border: 1px solid #fecaca; }
+  .tech-pill.vue { background: linear-gradient(135deg, #ecfdf5, #d1fae5); color: #059669; border: 1px solid #a7f3d0; }
+  .tech-pill.mysql { background: linear-gradient(135deg, #fff7ed, #ffedd5); color: #ea580c; border: 1px solid #fed7aa; }
+  .tech-pill.react { background: linear-gradient(135deg, #e0f2fe, #bae6fd); color: #0284c7; border: 1px solid #7dd3fc; }
+  .tech-pill.react-native { background: linear-gradient(135deg, #e0f2fe, #bae6fd); color: #0284c7; border: 1px solid #7dd3fc; }
+  .tech-pill.postgresql { background: linear-gradient(135deg, #eff6ff, #dbeafe); color: #2563eb; border: 1px solid #bfdbfe; }
+  .tech-pill.typescript { background: linear-gradient(135deg, #eff6ff, #dbeafe); color: #1d4ed8; border: 1px solid #bfdbfe; }
+  .tech-pill.nodejs { background: linear-gradient(135deg, #ecfdf5, #d1fae5); color: #16a34a; border: 1px solid #a7f3d0; }
+  .tech-pill.tailwind { background: linear-gradient(135deg, #ecfeff, #cffafe); color: #0891b2; border: 1px solid #a5f3fc; }
+  .tech-pill.nextjs { background: linear-gradient(135deg, #f8fafc, #f1f5f9); color: #0f172a; border: 1px solid #e2e8f0; }
+
+  /* ── Strengths ── */
+  .strengths-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+  }
+  .strengths-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .strength-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 8.5pt;
+    font-weight: 500;
+    color: #334155;
+    padding: 5px 8px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+  }
+  .strength-dot {
+    width: 8px; height: 8px;
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(59, 130, 246, 0.3);
+  }
+
+  /* ── Export Button ── */
+  .export-buttons {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+  }
+  .export-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.3);
+    transition: all 0.2s ease;
+  }
+  .export-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.4);
+  }
+  .export-btn:active {
+    transform: translateY(0);
+  }
+  .export-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+  }
+  .export-btn.loading {
+    pointer-events: none;
+    opacity: 0.7;
+  }
+  .export-btn .spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* ── Print ── */
+  @media print {
+    @page {
+      margin: 0;
+      size: letter;
+    }
+
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+
+    html, body {
+      width: 8.5in;
+      height: 11in;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: #fff !important;
+      font-size: 9.2pt !important;
+    }
+
+    body::before { display: none !important; }
+
+    .header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1e40af 100%) !important;
+      padding: 32px 48px 26px !important;
+      margin: 0 !important;
+    }
+
+    .header::before,
+    .header::after,
+    .header-decor {
+      display: block !important;
+    }
+
+    .header-accent {
+      background: linear-gradient(90deg, #3b82f6, #60a5fa, #93c5fd, #60a5fa, #3b82f6) !important;
+    }
+
+    .body {
+      padding: 24px 48px 30px !important;
+      background: #ffffff !important;
+    }
+
+    .body::before {
+      background: linear-gradient(180deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%) !important;
+    }
+
+    h2 { break-after: avoid; }
+    .job, .project-card, .skill-category, .edu-block { break-inside: avoid; }
+
+    .summary {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+      border-left: 3px solid #3b82f6 !important;
+    }
+
+    .skill-category {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+    }
+
+    .edu-block {
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
+    }
+
+    .project-card {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    }
+
+    .project-card::before {
+      background: linear-gradient(90deg, #3b82f6, #60a5fa, #93c5fd) !important;
+    }
+
+    .job-date, .edu-year {
+      background: linear-gradient(135deg, #3b82f6, #60a5fa) !important;
+      color: #fff !important;
+    }
+
+    .tech-pill.laravel { background: linear-gradient(135deg, #fef2f2, #fee2e2) !important; }
+    .tech-pill.vue { background: linear-gradient(135deg, #ecfdf5, #d1fae5) !important; }
+    .tech-pill.mysql { background: linear-gradient(135deg, #fff7ed, #ffedd5) !important; }
+    .tech-pill.react, .tech-pill.react-native { background: linear-gradient(135deg, #e0f2fe, #bae6fd) !important; }
+
+    .strength-item {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+    }
+
+    .export-buttons { display: none !important; }
+  }
+
+  /* ── Screen-only animations ── */
+  @media screen {
+    .project-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .project-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+    }
+    .skill-tag {
+      transition: all 0.15s ease;
+    }
+    .skill-tag:hover {
+      background: #3b82f6;
+      color: #fff;
+      border-color: #3b82f6;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════ RESUME CONTAINER ══════════ -->
+<div id="resume-content">
+
+<!-- ══════════ HEADER ══════════ -->
+<div class="header">
+  <div class="header-decor"></div>
+  <div class="header-accent"></div>
+  <h1>Arvin Baghari Edubas</h1>
+  <div class="subtitle">Full-Stack Web Developer &amp; Software Engineer</div>
+  <div class="contact-row">
+    <div class="contact-item">
+      <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      arvin.edubas15@gmail.com
+    </div>
+    <div class="contact-item">
+      <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>
+      Butuan City, Philippines
+    </div>
+  </div>
+  <div class="contact-row" style="margin-top: 6px;">
+    <div class="contact-item">
+      <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 016.02 0c2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      <a href="https://github.com/akosiArvin081596/">github.com/akosiArvin081596</a>
+    </div>
+    <div class="contact-item">
+      <svg viewBox="0 0 24 24"><path d="M20.45 20.45H16.9v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.95v5.66H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 11-.01-4.13 2.06 2.06 0 01.01 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.23 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.73V1.73C24 .77 23.21 0 22.23 0z"/></svg>
+      <a href="https://www.linkedin.com/in/arvin-edubas-a2b986144/">linkedin.com/in/arvin-edubas-a2b986144</a>
+    </div>
+    <div class="contact-item">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+      <a href="https://abedubas.dev">abedubas.dev</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ BODY ══════════ -->
+<div class="body">
+
+<h2><span class="accent"></span> Professional Summary</h2>
+<p class="summary">Results-driven full-stack developer with 10+ years of professional experience designing and building modern web applications for government agencies, enterprises, and startups. Proficient across the entire development lifecycle — from database architecture and API design to responsive frontend interfaces. Proven track record of delivering scalable, secure, and high-performance solutions under real-world constraints. Adept at leading technical teams and translating complex business requirements into reliable software products. Early adopter of AI-assisted development, leveraging AI tools as a pair programming partner to accelerate workflows, improve code quality, and drive innovation.</p>
+
+<div class="two-col">
+
+<!-- ── Left Column ── -->
+<div>
+
+<h2><span class="accent"></span> Work Experience</h2>
+
+<div class="job">
+  <div class="job-header">
+    <span class="job-title">Computer Programmer / DRMD-DRIM Section Head</span>
+    <span class="job-date">2024 &ndash; 2025</span>
+  </div>
+  <div class="job-company">Department of Social Welfare and Development</div>
+  <ul>
+    <li>Lead the information management section supporting national disaster response operations</li>
+    <li>Architect and develop web-based tools for relief coordination, beneficiary tracking, and automated reporting</li>
+    <li>Collaborate with cross-functional teams to streamline emergency data workflows</li>
+  </ul>
+</div>
+
+<div class="job">
+  <div class="job-header">
+    <span class="job-title">Information Technology Officer</span>
+    <span class="job-date">2018 &ndash; 2024</span>
+  </div>
+  <div class="job-company">Gingoog City Water District</div>
+  <ul>
+    <li>Managed end-to-end IT operations and infrastructure for the district utility</li>
+    <li>Developed custom systems for billing, customer records management, and inventory tracking</li>
+    <li>Streamlined internal workflows, improving operational efficiency and service reliability</li>
+  </ul>
+</div>
+
+<div class="job">
+  <div class="job-header">
+    <span class="job-title">Multimedia Officer</span>
+    <span class="job-date">2017 &ndash; 2018</span>
+  </div>
+  <div class="job-company">Axelum Resources Corporation</div>
+  <ul>
+    <li>Produced audio-visual training modules for employee onboarding, safety, and professional development</li>
+  </ul>
+</div>
+
+<div class="job">
+  <div class="job-header">
+    <span class="job-title">IT Staff / IT Officer</span>
+    <span class="job-date">2016 &ndash; 2017</span>
+  </div>
+  <div class="job-company">Mindanao Forge Company Inc.</div>
+  <ul>
+    <li>Provided IT support and infrastructure maintenance across the organization</li>
+    <li>Designed and developed the company's first mobile e-commerce application</li>
+  </ul>
+</div>
+
+<div class="job">
+  <div class="job-header">
+    <span class="job-title">Software Developer Intern</span>
+    <span class="job-date">2015 &ndash; 2016</span>
+  </div>
+  <div class="job-company">Philippine Long Distance Telephone Company (PLDT)</div>
+  <ul>
+    <li>Contributed to internal tooling projects under senior developer mentorship</li>
+    <li>Gained exposure to enterprise-grade software development practices and workflows</li>
+  </ul>
+</div>
+
+<div class="job">
+  <div class="job-header">
+    <span class="job-title">Freelance Web Developer</span>
+    <span class="job-date">2013 &ndash; 2019</span>
+  </div>
+  <div class="job-company">OnlineJobs.ph &mdash; Remote</div>
+  <ul>
+    <li>Delivered websites and web applications for international clients across diverse industries</li>
+    <li>Managed full project lifecycles from requirements gathering through deployment</li>
+  </ul>
+</div>
+
+</div>
+
+<!-- ── Right Column ── -->
+<div>
+
+<h2><span class="accent"></span> Technical Skills</h2>
+<div class="skills-section">
+  <div class="skill-category">
+    <div class="skill-label">Frontend</div>
+    <div class="skill-tags">
+      <span class="skill-tag">React</span>
+      <span class="skill-tag">Next.js</span>
+      <span class="skill-tag">Vue</span>
+      <span class="skill-tag">Nuxt.js</span>
+      <span class="skill-tag">TypeScript</span>
+      <span class="skill-tag">Tailwind CSS</span>
+      <span class="skill-tag">Redux</span>
+    </div>
+  </div>
+  <div class="skill-category">
+    <div class="skill-label">Backend</div>
+    <div class="skill-tags">
+      <span class="skill-tag">Node.js</span>
+      <span class="skill-tag">Express</span>
+      <span class="skill-tag">Laravel</span>
+      <span class="skill-tag">Python</span>
+      <span class="skill-tag">Django</span>
+      <span class="skill-tag">FastAPI</span>
+      <span class="skill-tag">GraphQL</span>
+    </div>
+  </div>
+  <div class="skill-category">
+    <div class="skill-label">Databases</div>
+    <div class="skill-tags">
+      <span class="skill-tag">PostgreSQL</span>
+      <span class="skill-tag">MySQL</span>
+      <span class="skill-tag">MongoDB</span>
+      <span class="skill-tag">Redis</span>
+      <span class="skill-tag">Prisma</span>
+    </div>
+  </div>
+  <div class="skill-category">
+    <div class="skill-label">DevOps & Tools</div>
+    <div class="skill-tags">
+      <span class="skill-tag">Git</span>
+      <span class="skill-tag">Docker</span>
+      <span class="skill-tag">AWS</span>
+      <span class="skill-tag">Vercel</span>
+      <span class="skill-tag">CI/CD</span>
+      <span class="skill-tag">Linux</span>
+      <span class="skill-tag">Nginx</span>
+      <span class="skill-tag">Jest</span>
+    </div>
+  </div>
+</div>
+
+<h2><span class="accent"></span> Education</h2>
+<div class="edu-block">
+  <div class="edu-degree">BS Information Technology</div>
+  <div class="edu-school">Christ the King College</div>
+  <div class="edu-year">Graduated 2016</div>
+</div>
+
+<h2><span class="accent"></span> Core Strengths</h2>
+<div class="strengths-wrapper">
+  <div class="strength-item"><span class="strength-dot"></span> Full-Stack Architecture</div>
+  <div class="strength-item"><span class="strength-dot"></span> Scalable API Design</div>
+  <div class="strength-item"><span class="strength-dot"></span> Performance Optimization</div>
+  <div class="strength-item"><span class="strength-dot"></span> Technical Leadership</div>
+  <div class="strength-item"><span class="strength-dot"></span> Clean, Maintainable Code</div>
+  <div class="strength-item"><span class="strength-dot"></span> User-Centric Development</div>
+</div>
+
+</div>
+</div><!-- end two-col -->
+
+<h2><span class="accent"></span> Selected Projects</h2>
+<div class="projects-grid">
+  <a href="https://dromic.dswd-caraga-drmd.online/" target="_blank" rel="noopener noreferrer" class="project-card" style="text-decoration:none;color:inherit;cursor:pointer;">
+    <div class="project-name">DROMIC Reporting Web Application</div>
+    <div style="font-size:7.5pt;color:#3b82f6;margin-bottom:4px;word-break:break-all;">dromic.dswd-caraga-drmd.online</div>
+    <div class="project-desc">Centralized disaster response platform enabling LGUs to submit real-time assistance requests with automated notifications to regional offices. Features dashboard analytics, beneficiary tracking, and multi-level approval workflows.</div>
+    <div class="project-tech">
+      <span class="tech-pill laravel">Laravel</span>
+      <span class="tech-pill vue">Vue</span>
+      <span class="tech-pill mysql">MySQL</span>
+    </div>
+  </a>
+  <a href="https://ect-beneficiary-validation.abedubas.dev/" target="_blank" rel="noopener noreferrer" class="project-card" style="text-decoration:none;color:inherit;cursor:pointer;">
+    <div class="project-name">ECT Post Monitoring App</div>
+    <div style="font-size:7.5pt;color:#3b82f6;margin-bottom:4px;word-break:break-all;">ect-beneficiary-validation.abedubas.dev</div>
+    <div class="project-desc">Mobile-first monitoring system for tracking emergency cash transfer disbursements to disaster-affected beneficiaries. Includes GPS-enabled field verification, photo documentation, and offline data sync capabilities.</div>
+    <div class="project-tech">
+      <span class="tech-pill react">React</span>
+      <span class="tech-pill laravel">Laravel</span>
+      <span class="tech-pill mysql">MySQL</span>
+    </div>
+  </a>
+  <a href="https://app.vendoraph.com/" target="_blank" rel="noopener noreferrer" class="project-card" style="text-decoration:none;color:inherit;cursor:pointer;">
+    <div class="project-name">Vendora POS &amp; Local E-Commerce</div>
+    <div style="font-size:7.5pt;color:#3b82f6;margin-bottom:4px;word-break:break-all;">app.vendoraph.com</div>
+    <div class="project-desc">Integrated retail solution combining point-of-sale operations with local e-commerce storefront. Features real-time inventory management, sales analytics, customer ordering, and multi-branch support.</div>
+    <div class="project-tech">
+      <span class="tech-pill react-native">React Native</span>
+      <span class="tech-pill laravel">Laravel</span>
+      <span class="tech-pill mysql">MySQL</span>
+    </div>
+  </a>
+  <a href="https://logistics-app.abedubas.dev" target="_blank" rel="noopener noreferrer" class="project-card" style="text-decoration:none;color:inherit;cursor:pointer;">
+    <div class="project-name">LogisX - Logistics Web Application</div>
+    <div style="font-size:7.5pt;color:#3b82f6;margin-bottom:4px;word-break:break-all;">logistics-app.abedubas.dev</div>
+    <div class="project-desc">Comprehensive logistics management platform for tracking shipments, managing fleet operations, and optimizing delivery routes. Features real-time tracking, automated dispatch, warehouse inventory management, and analytics dashboards.</div>
+    <div class="project-tech">
+      <span class="tech-pill vue">Vue</span>
+      <span class="tech-pill laravel">Laravel</span>
+      <span class="tech-pill mysql">MySQL</span>
+      <span class="tech-pill react-native">React Native</span>
+    </div>
+  </a>
+</div>
+
+</div><!-- end body -->
+
+</div><!-- end resume-content -->
+
+<!-- Export Buttons -->
+<div class="export-buttons">
+  <button class="export-btn" id="exportPng" title="Export as PNG">
+    <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+    <span>Export PNG</span>
+  </button>
+  <button class="export-btn" id="exportPdf" title="Print / Save as PDF">
+    <svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+    <span>Print PDF</span>
+  </button>
+</div>
+
+<!-- html2canvas and jsPDF libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+  // Capture page as canvas
+  async function captureResume() {
+    const exportBtns = document.querySelector('.export-buttons');
+    exportBtns.style.display = 'none';
+
+    const resumeContent = document.getElementById('resume-content');
+
+    const canvas = await html2canvas(resumeContent, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      logging: false
+    });
+
+    exportBtns.style.display = 'flex';
+    return canvas;
+  }
+
+  // Export as PNG
+  document.getElementById('exportPng').addEventListener('click', async function() {
+    const btn = this;
+    const originalContent = btn.innerHTML;
+
+    btn.classList.add('loading');
+    btn.innerHTML = '<div class="spinner"></div><span>Exporting...</span>';
+
+    try {
+      const canvas = await captureResume();
+      const link = document.createElement('a');
+      link.download = 'Arvin_Baghari_Edubas_Resume.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (error) {
+      console.error('Export failed:', error);
+      alert('Export failed. Please try again.');
+    }
+
+    btn.classList.remove('loading');
+    btn.innerHTML = originalContent;
+  });
+
+  // Export as PDF (using html2canvas + jsPDF for exact visual match)
+  document.getElementById('exportPdf').addEventListener('click', async function() {
+    const btn = this;
+    const originalContent = btn.innerHTML;
+
+    btn.classList.add('loading');
+    btn.innerHTML = '<div class="spinner"></div><span>Exporting...</span>';
+
+    try {
+      const canvas = await captureResume();
+      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+
+      const { jsPDF } = window.jspdf;
+
+      // Calculate the aspect ratio of the captured content
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = imgWidth / imgHeight;
+
+      // Create PDF with custom size matching the content aspect ratio
+      // Use the image dimensions to create a properly sized PDF
+      const pdfWidth = 8.5; // inches
+      const pdfHeight = pdfWidth / ratio;
+
+      const pdf = new jsPDF({
+        orientation: pdfHeight > pdfWidth ? 'portrait' : 'landscape',
+        unit: 'in',
+        format: [pdfWidth, pdfHeight]
+      });
+
+      // Add image to fill the entire page
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+
+      pdf.save('Arvin_Baghari_Edubas_Resume.pdf');
+    } catch (error) {
+      console.error('PDF export failed:', error);
+      alert('PDF export failed. Please try again.');
+    }
+
+    btn.classList.remove('loading');
+    btn.innerHTML = originalContent;
+  });
+</script>
+
+</body>
+</html>
