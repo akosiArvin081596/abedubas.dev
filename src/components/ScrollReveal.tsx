@@ -36,12 +36,9 @@ export function ScrollReveal({
   easing = "ease-out",
 }: ScrollRevealProps) {
   const [isVisible, setIsVisible] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setIsMounted(true);
-
     // Small delay to ensure CSS is ready
     const timer = setTimeout(() => {
       const observer = new IntersectionObserver(
@@ -143,15 +140,6 @@ export function ScrollReveal({
     transitionTimingFunction: easingMap[easing],
     transitionProperty: "opacity, transform, filter",
   });
-
-  // Before mount, show nothing (prevents flash)
-  if (!isMounted) {
-    return (
-      <div className={className} style={{ opacity: 0 }}>
-        {children}
-      </div>
-    );
-  }
 
   return (
     <div
