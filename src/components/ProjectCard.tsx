@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Project } from "@/types";
 
 interface ProjectCardProps {
@@ -8,11 +9,13 @@ export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <article className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-shadow hover:shadow-lg">
       {project.image && (
-        <div className="aspect-video overflow-hidden bg-muted">
-          <img
+        <div className="relative aspect-video overflow-hidden bg-muted">
+          <Image
             src={project.image}
             alt={project.title}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            fill
+            sizes="(min-width: 1024px) 352px, (min-width: 768px) 50vw, 100vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </div>
       )}
