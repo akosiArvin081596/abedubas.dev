@@ -56,6 +56,7 @@ export default function HomePage() {
                   src="/images/profile_picture.jpg"
                   alt="Arvin Baghari Edubas"
                   fill
+                  sizes="(min-width: 1024px) 280px, (min-width: 640px) 248px, 216px"
                   className="object-cover transition-transform duration-500 hover:scale-110"
                   priority
                 />

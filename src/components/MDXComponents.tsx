@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { MDXComponents } from "mdx/types";
 
 export const mdxComponents: MDXComponents = {
@@ -80,11 +81,19 @@ export const mdxComponents: MDXComponents = {
     }
     return <code className={className}>{children}</code>;
   },
-  img: ({ src, alt }) => (
-    <img
-      src={src}
-      alt={alt || ""}
-      className="my-4 rounded-lg border border-border"
-    />
-  ),
+  // Markdown supplies no dimensions, so fall back to explicit ones and let
+  // `h-auto` restore the real aspect ratio. No `images.remotePatterns` is
+  // configured on purpose: an external src should fail loudly rather than
+  // quietly widen the self-hosted image optimizer's reach.
+  img: ({ src, alt }) =>
+    typeof src === "string" ? (
+      <Image
+        src={src}
+        alt={alt || ""}
+        width={1200}
+        height={630}
+        sizes="(min-width: 768px) 768px, 100vw"
+        className="my-4 h-auto w-full rounded-lg border border-border"
+      />
+    ) : null,
 };
