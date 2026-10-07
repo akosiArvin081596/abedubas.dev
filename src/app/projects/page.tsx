@@ -36,7 +36,8 @@ const projects: Project[] = [
     description:
       "Comprehensive logistics management platform for tracking shipments, managing fleet operations, and optimizing delivery routes. Features real-time tracking, automated dispatch, warehouse inventory management, and analytics dashboards.",
     techStack: ["Vue", "Laravel", "MySQL", "React Native"],
-    // No liveUrl until logistics-app.abedubas.dev serves a valid certificate.
+    // The legacy subdomain 301-redirects to the app's new home, app.logisx.com.
+    liveUrl: "https://logistics-app.abedubas.dev",
   },
 ];
 
