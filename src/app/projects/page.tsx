@@ -8,51 +8,35 @@ export const metadata: Metadata = {
     "Portfolio of web development and software engineering projects by Arvin Baghari Edubas.",
 };
 
+// Mirrors the "Selected Projects" section of resume.html.
 const projects: Project[] = [
   {
-    title: "Enterprise Dashboard",
+    title: "DROMIC Reporting Web Application",
     description:
-      "A comprehensive analytics dashboard for enterprise clients featuring real-time data visualization, user management, and customizable reporting. Built with performance and scalability in mind.",
-    techStack: ["Next.js", "TypeScript", "Tailwind CSS", "PostgreSQL", "Prisma"],
-    githubUrl: "https://github.com/arvinedubas/enterprise-dashboard",
-    liveUrl: "https://dashboard.example.com",
+      "Centralized disaster response platform enabling LGUs to submit real-time assistance requests with automated notifications to regional offices. Features dashboard analytics, beneficiary tracking, and multi-level approval workflows.",
+    techStack: ["Laravel", "Vue", "MySQL"],
+    liveUrl: "https://dromic.dswd-caraga-drmd.online/",
   },
   {
-    title: "E-Commerce Platform",
+    title: "ECT Post Monitoring App",
     description:
-      "Full-featured e-commerce solution with product management, shopping cart, secure checkout, and order tracking. Integrated with multiple payment gateways.",
-    techStack: ["React", "Node.js", "Express", "MongoDB", "Stripe"],
-    githubUrl: "https://github.com/arvinedubas/ecommerce-platform",
-    liveUrl: "https://shop.example.com",
+      "Mobile-first monitoring system for tracking emergency cash transfer disbursements to disaster-affected beneficiaries. Includes GPS-enabled field verification, photo documentation, and offline data sync capabilities.",
+    techStack: ["React", "Laravel", "MySQL"],
+    liveUrl: "https://ect-beneficiary-validation.abedubas.dev/",
   },
   {
-    title: "Task Management System",
+    title: "Vendora POS & Local E-Commerce",
     description:
-      "Collaborative task management application with real-time updates, team workspaces, and project tracking. Features drag-and-drop interface and automated workflows.",
-    techStack: ["Next.js", "TypeScript", "Socket.io", "Redis", "PostgreSQL"],
-    githubUrl: "https://github.com/arvinedubas/task-manager",
+      "Integrated retail solution combining point-of-sale operations with local e-commerce storefront. Features real-time inventory management, sales analytics, customer ordering, and multi-branch support.",
+    techStack: ["React Native", "Laravel", "MySQL"],
+    liveUrl: "https://app.vendoraph.com/",
   },
   {
-    title: "Content Management System",
+    title: "LogisX - Logistics Web Application",
     description:
-      "Headless CMS built for developers with a focus on flexibility and performance. Features a powerful API, media management, and role-based access control.",
-    techStack: ["NestJS", "TypeScript", "GraphQL", "PostgreSQL", "AWS S3"],
-    githubUrl: "https://github.com/arvinedubas/headless-cms",
-  },
-  {
-    title: "Real-Time Chat Application",
-    description:
-      "Scalable chat application supporting private messaging, group chats, and file sharing. Implements end-to-end encryption for secure communications.",
-    techStack: ["React", "Node.js", "WebSocket", "MongoDB", "Redis"],
-    githubUrl: "https://github.com/arvinedubas/chat-app",
-    liveUrl: "https://chat.example.com",
-  },
-  {
-    title: "API Gateway Service",
-    description:
-      "Microservices API gateway handling authentication, rate limiting, request routing, and logging. Designed for high availability and horizontal scaling.",
-    techStack: ["Node.js", "Express", "Redis", "Docker", "Kubernetes"],
-    githubUrl: "https://github.com/arvinedubas/api-gateway",
+      "Comprehensive logistics management platform for tracking shipments, managing fleet operations, and optimizing delivery routes. Features real-time tracking, automated dispatch, warehouse inventory management, and analytics dashboards.",
+    techStack: ["Vue", "Laravel", "MySQL", "React Native"],
+    // No liveUrl until logistics-app.abedubas.dev serves a valid certificate.
   },
 ];
 
@@ -71,7 +55,7 @@ export default function ProjectsPage() {
       </ScrollReveal>
 
       {/* Projects Grid */}
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-8 md:grid-cols-2">
         {projects.map((project, index) => (
           <ScrollReveal
             key={project.title}
