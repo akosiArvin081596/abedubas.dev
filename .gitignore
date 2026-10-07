@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# claude code: per-machine permissions, which can name servers and logins
+.claude/settings.local.json
