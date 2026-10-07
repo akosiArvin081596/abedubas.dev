@@ -61,6 +61,15 @@ tags: ["tag1", "tag2"]
 
 Use `next/image` everywhere, and give `fill` images a `sizes` prop. No `images.remotePatterns` is configured, on purpose (see the comment in `MDXComponents.tsx`), so only local images under `public/` load.
 
+### Deployment
+
+Pushes to `main` deploy automatically. `.github/workflows/ci-cd.yml` lints and builds every push and pull request. On `main` it then SSHes into the VPS. There, `deploy/deploy-abedubas-dev.sh` builds the commit beside the live copy, smoke-tests it, swaps it in and restarts the `abedubas.dev` pm2 app. It swaps back on its own if the app doesn't come up. The README's Deployment section covers rollback and setup.
+
+- The VPS runs its own copy of the script at `/usr/local/bin/deploy-abedubas-dev.sh`. Editing `deploy/deploy-abedubas-dev.sh` changes nothing there until it's reinstalled.
+- The CI key in the VPS's `authorized_keys` can run only that script. The `DEPLOY_*` secrets live in the `production` environment, and only `main` may deploy to it.
+- The repo is public, so the Actions logs are too. The script keeps pm2's table of every app on the VPS out of them. Keep the VPS's other apps out of anything else it prints.
+- CI pins Node 20 because the site builds and runs on the VPS's system Node 20.
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know

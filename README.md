@@ -47,7 +47,7 @@ src/
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 20.9+
 - npm, yarn, or pnpm
 
 ### Installation
@@ -116,12 +116,30 @@ Edit theme colors in `src/app/globals.css`:
 
 ## Deployment
 
-### Deploy to Vercel
+The site runs under pm2 on a VPS and deploys itself through GitHub Actions (`.github/workflows/ci-cd.yml`):
 
-1. Push your code to GitHub
-2. Go to [Vercel](https://vercel.com/new)
-3. Import your repository
-4. Deploy
+- **Every push and pull request** runs `npm ci`, `npm run lint` and `npm run build` on Node 20.
+- **Every push to `main`** then deploys, once those pass. The job SSHes into the VPS with a key that can run only `deploy/deploy-abedubas-dev.sh`. That script clones the commit beside the live copy, builds it, and smoke-tests it with `next start` on a spare port. Then it swaps the new copy in and restarts only the `abedubas.dev` pm2 app. If the restarted app doesn't answer, it swaps the old release back.
+
+Pushes to `main` queue instead of cancelling each other, so deploys run one at a time and in push order. A deploy that has started finishes even if its CI job is cancelled or loses its connection. The output is in the Actions log, and the VPS keeps the last 30 deploy logs in `/var/log/deploy-abedubas-dev/`.
+
+### Rolling back
+
+- Revert the bad commit and push, or re-run the deploy job of an older run in the Actions tab, which redeploys that run's commit.
+- On the VPS, as root, `deploy-abedubas-dev.sh <sha>` deploys any commit on `main`. The release before the current one stays in `/var/www/abedubas.dev.rollback` until the next deploy.
+
+### One-time setup
+
+1. Install the script on the VPS as `/usr/local/bin/deploy-abedubas-dev.sh` (mode 755). Repeat this whenever `deploy/deploy-abedubas-dev.sh` changes, because the server runs its own copy.
+2. Generate an SSH key pair for CI. Add the public key to `/root/.ssh/authorized_keys`, locked to the script:
+   ```
+   restrict,command="/usr/local/bin/deploy-abedubas-dev.sh" ssh-ed25519 AAAA... github-actions-deploy@abedubas.dev
+   ```
+3. Create a `production` environment in the repo settings and allow it to deploy only from `main`. Give it these secrets:
+   - `DEPLOY_HOST`
+   - `DEPLOY_USER`
+   - `DEPLOY_SSH_KEY`: the private key
+   - `DEPLOY_KNOWN_HOSTS`: the VPS's host key line, checked against a fingerprint you already trust
 
 ### Build for Production
 
