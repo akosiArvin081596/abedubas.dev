@@ -20,7 +20,7 @@ Good API design starts with clear principles:
 
 Use plural nouns for resources and follow a hierarchical structure:
 
-```
+```text
 GET    /users              # List all users
 GET    /users/:id          # Get a specific user
 POST   /users              # Create a new user
@@ -87,7 +87,7 @@ For list endpoints, implement cursor-based pagination for better performance:
 
 Protect your API from abuse with rate limiting. Return helpful headers:
 
-```
+```text
 X-RateLimit-Limit: 100
 X-RateLimit-Remaining: 95
 X-RateLimit-Reset: 1696512000
@@ -116,7 +116,7 @@ throw new AppError(404, "USER_NOT_FOUND", "User not found");
 
 Version your API from the start to allow for future changes:
 
-```
+```text
 /api/v1/users
 /api/v2/users
 ```
