@@ -25,7 +25,7 @@ There is no CMS or database. Page copy and data (projects, skills, work history,
 - The email address and GitHub/LinkedIn links are duplicated in `src/components/Footer.tsx` and `src/app/contact/page.tsx`. Update both.
 - Site-wide SEO (title template `%s | Arvin Baghari Edubas`, OpenGraph, Twitter) is the `metadata` export in `src/app/layout.tsx`. Each page exports only `title` and `description`.
 - `POST /api/contact` only validates the submission and logs it with `console.log`. No email delivery or storage is wired up.
-- `resume.html` at the repo root is a standalone, print-ready (US Letter) resume. It is not part of the Next app and is not served, because it sits outside `public/`. It repeats the work history from the about page.
+- `resume.html` at the repo root is a standalone, print-ready (US Letter) resume. It is not part of the Next app and is not served, because it sits outside `public/`. It repeats the about page's work history and the projects page's project list, so update both places when either changes.
 - A component used by only one page sits beside that page (`src/app/HeroAnimation.tsx`, `src/app/contact/ContactForm.tsx`). Shared components live in `src/components/` and are re-exported from `@/components`.
 
 ### Blog

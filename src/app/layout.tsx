@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://arvinedubas.dev",
+    url: "https://abedubas.dev",
     siteName: "Arvin Baghari Edubas Portfolio",
     title: "Arvin Baghari Edubas | Web Developer & Software Engineer",
     description:
