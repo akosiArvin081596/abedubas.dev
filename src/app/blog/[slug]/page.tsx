@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
+import rehypeSlug from "rehype-slug";
 import { getPostBySlug, getAllPostSlugs } from "@/lib/blog";
 import { mdxComponents } from "@/components/MDXComponents";
 import { TagBadge } from "@/components/TagBadge";
@@ -98,7 +101,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
       {/* Content */}
       <div className="prose-custom">
-        <MDXRemote source={post.content} components={mdxComponents} />
+        <MDXRemote
+          source={post.content}
+          components={mdxComponents}
+          options={{
+            mdxOptions: {
+              remarkPlugins: [remarkGfm],
+              rehypePlugins: [rehypeSlug, rehypeHighlight],
+            },
+          }}
+        />
       </div>
     </article>
   );

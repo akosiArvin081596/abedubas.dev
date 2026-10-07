@@ -2,21 +2,27 @@ import Image from "next/image";
 import type { MDXComponents } from "mdx/types";
 
 export const mdxComponents: MDXComponents = {
-  h1: ({ children }) => (
-    <h1 className="mb-6 mt-8 text-3xl font-bold text-foreground">{children}</h1>
+  // Headings forward the `id` rehype-slug adds; `scroll-mt-20` keeps an
+  // anchored heading from landing under the sticky navbar.
+  h1: ({ children, id }) => (
+    <h1 id={id} className="mb-6 mt-8 scroll-mt-20 text-3xl font-bold text-foreground">
+      {children}
+    </h1>
   ),
-  h2: ({ children }) => (
-    <h2 className="mb-4 mt-8 text-2xl font-semibold text-foreground">
+  h2: ({ children, id }) => (
+    <h2 id={id} className="mb-4 mt-8 scroll-mt-20 text-2xl font-semibold text-foreground">
       {children}
     </h2>
   ),
-  h3: ({ children }) => (
-    <h3 className="mb-3 mt-6 text-xl font-semibold text-foreground">
+  h3: ({ children, id }) => (
+    <h3 id={id} className="mb-3 mt-6 scroll-mt-20 text-xl font-semibold text-foreground">
       {children}
     </h3>
   ),
-  h4: ({ children }) => (
-    <h4 className="mb-2 mt-4 text-lg font-medium text-foreground">{children}</h4>
+  h4: ({ children, id }) => (
+    <h4 id={id} className="mb-2 mt-4 scroll-mt-20 text-lg font-medium text-foreground">
+      {children}
+    </h4>
   ),
   p: ({ children }) => (
     <p className="mb-4 leading-relaxed text-muted-foreground">{children}</p>

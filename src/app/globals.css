@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Bind `dark:` to the `.dark` class the theme toggle sets, not the OS setting */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #0f172a;
@@ -12,6 +15,13 @@
   --border: #e2e8f0;
   --card: #ffffff;
   --card-foreground: #0f172a;
+  --code-keyword: #cf222e;
+  --code-title: #8250df;
+  --code-constant: #0550ae;
+  --code-string: #0a3069;
+  --code-builtin: #953800;
+  --code-comment: #59636e;
+  --code-tag: #116329;
 }
 
 .dark {
@@ -26,6 +36,13 @@
   --border: #334155;
   --card: #1e293b;
   --card-foreground: #f8fafc;
+  --code-keyword: #ff7b72;
+  --code-title: #d2a8ff;
+  --code-constant: #79c0ff;
+  --code-string: #a5d6ff;
+  --code-builtin: #ffa657;
+  --code-comment: #8b949e;
+  --code-tag: #7ee787;
 }
 
 @theme inline {
@@ -102,6 +119,72 @@ pre code {
   background: var(--muted);
   padding: 0.2em 0.4em;
   border-radius: 0.25rem;
+}
+
+/* Syntax highlighting for the highlight.js classes rehype-highlight emits.
+   The --code-* palettes (GitHub Primer light, GitHub dark) meet WCAG AA on --muted. */
+.hljs-doctag,
+.hljs-keyword,
+.hljs-meta .hljs-keyword,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-type,
+.hljs-variable.language_,
+.hljs-deletion {
+  color: var(--code-keyword);
+}
+
+.hljs-title {
+  color: var(--code-title);
+}
+
+.hljs-attr,
+.hljs-attribute,
+.hljs-literal,
+.hljs-meta,
+.hljs-number,
+.hljs-operator,
+.hljs-variable,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-id,
+.hljs-section {
+  color: var(--code-constant);
+}
+
+.hljs-regexp,
+.hljs-string,
+.hljs-meta .hljs-string {
+  color: var(--code-string);
+}
+
+.hljs-built_in,
+.hljs-symbol,
+.hljs-bullet {
+  color: var(--code-builtin);
+}
+
+.hljs-comment,
+.hljs-code,
+.hljs-formula {
+  color: var(--code-comment);
+}
+
+.hljs-name,
+.hljs-quote,
+.hljs-selector-tag,
+.hljs-selector-pseudo,
+.hljs-addition {
+  color: var(--code-tag);
+}
+
+.hljs-section,
+.hljs-strong {
+  font-weight: bold;
+}
+
+.hljs-emphasis {
+  font-style: italic;
 }
 
 /* Smooth scroll behavior */
