@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { ThemeToggle } from "./ThemeToggle";
 
 const navItems = [
@@ -14,16 +14,34 @@ const navItems = [
   { label: "Contact", href: "/contact" },
 ];
 
+// Stagger order for the `drop` entrance (see styles/motion/site.css)
+const order = (i: number) => ({ "--i": i }) as CSSProperties;
+
+// A link's aria-current: "page" on its own page, "true" on the pages below it
+// (a blog post is in Blog), so its section stays highlighted.
+const currentFor = (pathname: string, href: string) =>
+  pathname === href
+    ? ("page" as const)
+    : href !== "/" && pathname.startsWith(`${href}/`)
+      ? ("true" as const)
+      : undefined;
+
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+      <nav
+        className="container-site flex items-center justify-between py-4"
+        data-reveal="drop"
+        data-reveal-on="load"
+      >
         <Link
           href="/"
           className="group flex items-center gap-1 text-xl font-bold"
+          data-reveal-item
+          style={order(0)}
         >
           <span className="text-primary">&lt;</span>
           <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent transition-all group-hover:from-accent group-hover:to-primary">
@@ -35,29 +53,45 @@ export function Navbar() {
 
         {/* Desktop Navigation */}
         <div className="hidden items-center gap-8 md:flex">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`text-sm font-medium transition-colors hover:text-primary ${
-                pathname === item.href
-                  ? "text-primary"
-                  : "text-muted-foreground"
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
-          <ThemeToggle />
+          {navItems.map((item, index) => {
+            const current = currentFor(pathname, item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={current}
+                data-reveal-item
+                style={order(index + 1)}
+                className={`nav-link text-sm font-medium transition-colors hover:text-primary ${
+                  current ? "text-primary" : "text-muted-foreground"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+          <span
+            className="flex"
+            data-reveal-item
+            style={order(navItems.length + 1)}
+          >
+            <ThemeToggle />
+          </span>
         </div>
 
         {/* Mobile Menu Button */}
         <div className="flex items-center gap-4 md:hidden">
-          <ThemeToggle />
+          <span className="flex" data-reveal-item style={order(1)}>
+            <ThemeToggle />
+          </span>
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="rounded-lg p-2 hover:bg-muted"
             aria-label="Toggle menu"
+            aria-expanded={isMenuOpen}
+            aria-controls={isMenuOpen ? "mobile-menu" : undefined}
+            data-reveal-item
+            style={order(2)}
           >
             {isMenuOpen ? (
               <svg
@@ -94,24 +128,30 @@ export function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Navigation. Its items drop in top to bottom as it opens. */}
       {isMenuOpen && (
-        <div className="border-t border-border bg-background md:hidden">
+        <div
+          id="mobile-menu"
+          className="border-t border-border bg-background md:hidden"
+        >
           <div className="flex flex-col px-4 py-4">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setIsMenuOpen(false)}
-                className={`py-3 text-sm font-medium transition-colors hover:text-primary ${
-                  pathname === item.href
-                    ? "text-primary"
-                    : "text-muted-foreground"
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navItems.map((item, index) => {
+              const current = currentFor(pathname, item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  aria-current={current}
+                  style={order(index)}
+                  className={`nav-menu-item py-3 text-sm font-medium transition-colors hover:text-primary ${
+                    current ? "text-primary" : "text-muted-foreground"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
           </div>
         </div>
       )}

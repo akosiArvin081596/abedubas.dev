@@ -4,10 +4,18 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border bg-background">
-      <div className="mx-auto max-w-6xl px-4 py-8">
+    // `ledger` reveal (see styles/motion/site.css): the top rule draws left to
+    // right, then the columns and icons write in, left to right.
+    <footer
+      className="relative border-t border-border bg-background"
+      data-reveal="ledger"
+    >
+      <div className="container-site py-10">
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <div className="flex flex-col items-center gap-2 md:items-start">
+          <div
+            className="flex flex-col items-center gap-2 md:items-start"
+            data-reveal-item
+          >
             <Link
               href="/"
               className="text-lg font-bold text-foreground hover:text-primary"
@@ -26,6 +34,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="text-muted-foreground transition-colors hover:text-primary"
               aria-label="GitHub"
+              data-reveal-item
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -43,6 +52,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="text-muted-foreground transition-colors hover:text-primary"
               aria-label="LinkedIn"
+              data-reveal-item
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -58,6 +68,7 @@ export function Footer() {
               href="mailto:arvin.edubas15@gmail.com"
               className="text-muted-foreground transition-colors hover:text-primary"
               aria-label="Email"
+              data-reveal-item
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -77,8 +88,8 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-border pt-8 text-center">
-          <p className="text-sm text-muted-foreground">
+        <div className="ledger-divider relative mt-8 border-t border-border pt-8 text-center">
+          <p className="text-sm text-muted-foreground" data-reveal-item>
             &copy; {currentYear} Arvin Baghari Edubas. All rights reserved.
           </p>
         </div>

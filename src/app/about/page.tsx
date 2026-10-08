@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { ScrollReveal } from "@/components";
+import { SectionLabel, SplitText } from "@/components";
+import { Timeline, type TimelineEntry } from "./Timeline";
 
 export const metadata: Metadata = {
   title: "About",
@@ -7,7 +8,7 @@ export const metadata: Metadata = {
     "Learn more about Arvin Baghari Edubas, a Web Developer and Software Engineer with expertise in modern web technologies.",
 };
 
-const timeline = [
+const timeline: TimelineEntry[] = [
   {
     year: "2024 - Present",
     title: "Computer Programmer (DRMD-DRIM Section Head)",
@@ -59,6 +60,15 @@ const timeline = [
   },
 ];
 
+// Quick facts for the bio's side column, all drawn from the bio itself and
+// the contact page.
+const facts = [
+  { label: "Experience", value: "5+ years" },
+  { label: "Frontend", value: "Vue · Nuxt.js · React · Next.js" },
+  { label: "Backend", value: "Laravel · Node.js" },
+  { label: "Based in", value: "Philippines" },
+];
+
 export default function AboutPage() {
   const philosophyItems = [
     {
@@ -88,32 +98,67 @@ export default function AboutPage() {
   ];
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-16">
-      {/* Header */}
-      <ScrollReveal animation="fade-down" duration={800}>
-        <div className="mb-16 text-center">
-          <span className="mb-4 inline-block text-sm font-medium uppercase tracking-widest text-primary">
-            Get to know me
+    <div className="container-site py-16 lg:py-24">
+      {/* Header: `letters`, on load */}
+      <div
+        className="mb-20 text-center lg:mb-28"
+        data-reveal="letters"
+        data-reveal-on="load"
+      >
+        <SectionLabel className="letters-label mb-4">
+          Get to know me
+        </SectionLabel>
+        <h1 className="mb-4 text-5xl font-bold text-foreground md:text-7xl lg:text-8xl">
+          <SplitText text="About" by="char" />{" "}
+          <span className="text-primary">
+            <SplitText text="Me" by="char" start={5} />
           </span>
-          <h1 className="mb-4 text-5xl font-bold text-foreground md:text-6xl">
-            About <span className="text-primary">Me</span>
-          </h1>
-          <div className="mx-auto mt-6 h-1 w-24 bg-gradient-to-r from-transparent via-primary to-transparent" />
-        </div>
-      </ScrollReveal>
+        </h1>
+        <div className="letters-bar mx-auto mt-8 h-1 w-32 bg-gradient-to-r from-transparent via-primary to-transparent" />
+      </div>
 
-      {/* Bio Section */}
-      <section className="mb-20">
-        <ScrollReveal animation="fade-up" duration={800} delay={100}>
-          <div className="relative">
-            <span className="absolute -left-4 top-0 text-8xl font-bold text-primary/10 select-none hidden md:block">
-              &ldquo;
-            </span>
-            <h2 className="mb-6 inline-flex items-center gap-3 text-2xl font-semibold text-foreground">
+      {/* Bio: `highlight`. A side column of quick facts stays in view while
+          the bio reads at a comfortable measure beside it. */}
+      <section
+        className="mb-24 grid gap-10 lg:mb-32 lg:grid-cols-12 lg:gap-16"
+        data-reveal="highlight"
+      >
+        <div className="lg:col-span-4">
+          <div className="lg:sticky lg:top-28">
+            <h2
+              className="highlight-side mb-8 inline-flex items-center gap-3 text-2xl font-semibold text-foreground lg:text-3xl"
+              data-reveal-item
+            >
               <span className="h-px w-8 bg-primary" />
               Professional Bio
             </h2>
-            <div className="space-y-5 text-lg leading-relaxed text-muted-foreground md:pl-8">
+            <dl
+              className="highlight-side space-y-4 border-l border-border pl-5 text-sm"
+              data-reveal-item
+            >
+              {facts.map((fact) => (
+                <div key={fact.label}>
+                  <dt className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+                    {fact.label}
+                  </dt>
+                  <dd className="mt-1 font-medium text-foreground">
+                    {fact.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+
+        <div className="relative lg:col-span-8">
+          <span
+            aria-hidden="true"
+            className="highlight-quote absolute -left-6 -top-10 hidden select-none text-8xl font-bold text-primary/10 md:block"
+          >
+            &ldquo;
+          </span>
+          <div className="max-w-[68ch] space-y-6 text-lg leading-relaxed text-muted-foreground lg:text-xl lg:leading-relaxed">
+            <div className="highlight-line" data-reveal-item>
               <p>
                 <span className="text-foreground font-medium">
                   I&apos;m Arvin Baghari Edubas
@@ -123,6 +168,8 @@ export default function AboutPage() {
                 scalable, maintainable, and user-friendly products that solve
                 real business problems.
               </p>
+            </div>
+            <div className="highlight-line" data-reveal-item>
               <p>
                 I work across the stack—crafting thoughtful interfaces with{" "}
                 <span className="text-primary font-medium">Vue</span> and{" "}
@@ -138,12 +185,16 @@ export default function AboutPage() {
                 lot about clean code, practical best practices, and shipping
                 work that&apos;s easy to maintain.
               </p>
+            </div>
+            <div className="highlight-line" data-reveal-item>
               <p>
                 To move faster without sacrificing quality, I also use AI tools
                 as a coding partner—like a peer reviewer for ideas, refactors,
                 edge cases, and documentation. I stay accountable for the final
                 decisions, architecture, and code quality.
               </p>
+            </div>
+            <div className="highlight-line" data-reveal-item>
               <p>
                 I&apos;ve collaborated with enterprise teams, government
                 agencies, and startups to deliver solutions built for real-world
@@ -151,85 +202,50 @@ export default function AboutPage() {
               </p>
             </div>
           </div>
-        </ScrollReveal>
+        </div>
       </section>
 
-      {/* Philosophy Section */}
-      <section className="mb-20">
-        <ScrollReveal animation="blur-in" duration={800}>
-          <h2 className="mb-10 inline-flex items-center gap-3 text-2xl font-semibold text-foreground">
-            <span className="h-px w-8 bg-primary" />
-            Engineering Philosophy
-          </h2>
-        </ScrollReveal>
-        <div className="grid gap-8 md:grid-cols-2">
-          {philosophyItems.map((item, index) => (
-            <ScrollReveal
-              key={index}
-              animation={index % 2 === 0 ? "fade-right" : "fade-left"}
-              delay={index * 150}
-              duration={700}
-              easing="bounce"
+      {/* Philosophy: `hinge`, four across on wide screens */}
+      <section className="mb-24 lg:mb-32" data-reveal="hinge">
+        <h2
+          className="mb-12 inline-flex items-center gap-3 text-2xl font-semibold text-foreground lg:text-3xl"
+          data-reveal-item
+        >
+          <span className="h-px w-8 bg-primary" />
+          Engineering Philosophy
+        </h2>
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          {philosophyItems.map((item) => (
+            <div
+              key={item.number}
+              className="group relative rounded-xl border border-border bg-card/60 p-6 transition-colors hover:border-primary/40 lg:p-8"
+              data-reveal-item
             >
-              <div className="group relative pl-16 py-4 border-b border-border/50 hover:border-primary/30 transition-all">
-                <div className="absolute left-0 top-4 flex flex-col items-center">
-                  <span className="text-5xl font-black text-primary/20 group-hover:text-primary/60 transition-colors leading-none">
-                    {item.number}
-                  </span>
-                  <span className="mt-1 h-8 w-px bg-gradient-to-b from-primary/40 to-transparent group-hover:from-primary transition-colors" />
-                </div>
-                <h3 className="mb-2 text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
-                  {item.title}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">
-                  {item.description}
-                </p>
-              </div>
-            </ScrollReveal>
+              <span className="block text-5xl font-black leading-none text-primary/20 transition-colors group-hover:text-primary/60">
+                {item.number}
+              </span>
+              <span className="mt-4 mb-5 block h-px w-12 bg-gradient-to-r from-primary/40 to-transparent transition-colors group-hover:from-primary" />
+              <h3 className="mb-3 text-xl font-semibold text-foreground transition-colors group-hover:text-primary">
+                {item.title}
+              </h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                {item.description}
+              </p>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* Experience Timeline */}
+      {/* Experience Timeline: `gitlog`, one reveal per commit */}
       <section>
-        <ScrollReveal animation="blur-in" duration={800}>
-          <h2 className="mb-10 inline-flex items-center gap-3 text-2xl font-semibold text-foreground">
-            <span className="h-px w-8 bg-primary" />
-            Experience Timeline
-          </h2>
-        </ScrollReveal>
-        <div className="relative">
-          <div className="absolute left-[7px] top-2 bottom-2 w-px bg-gradient-to-b from-primary via-border to-transparent" />
-          <div className="space-y-8">
-            {timeline.map((item, index) => (
-              <ScrollReveal
-                key={index}
-                animation="slide-left"
-                delay={index * 200}
-                duration={800}
-                easing="elastic"
-              >
-                <div className="group relative pl-10">
-                  <div className="absolute left-0 top-1.5 h-4 w-4 rounded-full border-2 border-primary bg-background transition-all group-hover:scale-125 group-hover:bg-primary" />
-                  <div className="mb-1 flex flex-wrap items-center gap-x-4 gap-y-1">
-                    <span className="text-sm font-bold uppercase tracking-wider text-primary">
-                      {item.year}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {item.company}
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2 text-muted-foreground leading-relaxed">
-                    {item.description}
-                  </p>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
+        <h2
+          className="gitlog-head mb-12 inline-flex items-center gap-3 text-2xl font-semibold text-foreground lg:mb-16 lg:text-3xl"
+          data-reveal="gitlog"
+        >
+          <span className="h-px w-8 bg-primary" />
+          Experience Timeline
+        </h2>
+        <Timeline items={timeline} />
       </section>
     </div>
   );
