@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SectionLabel, SplitText } from "@/components";
+import { yearsOfExperience } from "@/lib/career";
 import { Timeline, type TimelineEntry } from "./Timeline";
 
 export const metadata: Metadata = {
@@ -63,7 +64,7 @@ const timeline: TimelineEntry[] = [
 // Quick facts for the bio's side column, all drawn from the bio itself and
 // the contact page.
 const facts = [
-  { label: "Experience", value: "5+ years" },
+  { label: "Experience", value: `${yearsOfExperience()}+ years` },
   { label: "Frontend", value: "Vue · Nuxt.js · React · Next.js" },
   { label: "Backend", value: "Laravel · Node.js" },
   { label: "Based in", value: "Philippines" },
@@ -163,8 +164,9 @@ export default function AboutPage() {
                 <span className="text-foreground font-medium">
                   I&apos;m Arvin Baghari Edubas
                 </span>
-                , a web developer and software engineer with 5+ years of
-                experience building modern web applications. I focus on creating
+                , a web developer and software engineer with{" "}
+                {yearsOfExperience()}+ years of experience building modern web
+                applications. I focus on creating
                 scalable, maintainable, and user-friendly products that solve
                 real business problems.
               </p>

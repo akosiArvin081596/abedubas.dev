@@ -164,6 +164,7 @@ npm start
 - `npm run build` - Build for production
 - `npm start` - Start production server
 - `npm run lint` - Run ESLint
+- `npm run stats:github` - Refresh the home page's GitHub stats snapshot (`src/data/github-stats.json`) through your local `gh` login
 
 ## Technologies
 

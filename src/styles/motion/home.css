@@ -289,10 +289,10 @@
    left to right and a highlight runs along its top edge. Then, card by card
    in reading order, each card drops in while a scanline passes down it: its
    icon pops, its metric key types on, its number's digit columns roll down
-   odometer style, its label slides in from the left, and its chart fills.
-   The experience bars and the meter fill left to right, the project matrix
-   lights up one cell at a time in reading order, and the stack chips pop
-   in left to right. */
+   odometer style, its label slides in from the left, and its chart fills:
+   the year columns drop in left to right, the repository matrix lights up
+   one cell at a time in reading order, and the language and activity bars
+   fill left to right. The data source note comes in last. */
 
 .count-panel,
 .count-beam {
@@ -408,6 +408,11 @@
   opacity: var(--level);
 }
 
+.stat-year {
+  height: var(--h);
+  opacity: var(--level);
+}
+
 .stat-scan {
   position: absolute;
   inset-inline: 0;
@@ -424,8 +429,8 @@
   );
 }
 
-/* The eyebrow drops in first. */
-.motion [data-reveal="count"][data-revealed] .stat-eyebrow {
+/* The eyebrow drops in first, the data source note last. */
+.motion [data-reveal="count"][data-revealed] :is(.stat-eyebrow, .stat-source) {
   animation: stat-drop var(--dur-1) var(--ease-out)
     calc(var(--i) * var(--stagger)) backwards;
 }
@@ -498,7 +503,7 @@
   }
 }
 
-/* Charts. Experience bars and meter segments fill left to right. */
+/* Charts. Language and activity bars fill left to right. */
 .motion [data-reveal="count"][data-revealed] .stat-bar {
   transform-origin: 0 50%;
   animation: stat-fill var(--dur-2) var(--ease-out)
@@ -511,19 +516,21 @@
   }
 }
 
-.motion [data-reveal="count"][data-revealed] .stat-seg {
-  animation: stat-light 500ms var(--ease-out)
-    calc(var(--i) * var(--stagger) + 650ms + var(--c) * 80ms) backwards;
+/* The year columns drop in from their tops, left to right. */
+.motion [data-reveal="count"][data-revealed] .stat-year {
+  transform-origin: 50% 0;
+  animation: stat-year var(--dur-1) var(--ease-out)
+    calc(var(--i) * var(--stagger) + 650ms + var(--c) * 60ms) backwards;
 }
 
-@keyframes stat-light {
+@keyframes stat-year {
   from {
-    opacity: 0.12;
-    filter: saturate(0);
+    opacity: 0;
+    scale: 1 0;
   }
 }
 
-/* The project matrix lights up a cell at a time, in reading order. */
+/* The repository matrix lights up a cell at a time, in reading order. */
 .motion [data-reveal="count"][data-revealed] .stat-cell {
   animation: stat-cell 500ms var(--ease-out)
     calc(var(--i) * var(--stagger) + 650ms + var(--c) * 16ms) backwards;
@@ -533,20 +540,6 @@
   from {
     opacity: 0;
     scale: 0.2;
-  }
-}
-
-/* The stack chips pop in left to right. */
-.motion [data-reveal="count"][data-revealed] .stat-chip {
-  animation: stat-chip var(--dur-1) var(--ease-out)
-    calc(var(--i) * var(--stagger) + 650ms + var(--c) * 60ms) backwards;
-}
-
-@keyframes stat-chip {
-  from {
-    opacity: 0;
-    translate: -12px 0;
-    filter: blur(4px);
   }
 }
 

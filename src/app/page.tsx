@@ -5,6 +5,8 @@ import {
   SectionLabel,
   SplitText,
 } from "@/components";
+import githubStats from "@/data/github-stats.json";
+import { WEB_DEV_SINCE, yearsOfExperience } from "@/lib/career";
 import { HeroBackdrop } from "./HeroBackdrop";
 import { HeroPortrait } from "./HeroPortrait";
 import { Odometer } from "./Odometer";
@@ -23,12 +25,16 @@ const techStack = [
   "Tailwind CSS",
 ];
 
-// The stats band's metric cards. `chart` picks each card's visualization,
-// which shows the number itself: a bar per year, a cell per project, the
-// stack, and a full meter.
+// The stats band's metric cards. Experience counts from WEB_DEV_SINCE; the
+// other three are GitHub totals across Arvin's personal and Alchemy
+// accounts, from the snapshot `npm run stats:github` writes to
+// src/data/github-stats.json. Each card's chart shows its own number.
+const githubSince = Number(githubStats.since.slice(0, 4));
+const thisYear = WEB_DEV_SINCE + yearsOfExperience();
+
 const stats = [
   {
-    value: 5,
+    value: yearsOfExperience(),
     suffix: "+",
     label: "Years Experience",
     metric: "experience.years",
@@ -37,111 +43,167 @@ const stats = [
     icon: "M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
   },
   {
-    value: 50,
-    suffix: "+",
-    label: "Projects Completed",
-    metric: "projects.shipped",
-    chart: "projects",
+    value: githubStats.repos.total,
+    suffix: "",
+    label: "GitHub Repositories",
+    metric: "github.repos",
+    chart: "repos",
     // Heroicons "folder"
     icon: "M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z",
   },
   {
-    value: 20,
-    suffix: "+",
-    label: "Technologies",
-    metric: "stack.size",
-    chart: "stack",
-    // Heroicons "square-3-stack-3d"
-    icon: "M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3",
+    value: githubStats.languages.count,
+    suffix: "",
+    label: "Languages",
+    metric: "github.languages",
+    chart: "languages",
+    // Heroicons "code-bracket"
+    icon: "M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5",
   },
   {
-    value: 100,
-    suffix: "%",
-    label: "Client Satisfaction",
-    metric: "clients.satisfied",
-    chart: "meter",
-    // Heroicons "check-badge"
-    icon: "M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z",
+    value: githubStats.active,
+    suffix: "",
+    label: "Active in the Past Year",
+    metric: "github.active",
+    chart: "active",
+    // Heroicons "bolt"
+    icon: "m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z",
   },
 ] as const;
 
 const range = (n: number) => Array.from({ length: n }, (_, i) => i);
 
-// A card's chart, numbered with --c (and --w for bar widths) for the
-// `count` effect in styles/motion/home.css. All decorative.
+// Numbers a chart piece with --c (its order) plus any extra properties, for
+// the `count` effect in styles/motion/home.css.
+const piece = (c: number, extra?: Record<string, string | number>) =>
+  ({ "--c": c, ...extra }) as CSSProperties;
+
+const caption = "font-mono text-[10px] leading-4 text-muted-foreground";
+
+// A card's chart. All of it is decorative: the number and label carry it.
 function StatChart({ chart }: { chart: (typeof stats)[number]["chart"] }) {
-  const n = (c: number, extra?: Record<string, string>) =>
-    ({ "--c": c, ...extra }) as CSSProperties;
-
   if (chart === "years") {
-    // A bar per year, each longer than the last, plus an open-ended one.
-    return (
-      <div className="flex w-full flex-col gap-1.5">
-        {range(5).map((year) => (
-          <span
-            key={year}
-            className="stat-bar h-1.5 rounded-full bg-gradient-to-r from-primary to-accent"
-            style={n(year, { "--w": `${44 + year * 14}%` })}
-          />
-        ))}
-        <span className="h-1.5 w-full rounded-full border border-dashed border-primary/40" />
-      </div>
+    // A column per year since WEB_DEV_SINCE, rising, with the years on
+    // GitHub lit.
+    const years = range(thisYear - WEB_DEV_SINCE + 1).map(
+      (k) => WEB_DEV_SINCE + k,
     );
-  }
-
-  if (chart === "projects") {
-    // One cell per project, 10 by 5, at a few brightness levels.
+    const githubAt = ((githubSince - WEB_DEV_SINCE) / years.length) * 100;
     return (
-      <div className="grid w-fit grid-cols-10 gap-1">
-        {range(50).map((cell) => (
-          <span
-            key={cell}
-            className="stat-cell h-2.5 w-2.5 rounded-[3px] bg-primary"
-            style={n(cell, {
-              "--level": `${[0.35, 0.55, 0.8, 1][(cell * 7 + Math.floor(cell / 10) * 3) % 4]}`,
-            })}
-          />
-        ))}
-      </div>
-    );
-  }
-
-  if (chart === "stack") {
-    return (
-      <div className="flex flex-wrap gap-1.5">
-        {[...techStack, "…"].map((tech, c) => (
-          <span
-            key={tech}
-            className="stat-chip rounded-md border border-border bg-background/60 px-1.5 py-0.5 font-mono text-[10px] leading-4 text-foreground/75"
-            style={n(c)}
-          >
-            {tech}
+      <div aria-hidden="true" className="w-full">
+        <div className="flex h-10 items-end gap-1">
+          {years.map((year, c) => (
+            <span
+              key={year}
+              className="stat-year flex-1 rounded-sm bg-gradient-to-b from-accent to-primary"
+              style={piece(c, {
+                "--h": `${35 + (65 * c) / Math.max(years.length - 1, 1)}%`,
+                "--level": year >= githubSince ? 1 : 0.3,
+              })}
+            />
+          ))}
+        </div>
+        <div className={`relative mt-1.5 h-4 ${caption}`}>
+          <span className="absolute left-0">{WEB_DEV_SINCE}</span>
+          <span className="absolute" style={{ left: `${githubAt}%` }}>
+            github {githubSince}
           </span>
-        ))}
+          <span className="absolute right-0">now</span>
+        </div>
       </div>
     );
   }
 
-  // meter: ten segments, all lit, with a 0 / 50 / 100 scale
-  return (
-    <div className="w-full">
-      <div className="flex gap-1">
-        {range(10).map((seg) => (
-          <span
-            key={seg}
-            className="stat-seg h-2 flex-1 rounded-sm bg-gradient-to-r from-primary to-accent"
-            style={n(seg)}
-          />
-        ))}
+  if (chart === "repos") {
+    // A cell per repository, three rows: public ones lit, private ones dim.
+    const { total, public: open, private: closed } = githubStats.repos;
+    return (
+      <div aria-hidden="true" className="w-full">
+        <div
+          className="grid gap-[3px]"
+          style={{
+            gridTemplateColumns: `repeat(${Math.ceil(total / 3)}, minmax(0, 1fr))`,
+          }}
+        >
+          {range(total).map((cell) => (
+            <span
+              key={cell}
+              className="stat-cell aspect-square rounded-[2px] bg-primary"
+              style={piece(cell, { "--level": cell < open ? 1 : 0.35 })}
+            />
+          ))}
+        </div>
+        <div className={`mt-1.5 flex gap-3 ${caption}`}>
+          <span>
+            <span className="mr-1 inline-block h-2 w-2 rounded-[2px] bg-primary" />
+            {open} public
+          </span>
+          <span>
+            <span className="mr-1 inline-block h-2 w-2 rounded-[2px] bg-primary/35" />
+            {closed} private
+          </span>
+        </div>
       </div>
-      <div className="mt-1.5 flex justify-between font-mono text-[10px] text-muted-foreground">
-        <span>0</span>
-        <span>50</span>
-        <span>100</span>
+    );
+  }
+
+  if (chart === "languages") {
+    // The top five by code size. Bars are scaled to the largest; the labels
+    // give the true shares.
+    const top = githubStats.languages.top;
+    return (
+      <ul aria-hidden="true" className="w-full space-y-1.5">
+        {top.map((language, c) => (
+          <li key={language.name} className={`flex items-center gap-2 ${caption}`}>
+            <span className="w-16 shrink-0 truncate text-foreground/80">
+              {language.name}
+            </span>
+            <span className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-foreground/10">
+              <span
+                className="stat-bar absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary to-accent"
+                style={piece(c, {
+                  "--w": `${(language.share / top[0].share) * 100}%`,
+                })}
+              />
+            </span>
+            <span className="w-9 shrink-0 text-right">{language.share}%</span>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  // active: the repositories pushed to in the past year, out of all of them
+  const total = githubStats.repos.total;
+  return (
+    <div aria-hidden="true" className="w-full">
+      <span className="relative block h-2 overflow-hidden rounded-full bg-foreground/10">
+        <span
+          className="stat-bar absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary to-accent"
+          style={piece(0, {
+            "--w": `${(githubStats.active / total) * 100}%`,
+          })}
+        />
+      </span>
+      <div className={`mt-1.5 flex justify-between gap-2 ${caption}`}>
+        <span>pushed in the last 12 months</span>
+        <span>
+          {githubStats.active}/{total}
+        </span>
       </div>
     </div>
   );
 }
+
+// When the GitHub snapshot was taken, for the band's footnote
+const githubUpdated = new Date(
+  `${githubStats.generatedAt}T00:00:00Z`,
+).toLocaleDateString("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+  timeZone: "UTC",
+});
 
 const services = [
   {
@@ -500,6 +562,14 @@ export default function HomePage() {
               </article>
             ))}
           </div>
+          <p
+            data-reveal-item
+            className="stat-source mt-6 text-right font-mono text-xs text-muted-foreground"
+          >
+            <span aria-hidden="true">{"// "}</span>
+            GitHub data from {githubStats.accounts} accounts, updated{" "}
+            {githubUpdated}
+          </p>
         </div>
       </section>
 

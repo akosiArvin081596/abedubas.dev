@@ -1,0 +1,37 @@
+{
+  "generatedAt": "2026-10-08",
+  "accounts": 2,
+  "since": "2016-07-15",
+  "years": 10,
+  "repos": {
+    "total": 66,
+    "public": 28,
+    "private": 38
+  },
+  "active": 50,
+  "languages": {
+    "count": 20,
+    "top": [
+      {
+        "name": "TypeScript",
+        "share": 29.4
+      },
+      {
+        "name": "JavaScript",
+        "share": 18.3
+      },
+      {
+        "name": "Python",
+        "share": 15.3
+      },
+      {
+        "name": "HTML",
+        "share": 11.8
+      },
+      {
+        "name": "PHP",
+        "share": 11.4
+      }
+    ]
+  }
+}
