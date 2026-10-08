@@ -242,25 +242,34 @@ const tokenColor: Record<TokenKind, string> = {
 
 const stackRows = [0, 3, 6].map((start) => techStack.slice(start, start + 3));
 
+// The AI tools Arvin pairs with: the terminal's `ai --pair` and engineer.ts.
+const AI_PEERS = ["Claude Code (CLI)", "Cursor AI"];
+
 const engineerTs: Token[][] = [
   [["export", "keyword"], [" "], ["const", "keyword"], [" "], ["engineer", "title"], [" = {"]],
   [["  "], ["name", "property"], [": "], ['"Arvin Baghari Edubas"', "string"], [","]],
   [["  "], ["role", "property"], [": "], ['"Web Developer & Software Engineer"', "string"], [","]],
+  [["  "], ["location", "property"], [": "], ['"Philippines"', "string"], [","]],
+  [["  "], ["since", "property"], [": "], [String(WEB_DEV_SINCE), "literal"], [","]],
   [["  "], ["stack", "property"], [": ["]],
   ...stackRows.map((row): Token[] => [
     ["    "],
     ...row.flatMap((tech): Token[] => [[`"${tech}"`, "string"], [","], [" "]]).slice(0, -1),
   ]),
   [["  ],"]],
+  [
+    ["  "],
+    ["aiPeers", "property"],
+    [": ["],
+    ...AI_PEERS.flatMap((tool): Token[] => [[`"${tool}"`, "string"], [", "]]).slice(0, -1),
+    ["],"],
+  ],
   [["  "], ["available", "property"], [": "], ["true", "literal"], [","]],
   [["} "], ["as", "keyword"], [" "], ["const", "keyword"], [";"]],
 ];
 
 // The role line types one character per step, so it needs its length.
 const ROLE = "Web Developer & Software Engineer";
-
-// The AI tools Arvin pairs with, shown by the terminal's `ai --pair`.
-const AI_PEERS = ["Claude Code (CLI)", "Cursor AI"];
 
 // When a hero step starts (the `boot` effect in styles/motion/home.css). The
 // hero builds strictly in reading order: the portrait, then the terminal
@@ -372,10 +381,10 @@ export default function HomePage() {
                 output appears, top to bottom. The prompts are decoration;
                 the heading, role, paragraph and links are the content. The
                 window stays dark in both themes, like a real terminal. */}
-            <div className="@container w-full min-w-0 text-left">
+            <div className="@container w-full min-w-0 text-left xl:flex xl:flex-col xl:self-stretch">
               <div
                 data-reveal-item
-                className="boot-term overflow-hidden rounded-xl border border-white/10 bg-[#0b1120] shadow-2xl shadow-primary/10"
+                className="boot-term overflow-hidden rounded-xl border border-white/10 bg-[#0b1120] shadow-2xl shadow-primary/10 xl:flex xl:flex-1 xl:flex-col"
                 style={startAt(HERO_START.terminal)}
               >
                 <div className="flex items-center gap-3 border-b border-white/10 bg-[#111a2e] px-4 py-2.5">
@@ -393,7 +402,7 @@ export default function HomePage() {
                   </span>
                 </div>
 
-                <div className="hero-term-body flex flex-col gap-3 p-5 font-mono text-slate-200 sm:p-7">
+                <div className="hero-term-body flex flex-col gap-3 p-5 font-mono text-slate-200 sm:p-7 xl:flex-1">
                   <TermLine command="whoami" start={HERO_START.whoami} />
                   {/* Main Heading: the name always gets a line of its own */}
                   <h1
@@ -499,13 +508,19 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Tech Stack, as code. A colored panel passes over it first. */}
+            {/* Tech Stack, as code. A colored panel passes over it first.
+                From xl it stretches to the terminal's height, with a status
+                bar along its bottom like an editor's. */}
             <div
               data-reveal-item
-              className="boot-window relative w-full max-w-lg text-left lg:col-start-2 lg:max-w-xl xl:col-start-3 xl:max-w-none"
+              className="boot-window relative w-full max-w-lg text-left lg:col-start-2 lg:max-w-xl xl:col-start-3 xl:flex xl:max-w-none xl:flex-col xl:self-stretch"
               style={startAt(HERO_START.code)}
             >
-              <CodeWindow title="engineer.ts">
+              <CodeWindow
+                title="engineer.ts"
+                className="xl:flex xl:flex-1 xl:flex-col"
+                bodyClassName="xl:flex xl:flex-1 xl:flex-col"
+              >
                 <pre className="hero-code overflow-x-auto text-foreground">
                   <code className="block">
                     {engineerTs.map((tokens, line) => (
@@ -533,6 +548,29 @@ export default function HomePage() {
                     ))}
                   </code>
                 </pre>
+                {/* Editor status bar */}
+                <div
+                  aria-hidden="true"
+                  className="mt-auto flex items-center justify-between gap-3 border-t border-border bg-muted/40 px-4 py-1.5 font-mono text-[10px] text-muted-foreground"
+                >
+                  <span className="flex items-center gap-1.5">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      className="h-3 w-3"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M6 3v12m12-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm0 0a9 9 0 0 1-9 9m-3 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+                      />
+                    </svg>
+                    main
+                  </span>
+                  <span>TypeScript · UTF-8 · LF</span>
+                </div>
               </CodeWindow>
               <span
                 aria-hidden="true"
