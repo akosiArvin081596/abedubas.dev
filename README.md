@@ -9,7 +9,9 @@ A modern, professional Web Developer / Software Engineer portfolio website built
 - **Tailwind CSS** - Utility-first styling with custom theme
 - **MDX Blog** - Write blog posts in Markdown with React components
 - **Dark/Light Theme** - System-aware theme with toggle
-- **SEO Optimized** - Meta tags, Open Graph, and semantic HTML
+- **Motion System** - A unique, cinematic scroll reveal for every section, and a "terminal curtain" between pages that types the destination (`cd ~/projects`). Motion only travels top to bottom and left to right, and it switches off under reduced motion
+- **Generated Media** - Hero loop, portrait clip, project covers and social-card art made with Higgsfield AI
+- **SEO Optimized** - Meta tags, semantic HTML, and generated Open Graph cards for the site and each post
 - **Responsive Design** - Mobile-first, works on all devices
 - **Contact Form** - API route for form submissions
 
@@ -28,19 +30,27 @@ src/
 │   ├── layout.tsx         # Root layout with providers
 │   ├── not-found.tsx      # 404 page
 │   └── page.tsx           # Home page
+├── assets/                # Build-time assets (OG card artwork)
 ├── components/            # Reusable components
+│   ├── motion/            # Reveal observer, page transitions, split text
 │   ├── BlogCard.tsx       # Blog post card
+│   ├── CodeWindow.tsx     # Editor-window frame
 │   ├── Footer.tsx         # Site footer
 │   ├── MDXComponents.tsx  # MDX rendering components
 │   ├── Navbar.tsx         # Navigation bar
-│   ├── ProjectCard.tsx    # Project card
+│   ├── ProjectCard.tsx    # Project card, framed as a browser window
 │   ├── SkillBadge.tsx     # Skill badge
 │   └── ThemeProvider.tsx  # Theme context provider
 ├── content/blog/          # MDX blog posts
 ├── lib/                   # Utility functions
-│   └── blog.ts            # Blog helper functions
+│   ├── blog.ts            # Blog helper functions
+│   └── og.tsx             # Shared pieces of the OG cards
+├── styles/motion/         # Motion contract (core.css) and per-page effects
 └── types/                 # TypeScript types
     └── index.ts
+public/
+├── images/                # Profile photo and project covers
+└── media/                 # Hero loop and portrait clip
 ```
 
 ## Getting Started

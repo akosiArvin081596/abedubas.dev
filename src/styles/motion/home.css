@@ -1,0 +1,644 @@
+/*
+ * Home page effects: boot (hero, on load), count (stats), curtain (services),
+ * words (CTA). The contract, tokens and pace are in core.css.
+ */
+
+/* ---------------------------------------------------------------- boot ---
+   Hero, on load, about 5 s. It builds strictly in reading order, one column
+   at a time, each step starting once the one before has visibly landed.
+   The start times are --t, set inline on the server (page.tsx):
+   1. The portrait: an iris opens from the top-left corner while a colored
+      panel passes left to right and the photo settles from 1.2x out of blur.
+   2. The intro, top to bottom: the badge wipes open, the heading's words drop
+      out of their masks, the role line types behind a block caret, the
+      paragraph opens a line at a time, and the links drop in.
+   3. engineer.ts: a colored panel sweeps across, the window shows behind it
+      as it passes, and the code types on a line at a time.
+   Stacked on smaller screens, the same order reads top to bottom. */
+
+/* 1. Portrait */
+.motion [data-reveal="boot"] .boot-slide {
+  animation: boot-fade var(--dur-1) var(--ease-out)
+    var(--t, 0ms) backwards;
+}
+
+@keyframes boot-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.motion [data-reveal="boot"] .boot-portrait {
+  animation: boot-iris var(--dur-3) var(--ease-out)
+    var(--t, 0ms) backwards;
+}
+
+@keyframes boot-iris {
+  from {
+    clip-path: circle(0% at 0% 0%);
+  }
+  to {
+    clip-path: circle(145% at 0% 0%);
+  }
+}
+
+.motion [data-reveal="boot"] .boot-portrait :is(img, video) {
+  animation: boot-settle var(--dur-3) var(--ease-out)
+    var(--t, 0ms) backwards;
+}
+
+@keyframes boot-settle {
+  from {
+    scale: 1.2;
+    filter: blur(12px);
+  }
+}
+
+/* A colored panel passes left to right: its leading edge crosses, then its
+   trailing edge follows, uncovering what's behind. Parked out of view (a
+   zero-width clip) whenever it isn't running. */
+.boot-panel,
+.boot-sweep {
+  clip-path: inset(0 0 0 100%);
+}
+
+.motion [data-reveal="boot"] .boot-panel {
+  animation: boot-pass var(--dur-2) var(--ease-in-out)
+    calc(var(--t, 0ms) + 150ms) backwards;
+}
+
+@keyframes boot-pass {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+  45% {
+    clip-path: inset(0);
+  }
+  100% {
+    clip-path: inset(0 0 0 100%);
+  }
+}
+
+/* 2. Intro. The badge wipes open left to right. */
+.motion [data-reveal="boot"] .boot-type {
+  animation: boot-type var(--dur-1) var(--ease-out)
+    var(--t, 0ms) backwards;
+}
+
+@keyframes boot-type {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+/* Heading words drop out of their masks, 120 ms apart. The name keeps its
+   gradient shimmer, which runs as a second animation. */
+.motion [data-reveal="boot"] .boot-heading .split-word > span {
+  animation: boot-drop var(--dur-2) var(--ease-out)
+    calc(var(--t, 0ms) + var(--si) * 120ms) backwards;
+}
+
+.motion [data-reveal="boot"] .boot-heading .split-word > .boot-name {
+  animation:
+    boot-drop var(--dur-2) var(--ease-out)
+      calc(var(--t, 0ms) + var(--si) * 120ms) backwards,
+    gradient 3s linear infinite;
+}
+
+@keyframes boot-drop {
+  from {
+    translate: 0 calc(-110% - 0.1em);
+    filter: blur(8px);
+  }
+}
+
+/* Role line: --n characters of monospace, one step each, slow enough to
+   read. The caret rides the edge, blinks three times, then goes. */
+.motion [data-reveal="boot"] .boot-role {
+  animation: boot-type calc(var(--n) * 26ms) steps(var(--n), end)
+    var(--t, 0ms) backwards;
+}
+
+.boot-caret {
+  display: none;
+}
+
+.motion [data-reveal="boot"] .boot-caret {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  display: block;
+  width: 1ch;
+  height: 1.2em;
+  margin-top: -0.6em;
+  background: var(--primary);
+  opacity: 0;
+  pointer-events: none;
+  animation:
+    boot-caret-type calc(var(--n) * 26ms) steps(var(--n), end)
+      var(--t, 0ms),
+    boot-caret-blink 560ms steps(1, end)
+      calc(var(--t, 0ms) + var(--n) * 26ms) 3;
+}
+
+@keyframes boot-caret-type {
+  from {
+    left: 0;
+    opacity: 0.85;
+  }
+  to {
+    left: 100%;
+    opacity: 0.85;
+  }
+}
+
+@keyframes boot-caret-blink {
+  0% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* The paragraph opens a line at a time, wherever it wraps. Each band of the
+   polygon is one line box (1lh) tall and wipes open left to right after the
+   band above it; the last band takes any lines left over. */
+.motion [data-reveal="boot"] .boot-paragraph {
+  animation: boot-lines var(--dur-2) var(--ease-in-out)
+    var(--t, 0ms) backwards;
+}
+
+@keyframes boot-lines {
+  0% {
+    clip-path: polygon(
+      0 0, 0 0, 0 1lh, 0 1lh, 0 2lh, 0 2lh,
+      0 3lh, 0 3lh, 0 4lh, 0 4lh, 0 100%, 0 100%
+    );
+  }
+  20% {
+    clip-path: polygon(
+      0 0, 100% 0, 100% 1lh, 0 1lh, 0 2lh, 0 2lh,
+      0 3lh, 0 3lh, 0 4lh, 0 4lh, 0 100%, 0 100%
+    );
+  }
+  40% {
+    clip-path: polygon(
+      0 0, 100% 0, 100% 1lh, 100% 1lh, 100% 2lh, 0 2lh,
+      0 3lh, 0 3lh, 0 4lh, 0 4lh, 0 100%, 0 100%
+    );
+  }
+  60% {
+    clip-path: polygon(
+      0 0, 100% 0, 100% 1lh, 100% 1lh, 100% 2lh, 100% 2lh,
+      100% 3lh, 0 3lh, 0 4lh, 0 4lh, 0 100%, 0 100%
+    );
+  }
+  80% {
+    clip-path: polygon(
+      0 0, 100% 0, 100% 1lh, 100% 1lh, 100% 2lh, 100% 2lh,
+      100% 3lh, 100% 3lh, 100% 4lh, 0 4lh, 0 100%, 0 100%
+    );
+  }
+  100% {
+    clip-path: polygon(
+      0 0, 100% 0, 100% 1lh, 100% 1lh, 100% 2lh, 100% 2lh,
+      100% 3lh, 100% 3lh, 100% 4lh, 100% 4lh, 100% 100%, 0 100%
+    );
+  }
+}
+
+/* The links drop in from above as their blur clears. */
+.motion [data-reveal="boot"] .boot-drop {
+  animation: boot-fall var(--dur-2) var(--ease-out)
+    var(--t, 0ms) backwards;
+}
+
+@keyframes boot-fall {
+  from {
+    opacity: 0;
+    translate: 0 -40px;
+    filter: blur(10px);
+  }
+}
+
+/* 3. engineer.ts: the panel sweeps across, the window shows behind its
+   trailing edge (same timing, so they move together), then each line types
+   on, starting while the panel is still leaving. */
+.motion [data-reveal="boot"] .boot-sweep {
+  animation: boot-pass var(--dur-2) var(--ease-in-out)
+    var(--t, 0ms) backwards;
+}
+
+.motion [data-reveal="boot"] .boot-window > .code-window {
+  animation: boot-behind var(--dur-2) var(--ease-in-out)
+    var(--t, 0ms) backwards;
+}
+
+@keyframes boot-behind {
+  0%,
+  45% {
+    clip-path: inset(-1rem 100% -2rem -1rem);
+  }
+  100% {
+    clip-path: inset(-1rem -1rem -2rem -1rem);
+  }
+}
+
+.motion [data-reveal="boot"] .boot-code-line {
+  animation: boot-type var(--dur-1) var(--ease-out)
+    calc(var(--t, 0ms) + 480ms + var(--line) * 45ms) backwards;
+}
+
+/* engineer.ts. globals.css styles pre and code outside any layer, so they
+   outrank utilities; the window's type and padding are set here instead.
+   Geist Mono, to match the role line and the window's title. In the
+   three-column hero the window is narrower, so the type steps down. */
+.hero-code {
+  border-radius: 0;
+  padding: 1rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+}
+
+.hero-code code {
+  font: inherit;
+}
+
+@media (min-width: 40rem) {
+  .hero-code {
+    padding: 1rem 1.25rem;
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+  }
+}
+
+@media (min-width: 80rem) {
+  .hero-code {
+    font-size: clamp(0.75rem, 0.88vw, 0.875rem);
+    line-height: 1.7;
+  }
+}
+
+/* --------------------------------------------------------------- count ---
+   Stats band. A tinted panel sweeps the band left to right while each
+   number's digit columns roll down a full turn and land, odometer style.
+   Labels slide in from the left out of blur, and a highlight runs along the
+   band's top edge. */
+
+.count-panel,
+.count-beam {
+  opacity: 0;
+}
+
+.motion [data-reveal="count"][data-revealed] .count-panel {
+  animation: count-panel var(--dur-2) var(--ease-in-out)
+    calc(var(--i, 0) * var(--stagger));
+}
+
+@keyframes count-panel {
+  from {
+    opacity: 1;
+    translate: -100% 0;
+  }
+  to {
+    opacity: 1;
+    translate: 300% 0;
+  }
+}
+
+.motion [data-reveal="count"][data-revealed] .count-beam {
+  animation: count-beam var(--dur-2) var(--ease-in-out)
+    calc(var(--i, 0) * var(--stagger) + 300ms);
+}
+
+@keyframes count-beam {
+  from {
+    opacity: 1;
+    translate: -100% 0;
+  }
+  to {
+    opacity: 1;
+    translate: 250% 0;
+  }
+}
+
+.motion [data-reveal="count"][data-revealed] .count-num {
+  animation: count-num var(--dur-1) var(--ease-out)
+    calc(var(--i) * var(--stagger)) backwards;
+}
+
+@keyframes count-num {
+  from {
+    opacity: 0;
+    filter: blur(12px);
+  }
+}
+
+.motion [data-reveal="count"][data-revealed] .count-label {
+  animation: count-label var(--dur-2) var(--ease-out)
+    calc(var(--i) * var(--stagger) + 150ms) backwards;
+}
+
+@keyframes count-label {
+  from {
+    opacity: 0;
+    translate: -48px 0;
+    filter: blur(8px);
+  }
+}
+
+/* Odometer (Odometer.tsx). The digits are real text. While a column rolls,
+   its digit turns transparent and a strip of digits, one per line, rolls
+   down over it from --n lines up. The strip's first line is the digit
+   itself, so it lands exactly where the text sits; then the strip goes and
+   the real digit (selectable, copyable) is back. */
+.odometer {
+  white-space: nowrap;
+}
+
+.odo-col,
+.odo-suffix {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.odo-col {
+  position: relative;
+  overflow: hidden;
+}
+
+.odo-strip {
+  display: none;
+}
+
+.motion [data-reveal="count"] .odo-strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  -webkit-text-fill-color: currentColor;
+  opacity: 0;
+}
+
+.motion [data-reveal="count"][data-revealed] .odo-col {
+  animation: odo-cover var(--dur-3) var(--ease-out)
+    calc(var(--i) * var(--stagger) + var(--k) * 90ms) backwards;
+}
+
+@keyframes odo-cover {
+  from,
+  to {
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+.odo-strip::before {
+  content: attr(data-strip);
+  display: block;
+  white-space: pre;
+}
+
+.motion [data-reveal="count"][data-revealed] .odo-strip {
+  animation: odo-roll var(--dur-3) var(--ease-out)
+    calc(var(--i) * var(--stagger) + var(--k) * 90ms) backwards;
+}
+
+@keyframes odo-roll {
+  from {
+    translate: 0 calc(var(--n) * -1em);
+    filter: blur(3px);
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ------------------------------------------------------------- curtain ---
+   Services. The header's lines unveil top to bottom out of blur and the rule
+   draws left to right. Then, card by card (left to right), a colored panel
+   sweeps across: the card shows behind its trailing edge, its big number
+   drops out of a mask, and its accent line draws down. */
+
+.motion [data-reveal="curtain"][data-revealed] .curtain-open {
+  animation: curtain-open var(--dur-2) var(--ease-out)
+    calc(var(--i) * var(--stagger)) backwards;
+}
+
+@keyframes curtain-open {
+  from {
+    clip-path: inset(-0.25em -0.25em 100%);
+    filter: blur(10px);
+  }
+  to {
+    clip-path: inset(-0.25em);
+    filter: blur(0);
+  }
+}
+
+.motion [data-reveal="curtain"][data-revealed] .curtain-rule {
+  transform-origin: left;
+  animation: curtain-rule var(--dur-2) var(--ease-out)
+    calc(var(--i) * var(--stagger)) backwards;
+}
+
+@keyframes curtain-rule {
+  from {
+    scale: 0 1;
+  }
+}
+
+.curtain-panel {
+  clip-path: inset(0 0 0 100%);
+}
+
+.motion [data-reveal="curtain"][data-revealed] .curtain-panel {
+  animation: curtain-pass var(--dur-3) var(--ease-in-out)
+    calc(var(--i) * var(--stagger)) backwards;
+}
+
+@keyframes curtain-pass {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+  45% {
+    clip-path: inset(0);
+  }
+  100% {
+    clip-path: inset(0 0 0 100%);
+  }
+}
+
+.motion [data-reveal="curtain"][data-revealed] .curtain-body {
+  animation: curtain-behind var(--dur-3) var(--ease-in-out)
+    calc(var(--i) * var(--stagger)) backwards;
+}
+
+@keyframes curtain-behind {
+  0%,
+  45% {
+    clip-path: inset(-1rem 100% -1rem -1rem);
+  }
+  100% {
+    clip-path: inset(-1rem);
+  }
+}
+
+.motion [data-reveal="curtain"][data-revealed] .curtain-number {
+  animation: curtain-drop var(--dur-2) var(--ease-out)
+    calc(var(--i) * var(--stagger) + var(--dur-3) * 0.45) backwards;
+}
+
+@keyframes curtain-drop {
+  from {
+    translate: 0 calc(-110% - 0.1em);
+  }
+}
+
+.motion [data-reveal="curtain"][data-revealed] .curtain-line {
+  transform-origin: top;
+  animation: curtain-line var(--dur-1) var(--ease-out)
+    calc(var(--i) * var(--stagger) + var(--dur-3) * 0.6) backwards;
+}
+
+@keyframes curtain-line {
+  from {
+    scale: 1 0;
+  }
+}
+
+/* --------------------------------------------------------------- words ---
+   CTA. The icon drops in, then the heading's words drop out of their masks
+   over --dur-3, 120 ms apart, left to right. The paragraph, link and trust
+   row cascade in after, top to bottom. */
+
+.motion [data-reveal="words"][data-revealed] .words-head .split-word > span {
+  animation: words-drop var(--dur-3) var(--ease-out)
+    calc(var(--i) * var(--stagger) + var(--si) * 120ms) backwards;
+}
+
+@keyframes words-drop {
+  from {
+    translate: 0 calc(-110% - 0.1em);
+    filter: blur(8px);
+  }
+}
+
+/* Items after the heading wait for its words to land. */
+.words-after {
+  --words-after: 600ms;
+}
+
+.motion [data-reveal="words"][data-revealed] .words-follow {
+  animation: words-follow var(--dur-2) var(--ease-out)
+    calc(var(--i) * var(--stagger) + var(--words-after, 0ms)) backwards;
+}
+
+@keyframes words-follow {
+  from {
+    opacity: 0;
+    translate: 0 -48px;
+    filter: blur(10px);
+  }
+}
+
+/* ----------------------------------------------------------- decoration --
+   Not reveal effects. Each one animates only with motion on. */
+
+/* The CTA's backdrop orbs breathe in place rather than travel. */
+.motion .home-orb {
+  animation: home-orb var(--orb-time, 8s) var(--ease-in-out) infinite
+    alternate;
+}
+
+@keyframes home-orb {
+  to {
+    scale: 1.15;
+    opacity: 0.6;
+  }
+}
+
+/* ParallaxHero's color fields drift down and right as the page scrolls. */
+@supports (animation-timeline: scroll()) {
+  .motion .home-drift {
+    animation: home-drift linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+
+@keyframes home-drift {
+  to {
+    transform: translate3d(var(--drift-x), var(--drift-y), 0);
+  }
+}
+
+/* Hero backdrop (HeroBackdrop). The loop is a dark circuit board with light
+   pulses. Dark mode screens it onto the page, so only the pulses show, and
+   light mode inverts it into a pale blueprint. Under the scrim it moves the
+   page color only a few percent, which keeps the hero text at AA. */
+.hero-video {
+  opacity: 0.2;
+  filter: invert(1) hue-rotate(180deg);
+  mix-blend-mode: multiply;
+}
+
+.dark .hero-video {
+  opacity: 0.45;
+  filter: none;
+  mix-blend-mode: screen;
+}
+
+.hero-backdrop[data-video="failed"] .hero-video {
+  display: none;
+}
+
+.hero-scrim {
+  background: linear-gradient(
+    to bottom,
+    var(--background),
+    color-mix(in srgb, var(--background) 60%, transparent) 30% 70%,
+    var(--background)
+  );
+}
+
+/* A clearing behind the hero copy. It covers the color fields, video and
+   grid, so the text reads at AA over any frame, then feathers out (longer to
+   the right and below, where nothing sits) so the texture shows around it. */
+.hero-halo {
+  inset: -3.5rem -6rem -4rem -3rem;
+  background: color-mix(in srgb, var(--background) 85%, transparent);
+  mask-image:
+    linear-gradient(
+      to right,
+      transparent,
+      rgb(0 0 0 / 0.35) 1.5rem,
+      #000 3rem,
+      #000 calc(100% - 6rem),
+      rgb(0 0 0 / 0.35) calc(100% - 3rem),
+      transparent
+    ),
+    linear-gradient(
+      to bottom,
+      transparent,
+      rgb(0 0 0 / 0.35) 1.75rem,
+      #000 3.5rem,
+      #000 calc(100% - 4rem),
+      rgb(0 0 0 / 0.35) calc(100% - 2rem),
+      transparent
+    );
+  mask-composite: intersect;
+}
+
+.hero-grid {
+  mask-image: radial-gradient(
+    ellipse 75% 65% at 50% 45%,
+    #000 30%,
+    transparent 100%
+  );
+}

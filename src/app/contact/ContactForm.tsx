@@ -8,15 +8,33 @@ interface FormState {
   message: string;
 }
 
+const SUCCESS_MESSAGE =
+  "Thank you for your message! I'll get back to you soon.";
+
+const inputClass =
+  "fields-input block w-full rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary";
+
+// A TypeScript-style annotation after each label. Screen readers skip it,
+// so the fields are still just "Name", "Email" and "Message".
+function TypeHint() {
+  return (
+    <span aria-hidden="true" className="text-muted-foreground">
+      : string
+    </span>
+  );
+}
+
+// Each field is a `fields` reveal item (see styles/motion/site.css): its
+// underline draws, then its label drops in.
 export function ContactForm() {
   const [formData, setFormData] = useState<FormState>({
     name: "",
     email: "",
     message: "",
   });
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
-    "idle"
-  );
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e: FormEvent) => {
@@ -44,78 +62,109 @@ export function ContactForm() {
     } catch (error) {
       setStatus("error");
       setErrorMessage(
-        error instanceof Error ? error.message : "Failed to send message"
+        error instanceof Error ? error.message : "Failed to send message",
       );
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
+    <form onSubmit={handleSubmit} className="grid gap-6 md:grid-cols-2">
+      <div data-reveal-item>
         <label
           htmlFor="name"
-          className="mb-2 block text-sm font-medium text-card-foreground"
+          className="fields-label mb-2 block overflow-hidden font-mono text-sm font-medium text-card-foreground"
         >
-          Name
+          <span className="fields-label-text">
+            Name
+            <TypeHint />
+          </span>
         </label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          required
-          className="w-full rounded-lg border border-border bg-background px-4 py-2 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-          placeholder="Your name"
-        />
+        <div className="fields-control">
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            required
+            className={inputClass}
+            placeholder="Your name"
+          />
+        </div>
       </div>
 
-      <div>
+      <div data-reveal-item>
         <label
           htmlFor="email"
-          className="mb-2 block text-sm font-medium text-card-foreground"
+          className="fields-label mb-2 block overflow-hidden font-mono text-sm font-medium text-card-foreground"
         >
-          Email
+          <span className="fields-label-text">
+            Email
+            <TypeHint />
+          </span>
         </label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          required
-          className="w-full rounded-lg border border-border bg-background px-4 py-2 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-          placeholder="your@email.com"
-        />
+        <div className="fields-control">
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
+            required
+            className={inputClass}
+            placeholder="your@email.com"
+          />
+        </div>
       </div>
 
-      <div>
+      <div className="md:col-span-2" data-reveal-item>
         <label
           htmlFor="message"
-          className="mb-2 block text-sm font-medium text-card-foreground"
+          className="fields-label mb-2 block overflow-hidden font-mono text-sm font-medium text-card-foreground"
         >
-          Message
+          <span className="fields-label-text">
+            Message
+            <TypeHint />
+          </span>
         </label>
-        <textarea
-          id="message"
-          name="message"
-          value={formData.message}
-          onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-          required
-          rows={5}
-          className="w-full resize-none rounded-lg border border-border bg-background px-4 py-2 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-          placeholder="Your message..."
-        />
+        <div className="fields-control">
+          <textarea
+            id="message"
+            name="message"
+            value={formData.message}
+            onChange={(e) =>
+              setFormData({ ...formData, message: e.target.value })
+            }
+            required
+            rows={6}
+            className={`${inputClass} resize-none`}
+            placeholder="Your message..."
+          />
+        </div>
       </div>
 
+      {/* Screen readers announce a live region's new text reliably only
+          when the region is already in the page, so this one always is.
+          The visible box below repeats it, hidden from them. */}
+      <p role="status" className="sr-only">
+        {status === "success" ? SUCCESS_MESSAGE : ""}
+      </p>
       {status === "success" && (
-        <div className="rounded-lg bg-green-100 p-4 text-green-800 dark:bg-green-900/30 dark:text-green-400">
-          Thank you for your message! I&apos;ll get back to you soon.
+        <div
+          aria-hidden="true"
+          className="fields-status rounded-lg md:col-span-2 bg-green-100 p-4 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+        >
+          {SUCCESS_MESSAGE}
         </div>
       )}
 
       {status === "error" && (
-        <div className="rounded-lg bg-red-100 p-4 text-red-800 dark:bg-red-900/30 dark:text-red-400">
+        <div
+          role="alert"
+          className="fields-status rounded-lg md:col-span-2 bg-red-100 p-4 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+        >
           {errorMessage}
         </div>
       )}
@@ -123,7 +172,8 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={status === "loading"}
-        className="w-full rounded-lg bg-primary px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+        data-reveal-item
+        className="fields-submit w-full rounded-lg md:col-span-2 bg-primary px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
       >
         {status === "loading" ? "Sending..." : "Send Message"}
       </button>
