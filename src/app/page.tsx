@@ -9,6 +9,7 @@ import { HeroBackdrop } from "./HeroBackdrop";
 import { HeroPortrait } from "./HeroPortrait";
 import { Odometer } from "./Odometer";
 import { ParallaxHero } from "./ParallaxHero";
+import { Spotlight } from "./Spotlight";
 
 const techStack = [
   "Vue",
@@ -22,12 +23,125 @@ const techStack = [
   "Tailwind CSS",
 ];
 
+// The stats band's metric cards. `chart` picks each card's visualization,
+// which shows the number itself: a bar per year, a cell per project, the
+// stack, and a full meter.
 const stats = [
-  { value: 5, suffix: "+", label: "Years Experience" },
-  { value: 50, suffix: "+", label: "Projects Completed" },
-  { value: 20, suffix: "+", label: "Technologies" },
-  { value: 100, suffix: "%", label: "Client Satisfaction" },
-];
+  {
+    value: 5,
+    suffix: "+",
+    label: "Years Experience",
+    metric: "experience.years",
+    chart: "years",
+    // Heroicons "clock"
+    icon: "M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
+  },
+  {
+    value: 50,
+    suffix: "+",
+    label: "Projects Completed",
+    metric: "projects.shipped",
+    chart: "projects",
+    // Heroicons "folder"
+    icon: "M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z",
+  },
+  {
+    value: 20,
+    suffix: "+",
+    label: "Technologies",
+    metric: "stack.size",
+    chart: "stack",
+    // Heroicons "square-3-stack-3d"
+    icon: "M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3",
+  },
+  {
+    value: 100,
+    suffix: "%",
+    label: "Client Satisfaction",
+    metric: "clients.satisfied",
+    chart: "meter",
+    // Heroicons "check-badge"
+    icon: "M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z",
+  },
+] as const;
+
+const range = (n: number) => Array.from({ length: n }, (_, i) => i);
+
+// A card's chart, numbered with --c (and --w for bar widths) for the
+// `count` effect in styles/motion/home.css. All decorative.
+function StatChart({ chart }: { chart: (typeof stats)[number]["chart"] }) {
+  const n = (c: number, extra?: Record<string, string>) =>
+    ({ "--c": c, ...extra }) as CSSProperties;
+
+  if (chart === "years") {
+    // A bar per year, each longer than the last, plus an open-ended one.
+    return (
+      <div className="flex w-full flex-col gap-1.5">
+        {range(5).map((year) => (
+          <span
+            key={year}
+            className="stat-bar h-1.5 rounded-full bg-gradient-to-r from-primary to-accent"
+            style={n(year, { "--w": `${44 + year * 14}%` })}
+          />
+        ))}
+        <span className="h-1.5 w-full rounded-full border border-dashed border-primary/40" />
+      </div>
+    );
+  }
+
+  if (chart === "projects") {
+    // One cell per project, 10 by 5, at a few brightness levels.
+    return (
+      <div className="grid w-fit grid-cols-10 gap-1">
+        {range(50).map((cell) => (
+          <span
+            key={cell}
+            className="stat-cell h-2.5 w-2.5 rounded-[3px] bg-primary"
+            style={n(cell, {
+              "--level": `${[0.35, 0.55, 0.8, 1][(cell * 7 + Math.floor(cell / 10) * 3) % 4]}`,
+            })}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (chart === "stack") {
+    return (
+      <div className="flex flex-wrap gap-1.5">
+        {[...techStack, "…"].map((tech, c) => (
+          <span
+            key={tech}
+            className="stat-chip rounded-md border border-border bg-background/60 px-1.5 py-0.5 font-mono text-[10px] leading-4 text-foreground/75"
+            style={n(c)}
+          >
+            {tech}
+          </span>
+        ))}
+      </div>
+    );
+  }
+
+  // meter: ten segments, all lit, with a 0 / 50 / 100 scale
+  return (
+    <div className="w-full">
+      <div className="flex gap-1">
+        {range(10).map((seg) => (
+          <span
+            key={seg}
+            className="stat-seg h-2 flex-1 rounded-sm bg-gradient-to-r from-primary to-accent"
+            style={n(seg)}
+          />
+        ))}
+      </div>
+      <div className="mt-1.5 flex justify-between font-mono text-[10px] text-muted-foreground">
+        <span>0</span>
+        <span>50</span>
+        <span>100</span>
+      </div>
+    </div>
+  );
+}
 
 const services = [
   {
@@ -309,11 +423,15 @@ export default function HomePage() {
         <HeroBackdrop />
       </section>
 
-      {/* Stats Section */}
+      {/* Stats Section: a row of live metric cards */}
       <section
         data-reveal="count"
-        className="relative overflow-hidden border-y border-border bg-muted/30 py-16 xl:py-20"
+        className="stat-band relative overflow-hidden border-y border-border bg-muted/30 py-16 xl:py-20"
       >
+        <span
+          aria-hidden="true"
+          className="bg-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,#000_30%,transparent_75%)]"
+        />
         <span
           aria-hidden="true"
           className="count-panel pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-primary/10 to-transparent"
@@ -324,17 +442,64 @@ export default function HomePage() {
         >
           <span className="count-beam block h-full w-2/5 bg-gradient-to-r from-transparent via-primary to-transparent" />
         </span>
-        <div className="container-site grid grid-cols-2 gap-x-8 gap-y-12 md:grid-cols-4">
-          {stats.map((stat) => (
-            <div key={stat.label} data-reveal-item className="text-center">
-              <div className="count-num mb-3 text-5xl font-bold leading-none tabular-nums text-primary md:text-6xl xl:text-7xl">
-                <Odometer value={stat.value} suffix={stat.suffix} />
-              </div>
-              <div className="count-label text-sm font-medium text-muted-foreground xl:text-base">
-                {stat.label}
-              </div>
-            </div>
-          ))}
+
+        <div className="container-site relative">
+          <div data-reveal-item className="stat-eyebrow mb-8 xl:mb-10">
+            <SectionLabel>by the numbers</SectionLabel>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 xl:gap-6">
+            {stats.map((stat) => (
+              <article
+                key={stat.label}
+                data-reveal-item
+                className="stat-card group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card/70 p-6 shadow-sm backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/50 hover:shadow-[0_0_32px_-8px_var(--primary)] xl:p-7"
+              >
+                <Spotlight />
+                <span aria-hidden="true" className="stat-scan" />
+                {/* A hairline of the brand gradient along the top edge */}
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent"
+                />
+
+                <div className="relative flex items-center justify-between gap-3">
+                  <span
+                    aria-hidden="true"
+                    className="stat-icon grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/25 transition-shadow duration-300 group-hover:shadow-[0_0_20px_-4px_var(--primary)]"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="h-5 w-5"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d={stat.icon} />
+                    </svg>
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="stat-key truncate font-mono text-xs text-muted-foreground"
+                    style={{ "--n": stat.metric.length } as CSSProperties}
+                  >
+                    {stat.metric}
+                  </span>
+                </div>
+
+                <div className="stat-value count-num relative mt-6 text-5xl font-bold leading-none tabular-nums text-foreground xl:text-6xl">
+                  <Odometer value={stat.value} suffix={stat.suffix} />
+                </div>
+                <div className="count-label relative mt-2 text-sm font-medium text-muted-foreground xl:text-base">
+                  {stat.label}
+                </div>
+
+                <div className="relative mt-6 flex min-h-16 flex-1 items-end">
+                  <StatChart chart={stat.chart} />
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
