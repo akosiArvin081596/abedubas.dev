@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { OgLogo, OgRule, ogBackground, ogFrame } from "@/lib/og";
 
 export const alt =
-  "Arvin Baghari Edubas, Web Developer & Software Engineer, abedubas.dev";
+  "Arvin Baghari Edubas, Information Technologist & Software Engineer, abedubas.dev";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -27,7 +27,7 @@ export default async function Image() {
           </div>
           <OgRule />
           <div style={{ marginTop: 28, fontSize: 36, color: "#cbd5e1" }}>
-            Web Developer & Software Engineer
+            Information Technologist & Software Engineer
           </div>
         </div>
 

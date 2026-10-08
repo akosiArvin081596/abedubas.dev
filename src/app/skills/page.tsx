@@ -72,19 +72,35 @@ const skillCategories = [
     ],
   },
   {
+    category: "Cybersecurity",
+    description:
+      "Building and running systems with security in mind, from the first line of code to production",
+    skills: [
+      "Secure Coding",
+      "OWASP Top 10",
+      "Authentication & Authorization",
+      "Access Control",
+      "SSL/TLS",
+      "Network Security",
+    ],
+  },
+  {
     category: "AI-Assisted Development",
     description:
       "Pairing with AI as a coding peer for ideas, refactors, edge cases, and documentation, while I own the final decisions",
     skills: [
       "Claude Code (CLI)",
       "Cursor AI",
+      "Gemini",
+      "ChatGPT",
       "AI Pair Programming",
       "AI Code Review",
       "AI-Assisted Refactoring",
       "Edge-Case Discovery",
       "AI-Assisted Documentation",
     ],
-    // Spans the full row, so it doesn't sit alone under the other four
+    // Highlighted. With Cybersecurity beside it, the six cards fill three
+    // rows of two.
     featured: true,
   },
 ];
@@ -185,7 +201,7 @@ export default function SkillsPage() {
               data-reveal="wipe"
               className={`relative rounded-xl border bg-card p-6 transition-[border-color,box-shadow] duration-200 hover:border-primary/50 hover:shadow-lg md:p-8 ${
                 category.featured
-                  ? "border-primary/40 bg-gradient-to-br from-primary/10 via-card to-card lg:col-span-2"
+                  ? "border-primary/40 bg-gradient-to-br from-primary/10 via-card to-card"
                   : "border-border"
               }`}
             >

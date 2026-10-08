@@ -1,6 +1,6 @@
 # Arvin Baghari Edubas Portfolio
 
-A modern, professional Web Developer / Software Engineer portfolio website built with Next.js 16, TypeScript, Tailwind CSS, and MDX.
+A modern, professional Information Technologist / Software Engineer portfolio website built with Next.js 16, TypeScript, Tailwind CSS, and MDX.
 
 ## Features
 
@@ -9,8 +9,9 @@ A modern, professional Web Developer / Software Engineer portfolio website built
 - **Tailwind CSS** - Utility-first styling with custom theme
 - **MDX Blog** - Write blog posts in Markdown with React components
 - **Dark/Light Theme** - System-aware theme with toggle
-- **Motion System** - A unique, cinematic scroll reveal for every section, and a "terminal curtain" between pages that types the destination (`cd ~/projects`). Motion only travels top to bottom and left to right, and it switches off under reduced motion
-- **Generated Media** - Hero loop, portrait clip, project covers and social-card art made with Higgsfield AI
+- **Motion System** - A unique, cinematic scroll reveal for every section, a short loading screen when the site loads, and a "terminal curtain" between pages that types the destination (`cd ~/projects`). Motion only travels top to bottom and left to right, and it switches off under reduced motion
+- **Terminal Hero** - The intro runs as a full-screen tmux session beside a slideshow of photos that render in like terminal images. Its last prompt is live: try `help`, `cat engineer.ts` or `projects`
+- **Generated Media** - Hero loop, project covers and social-card art made with Higgsfield AI
 - **SEO Optimized** - Meta tags, semantic HTML, and generated Open Graph cards for the site and each post
 - **Responsive Design** - Mobile-first, works on all devices
 - **Contact Form** - API route for form submissions
@@ -49,8 +50,8 @@ src/
 └── types/                 # TypeScript types
     └── index.ts
 public/
-├── images/                # Profile photo and project covers
-└── media/                 # Hero loop and portrait clip
+├── images/                # Hero photos (with the render-in mosaics) and project covers
+└── media/                 # Hero loop
 ```
 
 ## Getting Started

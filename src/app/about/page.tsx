@@ -6,7 +6,7 @@ import { Timeline, type TimelineEntry } from "./Timeline";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Learn more about Arvin Baghari Edubas, a Web Developer and Software Engineer with expertise in modern web technologies.",
+    "Learn more about Arvin Baghari Edubas, an Information Technologist and Software Engineer with expertise in modern web technologies.",
 };
 
 const timeline: TimelineEntry[] = [
@@ -164,7 +164,7 @@ export default function AboutPage() {
                 <span className="text-foreground font-medium">
                   I&apos;m Arvin Baghari Edubas
                 </span>
-                , a web developer and software engineer with{" "}
+                , an information technologist and software engineer with{" "}
                 {yearsOfExperience()}+ years of experience building modern web
                 applications. I focus on creating
                 scalable, maintainable, and user-friendly products that solve
@@ -193,9 +193,12 @@ export default function AboutPage() {
                 To move faster without sacrificing quality, I also use AI tools
                 as a coding partner:{" "}
                 <span className="text-primary font-medium">Claude Code</span> in
-                the terminal and{" "}
+                the terminal,{" "}
                 <span className="text-primary font-medium">Cursor AI</span> in
-                the editor, like a peer reviewer for ideas, refactors, edge
+                the editor, and{" "}
+                <span className="text-primary font-medium">Gemini</span> and{" "}
+                <span className="text-primary font-medium">ChatGPT</span>{" "}
+                alongside them, like a peer reviewer for ideas, refactors, edge
                 cases, and documentation. I stay accountable for the final
                 decisions, architecture, and code quality.
               </p>

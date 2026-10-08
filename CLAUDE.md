@@ -24,12 +24,15 @@ There is no CMS or database. Page copy and data (projects, skills, work history,
 
 - The email address and GitHub/LinkedIn links are duplicated in `src/components/Footer.tsx` and `src/app/contact/page.tsx`. Update both.
 - Years of experience are counted from `WEB_DEV_SINCE` (2013) in `src/lib/career.ts`, which both the home stats and the About page read. Don't hardcode the number anywhere.
+- The projects live in `src/data/projects.ts`, which the Projects page renders. The home stats band's "Live Projects" card lists their live URLs plus the other live sites in `src/data/live-sites.ts`. Keep that list to public sites: no confidential or login-only client systems, staging hosts or APIs.
 - The home stats band's GitHub numbers come from `src/data/github-stats.json`, a snapshot of totals across the personal (`akosiArvin081596`) and Alchemy (`abedubas-alchemydev`) accounts. It holds aggregates only, with no repo names.
   - To refresh it, run `npm run stats:github` and commit the JSON.
   - The script reads each account through the local `gh` login, calling the `gh` binary directly. In an interactive shell, the per-directory `gh` wrapper function ignores `GH_TOKEN`.
   - No tokens go to CI or the VPS.
 - Site-wide SEO (title template `%s | Arvin Baghari Edubas`, OpenGraph, Twitter) is the `metadata` export in `src/app/layout.tsx`. Each page exports only `title` and `description`.
+- The home hero is a full-screen, tmux-style terminal: a slideshow of photos in the left pane (`HeroPortrait`, whose `SLIDES` list them) and the intro as a shell session in the right. The session's last prompt is live (`src/app/HeroShell.tsx`), and its commands, their output and `help`'s list all live in that file, so keep `HELP` in step with what it handles. `cat engineer.ts` prints the `engineerTs` tokens from `page.tsx`, rendered on the server.
 - `POST /api/contact` only validates the submission and logs it with `console.log`. No email delivery or storage is wired up.
+- Bintoy (`src/components/Bintoy.tsx`, mounted in the layout) is the site's chat assistant. For now it's a placeholder: its answers are prewritten, picked by keyword in `answer()`, the one function to replace with a real assistant. Its avatar, `public/images/bintoy/bintoy.webp`, is a robot mascot made in Higgsfield (GPT Image 2.5) from Arvin's photo.
 - `resume.html` at the repo root is a standalone, print-ready (US Letter) resume. It is not part of the Next app and is not served, because it sits outside `public/`. It repeats the about page's work history and the projects page's project list, so update both places when either changes.
 - A component used by only one page sits beside that page (`src/app/HeroBackdrop.tsx`, `src/app/about/Timeline.tsx`, `src/app/contact/ContactForm.tsx`). Shared components live in `src/components/` and are re-exported from `@/components`.
 
@@ -60,7 +63,7 @@ tags: ["tag1", "tag2"]
 - `react-hooks/set-state-in-effect` is a lint error. That's why the theme is resolved before paint, and why every animation is CSS or a direct DOM write through a ref (see Motion) rather than state set in an effect. Handle new mount-time effects the same way.
 - Colors are CSS variables on `:root` and `.dark` in `src/app/globals.css`. They're exposed to Tailwind through `@theme inline` as `background`, `foreground`, `primary`, `primary-hover`, `secondary`, `accent`, `muted`, `muted-foreground`, `border`, `card` and `card-foreground`. There's no `tailwind.config`, because Tailwind 4 is configured in CSS.
 - `@custom-variant dark` in `globals.css` ties Tailwind's `dark:` variant to the `.dark` class, so `dark:` follows the site toggle. Without that line, Tailwind 4's `dark:` would follow the OS setting instead.
-- The `--grid-line` token and the `bg-grid` utility (an `@utility` in `globals.css`) draw the blueprint grid behind the hero and page headers.
+- The `--grid-line` token and the `bg-grid` utility (an `@utility` in `globals.css`) draw the blueprint grid behind the home page's stats band.
 - Lay pages out in `container-site`, another `@utility` in `globals.css`. It spans the screen up to 100rem, with side padding that grows with the viewport. Keep long-form text, such as blog posts and the bio, at a readable measure inside it.
 
 ### Motion
@@ -77,6 +80,15 @@ Every section has its own reveal effect and every page its own route transition.
   - Each page has its own panel pattern in `PATTERNS`.
   - While it covers, `html[data-curtain]` pauses every animation in `<main>`, so the new page's entrance plays as the curtain lifts. Drive entrances with CSS, not timers, or they'll run unseen underneath.
   - Back and forward navigation and modified clicks skip the curtain, and it never engages without `.motion`.
+- On the home page, from lg on screens at least 700px tall, each section fills the screen below the header.
+  - `HomeSnap` pages through them: each wheel or trackpad gesture glides the page one section, eased, and swallows the rest of that gesture (momentum included), so a flick never skips two. PageUp/PageDown, the arrow keys and Space page too, and Home/End go to the ends.
+  - It leaves alone a wheel over something that scrolls itself (the terminal's output), keys typed into a field, touch scrolling and pinch zoom.
+  - While the page moves, `html[data-scrolling]` (set by RevealObserver, cleared 150 ms after the last scroll event) holds every effect in `<main>`, so a section's entrance plays once the page is at rest.
+  - The home wrapper (`ParallaxHero`) clips its overflow instead of hiding it, because a hidden overflow would make it a scroll container.
+- `SiteLoader`, mounted once in the layout, is a loading screen on every full page load. Moving between pages is a client navigation, so the curtain plays instead.
+  - The head script shows it before paint by setting `html[data-loader]`, but only with motion on.
+  - While it's up, the header's and main's effects are paused, as under the curtain. It lifts once its bar has filled and the page and fonts have loaded, or after 3.5 s. It then wipes down as the page's entrance plays.
+  - The head script removes the attribute after 5 s regardless.
 - `<html data-scroll-behavior="smooth">` makes Next 16 pause smooth scrolling during navigation. Without it, each new page would smooth-scroll to the top while the curtain lifts.
 - `SplitText`, `CodeWindow`, `SectionLabel` and `WindowDots` are the shared building blocks. `ScrollProgress` is a pure-CSS reading bar along the top of the page.
 
@@ -88,10 +100,15 @@ The OG cards are generated by `src/app/opengraph-image.tsx` and `src/app/blog/[s
 
 ### Media
 
-The hero loop, the portrait clip, the project covers and the OG artwork were generated with Higgsfield AI (the `higgsfield` CLI) and then optimized with ffmpeg and cwebp. Check a regenerated asset's frames before shipping it, and keep it within the current sizes.
+The hero loop, the project covers and the OG artwork were generated with Higgsfield AI (the `higgsfield` CLI) and then optimized with ffmpeg and cwebp. Check a regenerated asset's frames before shipping it, and keep it within the current sizes.
 
 - `public/media/hero-loop.{webm,mp4}`, plus `hero-loop-720.mp4` for phones and `hero-poster.webp`: Seedance 2.5, animated from a GPT Image 2.5 keyframe used as both its first and last frame. It was then crossfaded into itself at its calmest frame step, so the loop has no visible seam. `HeroBackdrop` plays it.
-- `public/media/portrait.{webm,mp4}`: Seedance 2.5, with `profile_picture.jpg` as both its first and last frame, so it ends on the real photo. `HeroPortrait` plays it.
+- `public/images/hero/*.jpg` are the hero's photos, 4:5 crops served at quality 90 (allowed by `images.qualities` in `next.config.ts`).
+  - Each carries a baked-in watermark: a faint diagonal "abedubas.dev" pattern plus a "© abedubas.dev" credit.
+  - To add one, crop it to 4:5 with the face in the upper third, then run `npm run watermark -- clean.jpg public/images/hero/name.jpg`. Keep the clean original out of the repo.
+  - List the new photo in `SLIDES` in `HeroPortrait.tsx`.
+  - The slideshow frame also blocks right-click and dragging, which only stops casual saving.
+- `public/images/hero/mosaic-{12,24,48}.png`: the first photo shrunk with ffmpeg to 12×15, 24×30 and 48×60 (`-vf "scale=W:H:flags=area"`), for its pixelated render-in. Regenerate them whenever the first photo changes.
 - `public/images/projects/*.webp` (1600×900, set through each project's `image` field) and `src/assets/og-background.jpg` (1200×630): GPT Image 2.5. The four covers share one isometric style.
 - With reduced motion, visitors get the poster and the still photo, never video.
 

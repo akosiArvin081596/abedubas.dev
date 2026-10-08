@@ -23,7 +23,7 @@ export function Footer() {
               Arvin Baghari Edubas
             </Link>
             <p className="text-sm text-muted-foreground">
-              Web Developer & Software Engineer
+              Information Technologist & Software Engineer
             </p>
           </div>
 

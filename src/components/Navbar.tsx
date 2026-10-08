@@ -32,8 +32,10 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
+      {/* A fixed height, so the header with its border is exactly 4.5rem,
+          which the home hero takes off the screen height */}
       <nav
-        className="container-site flex items-center justify-between py-4"
+        className="container-site flex h-[calc(4.5rem-1px)] items-center justify-between"
         data-reveal="drop"
         data-reveal-on="load"
       >
