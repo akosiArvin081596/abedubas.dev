@@ -4,25 +4,22 @@
  */
 
 /* ---------------------------------------------------------------- boot ---
-   Hero, on load, about 2.6 s. --i (reading order) is set inline on the
-   server, and steps start --stagger apart, so the hero builds left to right
-   (top to bottom when stacked):
+   Hero, on load, about 5 s. It builds strictly in reading order, one column
+   at a time, each step starting once the one before has visibly landed.
+   The start times are --t, set inline on the server (page.tsx):
    1. The portrait: an iris opens from the top-left corner while a colored
       panel passes left to right and the photo settles from 1.2x out of blur.
-   2. The intro: the badge wipes open, the heading's words drop out of their
-      masks, the role line types behind a block caret, the paragraph opens a
-      line at a time, and the links drop in.
+   2. The intro, top to bottom: the badge wipes open, the heading's words drop
+      out of their masks, the role line types behind a block caret, the
+      paragraph opens a line at a time, and the links drop in.
    3. engineer.ts: a colored panel sweeps across, the window shows behind it
-      as it passes, and the code types on a line at a time. */
-
-.motion [data-reveal="boot"] {
-  --boot-step: var(--stagger);
-}
+      as it passes, and the code types on a line at a time.
+   Stacked on smaller screens, the same order reads top to bottom. */
 
 /* 1. Portrait */
 .motion [data-reveal="boot"] .boot-slide {
   animation: boot-fade var(--dur-1) var(--ease-out)
-    calc(var(--i) * var(--boot-step)) backwards;
+    var(--t, 0ms) backwards;
 }
 
 @keyframes boot-fade {
@@ -33,7 +30,7 @@
 
 .motion [data-reveal="boot"] .boot-portrait {
   animation: boot-iris var(--dur-3) var(--ease-out)
-    calc(var(--i) * var(--boot-step)) backwards;
+    var(--t, 0ms) backwards;
 }
 
 @keyframes boot-iris {
@@ -47,7 +44,7 @@
 
 .motion [data-reveal="boot"] .boot-portrait :is(img, video) {
   animation: boot-settle var(--dur-3) var(--ease-out)
-    calc(var(--i) * var(--boot-step)) backwards;
+    var(--t, 0ms) backwards;
 }
 
 @keyframes boot-settle {
@@ -67,7 +64,7 @@
 
 .motion [data-reveal="boot"] .boot-panel {
   animation: boot-pass var(--dur-2) var(--ease-in-out)
-    calc(var(--i) * var(--boot-step) + 150ms) backwards;
+    calc(var(--t, 0ms) + 150ms) backwards;
 }
 
 @keyframes boot-pass {
@@ -85,7 +82,7 @@
 /* 2. Intro. The badge wipes open left to right. */
 .motion [data-reveal="boot"] .boot-type {
   animation: boot-type var(--dur-1) var(--ease-out)
-    calc(var(--i) * var(--boot-step)) backwards;
+    var(--t, 0ms) backwards;
 }
 
 @keyframes boot-type {
@@ -101,13 +98,13 @@
    gradient shimmer, which runs as a second animation. */
 .motion [data-reveal="boot"] .boot-heading .split-word > span {
   animation: boot-drop var(--dur-2) var(--ease-out)
-    calc(var(--i) * var(--boot-step) + var(--si) * 120ms) backwards;
+    calc(var(--t, 0ms) + var(--si) * 120ms) backwards;
 }
 
 .motion [data-reveal="boot"] .boot-heading .split-word > .boot-name {
   animation:
     boot-drop var(--dur-2) var(--ease-out)
-      calc(var(--i) * var(--boot-step) + var(--si) * 120ms) backwards,
+      calc(var(--t, 0ms) + var(--si) * 120ms) backwards,
     gradient 3s linear infinite;
 }
 
@@ -121,8 +118,8 @@
 /* Role line: --n characters of monospace, one step each, slow enough to
    read. The caret rides the edge, blinks three times, then goes. */
 .motion [data-reveal="boot"] .boot-role {
-  animation: boot-type calc(var(--n) * 34ms) steps(var(--n), end)
-    calc(var(--i) * var(--boot-step)) backwards;
+  animation: boot-type calc(var(--n) * 26ms) steps(var(--n), end)
+    var(--t, 0ms) backwards;
 }
 
 .boot-caret {
@@ -141,10 +138,10 @@
   opacity: 0;
   pointer-events: none;
   animation:
-    boot-caret-type calc(var(--n) * 34ms) steps(var(--n), end)
-      calc(var(--i) * var(--boot-step)),
+    boot-caret-type calc(var(--n) * 26ms) steps(var(--n), end)
+      var(--t, 0ms),
     boot-caret-blink 560ms steps(1, end)
-      calc(var(--i) * var(--boot-step) + var(--n) * 34ms) 3;
+      calc(var(--t, 0ms) + var(--n) * 26ms) 3;
 }
 
 @keyframes boot-caret-type {
@@ -172,7 +169,7 @@
    band above it; the last band takes any lines left over. */
 .motion [data-reveal="boot"] .boot-paragraph {
   animation: boot-lines var(--dur-2) var(--ease-in-out)
-    calc(var(--i) * var(--boot-step)) backwards;
+    var(--t, 0ms) backwards;
 }
 
 @keyframes boot-lines {
@@ -217,7 +214,7 @@
 /* The links drop in from above as their blur clears. */
 .motion [data-reveal="boot"] .boot-drop {
   animation: boot-fall var(--dur-2) var(--ease-out)
-    calc(var(--i) * var(--boot-step)) backwards;
+    var(--t, 0ms) backwards;
 }
 
 @keyframes boot-fall {
@@ -233,12 +230,12 @@
    on, starting while the panel is still leaving. */
 .motion [data-reveal="boot"] .boot-sweep {
   animation: boot-pass var(--dur-2) var(--ease-in-out)
-    calc(var(--i) * var(--boot-step)) backwards;
+    var(--t, 0ms) backwards;
 }
 
 .motion [data-reveal="boot"] .boot-window > .code-window {
   animation: boot-behind var(--dur-2) var(--ease-in-out)
-    calc(var(--i) * var(--boot-step)) backwards;
+    var(--t, 0ms) backwards;
 }
 
 @keyframes boot-behind {
@@ -253,7 +250,7 @@
 
 .motion [data-reveal="boot"] .boot-code-line {
   animation: boot-type var(--dur-1) var(--ease-out)
-    calc(var(--i) * var(--boot-step) + 480ms + var(--line) * 45ms) backwards;
+    calc(var(--t, 0ms) + 480ms + var(--line) * 45ms) backwards;
 }
 
 /* engineer.ts. globals.css styles pre and code outside any layer, so they

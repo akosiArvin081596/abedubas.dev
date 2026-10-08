@@ -83,8 +83,20 @@ const engineerTs: Token[][] = [
 const ROLE = "Web Developer & Software Engineer";
 const ROLE_PROMPT = "> ";
 
-// Reading-order index for an above-the-fold (load) reveal item.
-const at = (i: number) => ({ "--i": i }) as CSSProperties;
+// When a hero step starts (the `boot` effect in styles/motion/home.css). The
+// hero builds strictly in reading order: the portrait, then the intro top to
+// bottom, then engineer.ts, each step once the one before has landed.
+const startAt = (ms: number) => ({ "--t": `${ms}ms` }) as CSSProperties;
+const HERO_START = {
+  portrait: 150,
+  badge: 750,
+  heading: 1000,
+  role: 1700,
+  paragraph: 2450,
+  work: 3000,
+  contact: 3150,
+  code: 3450,
+};
 
 const arrow = (className: string) => (
   <svg
@@ -134,7 +146,7 @@ export default function HomePage() {
             <div
               data-reveal-item
               className="boot-slide lg:row-span-2 xl:row-span-1"
-              style={at(0)}
+              style={startAt(HERO_START.portrait)}
             >
               <HeroPortrait
                 video={{
@@ -158,7 +170,7 @@ export default function HomePage() {
                 <div
                   data-reveal-item
                   className="boot-type mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card/50 px-4 py-2 backdrop-blur-sm"
-                  style={at(1)}
+                  style={startAt(HERO_START.badge)}
                 >
                   <span className="relative flex h-2 w-2">
                     <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 motion-safe:animate-ping"></span>
@@ -173,7 +185,7 @@ export default function HomePage() {
                 <h1
                   data-reveal-item
                   className="boot-heading mb-5 text-[clamp(1.75rem,10cqi,4.5rem)] font-bold leading-[1.08] tracking-tight text-foreground"
-                  style={at(2)}
+                  style={startAt(HERO_START.heading)}
                 >
                   <SplitText text="Hi, I'm" />{" "}
                   <span className="block whitespace-nowrap">
@@ -189,7 +201,7 @@ export default function HomePage() {
                 <p
                   data-reveal-item
                   className="mb-5 font-mono text-[clamp(0.8125rem,4.4cqi,1.25rem)] font-medium text-foreground/80"
-                  style={at(3)}
+                  style={startAt(HERO_START.role)}
                 >
                   <span
                     className="relative inline-block"
@@ -213,7 +225,7 @@ export default function HomePage() {
                 <p
                   data-reveal-item
                   className="boot-paragraph mx-auto mb-8 max-w-2xl text-base text-muted-foreground sm:text-lg lg:mx-0 xl:text-base 2xl:text-lg"
-                  style={at(4)}
+                  style={startAt(HERO_START.paragraph)}
                 >
                   Clean code, intuitive user experiences, and scalable,
                   enterprise-ready architecture—brought together to build
@@ -227,7 +239,7 @@ export default function HomePage() {
                     href="/projects"
                     data-reveal-item
                     className="boot-drop group relative inline-flex items-center text-base font-medium text-foreground transition-colors hover:text-primary"
-                    style={at(5)}
+                    style={startAt(HERO_START.work)}
                   >
                     <span className="relative">
                       View My Work
@@ -239,7 +251,7 @@ export default function HomePage() {
                     href="/contact"
                     data-reveal-item
                     className="boot-drop group relative inline-flex items-center text-base font-medium text-muted-foreground transition-colors hover:text-primary"
-                    style={at(6)}
+                    style={startAt(HERO_START.contact)}
                   >
                     <span className="relative">
                       Get in Touch
@@ -255,7 +267,7 @@ export default function HomePage() {
             <div
               data-reveal-item
               className="boot-window relative w-full max-w-lg text-left lg:col-start-2 lg:max-w-xl xl:col-start-3 xl:max-w-none"
-              style={at(7)}
+              style={startAt(HERO_START.code)}
             >
               <CodeWindow title="engineer.ts">
                 <pre className="hero-code overflow-x-auto text-foreground">
