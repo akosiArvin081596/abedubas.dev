@@ -1,0 +1,661 @@
+/*
+ * Work pages: decode (skills header, on load), scan (skills strengths),
+ * wipe (skills categories), type (projects header, on load), window
+ * (projects grid), trace (projects CTA), focus (blog header, on load),
+ * stack (blog list), rule (blog post header, on load).
+ * The contract, with its pace and scale tokens, is in core.css.
+ */
+
+/* ---------------------------------------------------------------------------
+ * decode: the Skills title churns through code glyphs for about 1.4 s, then
+ * settles left to right, each letter flashing as it locks
+ * (components/Decode.tsx drives it, after the route curtain lifts). The
+ * subtitle comes out of a blur under it. The title stays hidden until
+ * Decode takes over, so the final text never flashes first.
+ */
+/* Hold the title back for at most 500 ms: past that (a slow device), it
+   simply shows, and Decode leaves it plain. The hold pauses under the route
+   curtain, so after a navigation it still covers the gap until Decode runs. */
+.motion [data-reveal="decode"] [data-decode=""] {
+  animation: decode-hold 0s 500ms backwards;
+}
+
+@keyframes decode-hold {
+  from {
+    opacity: 0;
+  }
+}
+
+.motion [data-reveal="decode"] .decode-cell:not([data-settled]) {
+  color: var(--primary);
+  opacity: 0.75;
+}
+
+.motion [data-reveal="decode"] .decode-cell[data-settled] {
+  animation: decode-lock var(--dur-1) var(--ease-out) backwards;
+}
+
+.motion [data-reveal="decode"] .decode-sub {
+  animation: decode-sub var(--dur-2) var(--ease-out) backwards;
+  animation-delay: calc(600ms + var(--i) * var(--stagger));
+}
+
+@keyframes decode-lock {
+  from {
+    color: var(--accent);
+    text-shadow: 0 0 18px var(--accent);
+  }
+}
+
+@keyframes decode-sub {
+  from {
+    opacity: 0;
+    translate: 0 -40px;
+    filter: blur(12px);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * scan: a bright bar sweeps left to right across each card, slowly, and
+ * the content is uncovered right behind it, drifting in from the left out
+ * of a blur. The card's border catches the light as the bar passes. Cards
+ * go in reading order. --scan-x inherits, so the bar (a pseudo-element)
+ * and the content mask share one animated value and never drift apart.
+ */
+@property --scan-x {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 140%;
+}
+
+.motion [data-reveal="scan"][data-revealed] [data-reveal-item] {
+  animation:
+    scan-in var(--dur-1) var(--ease-out) backwards,
+    scan-sweep var(--dur-3) var(--ease-in-out) backwards;
+  animation-delay:
+    calc(var(--i) * var(--stagger)),
+    calc(var(--i) * var(--stagger) + 120ms);
+}
+
+/* Content shows only where the bar has passed, through a soft edge. The
+   mask follows --scan-x only while the sweep runs (keyframes), so nothing
+   stays masked once it's done. */
+.motion [data-reveal="scan"][data-revealed] .scan-sweep {
+  animation: scan-mask var(--dur-3) linear backwards;
+  animation-delay: calc(var(--i) * var(--stagger) + 120ms);
+}
+
+.motion [data-reveal="scan"][data-revealed] .scan-card .scan-sweep {
+  animation:
+    scan-mask var(--dur-3) linear backwards,
+    scan-drift var(--dur-3) var(--ease-out) backwards;
+  animation-delay: calc(var(--i) * var(--stagger) + 120ms);
+}
+
+@keyframes scan-mask {
+  from,
+  to {
+    mask-image: linear-gradient(
+      to right,
+      #000 calc(var(--scan-x) - 40%),
+      transparent var(--scan-x)
+    );
+  }
+}
+
+/* The bar: a wide glow trailing a bright leading edge at --scan-x. */
+.motion [data-reveal="scan"] .scan-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    to right,
+    transparent 30%,
+    color-mix(in srgb, var(--primary) 16%, transparent) 70%,
+    color-mix(in srgb, var(--accent) 55%, transparent) 96%,
+    color-mix(in srgb, var(--accent) 35%, white) 99.3%,
+    transparent
+  );
+  translate: calc(var(--scan-x) - 100%) 0;
+}
+
+.motion.dark [data-reveal="scan"] .scan-card::after {
+  mix-blend-mode: screen;
+}
+
+.motion [data-reveal="scan"][data-revealed] .scan-card::after {
+  animation: scan-bar var(--dur-3) linear backwards;
+  animation-delay: calc(var(--i) * var(--stagger) + 120ms);
+}
+
+@keyframes scan-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes scan-sweep {
+  from {
+    --scan-x: 0%;
+    border-color: var(--accent);
+  }
+  to {
+    --scan-x: 140%;
+  }
+}
+
+@keyframes scan-drift {
+  from {
+    translate: -40px 0;
+    filter: blur(6px);
+  }
+}
+
+@keyframes scan-bar {
+  from,
+  85% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * wipe: a colored panel sweeps left to right across each category card
+ * (and the section heading), covers it, then carries on out the right
+ * side, uncovering the card behind it. Then the badges pop in with depth,
+ * in reading order. --wipe-base keeps the container's own --i, so each
+ * card's badges count from where the card starts in a shared batch, and
+ * --wipe-at caps how long a later card in the batch waits.
+ */
+.motion [data-reveal="wipe"] {
+  --wipe-base: var(--i, 0);
+  --wipe-at: min(var(--i, 0) * 25ms, 450ms);
+}
+
+/* Opacity, not visibility, so the card stays in the accessibility tree. */
+.motion [data-reveal="wipe"]:not([data-revealed]) {
+  opacity: 0;
+}
+
+/* The card stays hidden until the panel covers it... */
+.motion [data-reveal="wipe"][data-revealed] {
+  animation: wipe-frame var(--dur-2) linear backwards;
+  animation-delay: var(--wipe-at);
+}
+
+/* ...and the panel, a pseudo-element, shows regardless. */
+.motion [data-reveal="wipe"]::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  visibility: visible;
+  background: linear-gradient(to right, var(--primary), var(--accent));
+  scale: 0 1;
+}
+
+.motion [data-reveal="wipe"][data-revealed]::after {
+  animation: wipe-panel var(--dur-2) var(--ease-in-out) backwards;
+  animation-delay: var(--wipe-at);
+}
+
+.motion [data-reveal="wipe"][data-revealed] [data-reveal-item] {
+  transform-origin: 50% 0;
+  animation: wipe-pop var(--dur-1) var(--ease-out) backwards;
+  animation-delay: calc(
+    var(--wipe-at) + 760ms + (var(--i) - var(--wipe-base)) * var(--stagger) *
+      0.4
+  );
+}
+
+@keyframes wipe-frame {
+  0%,
+  50% {
+    visibility: hidden;
+  }
+  50.01%,
+  100% {
+    visibility: visible;
+  }
+}
+
+/* Grow from the left edge, then shrink toward the right edge, so the panel
+   keeps moving right the whole way. */
+@keyframes wipe-panel {
+  0% {
+    scale: 0 1;
+    transform-origin: 0 50%;
+  }
+  50% {
+    scale: 1 1;
+    transform-origin: 0 50%;
+  }
+  50.01% {
+    scale: 1 1;
+    transform-origin: 100% 50%;
+  }
+  100% {
+    scale: 0 1;
+    transform-origin: 100% 50%;
+  }
+}
+
+@keyframes wipe-pop {
+  from {
+    opacity: 0;
+    transform: perspective(600px) translate3d(0, -40px, -160px) rotateX(40deg);
+    filter: blur(8px);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * type: a shell prompt types out left to right in steps, one monospace
+ * character each (--chars on the line sets the count), with the caret
+ * riding along. Then the title's words drop out of their masks, and the
+ * subtitle's words follow. The caret blinks a few times and then rests;
+ * without .motion it simply sits at the end.
+ */
+.motion [data-reveal="type"] .type-line {
+  animation: type-keys var(--dur-2) steps(var(--chars), end) 200ms backwards;
+}
+
+.motion [data-reveal="type"] .type-caret {
+  animation:
+    type-caret var(--dur-2) steps(var(--chars), end) 200ms backwards,
+    type-blink var(--dur-2) step-end 1500ms 4;
+}
+
+.motion [data-reveal="type"] .type-title .split-word > span {
+  animation: type-drop var(--dur-2) var(--ease-out) backwards;
+  animation-delay: calc(1150ms + var(--si) * var(--stagger));
+}
+
+.motion [data-reveal="type"] .type-sub .split-word > span {
+  animation: type-drop var(--dur-2) var(--ease-out) backwards;
+  animation-delay: calc(1300ms + var(--si) * 25ms);
+}
+
+@keyframes type-keys {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes type-caret {
+  from {
+    translate: calc(var(--chars) * -1ch) 0;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+
+@keyframes type-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Each word starts just above its mask and drops into place. */
+@keyframes type-drop {
+  from {
+    translate: 0 -110%;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * window: each project card opens like a browser window. Two colored
+ * panels sweep across it, left to right: accent, then primary over it, and
+ * they leave in the reverse order, uncovering the card. Then the cover
+ * opens top to bottom while the image settles from 1.2x out of a 12px blur,
+ * the title bar drops in, and the details follow. Cards stagger along the
+ * diagonals (--d).
+ */
+.motion [data-reveal="window"][data-revealed] [data-reveal-item] {
+  --window-at: calc(var(--d) * var(--stagger) * 1.5);
+  animation: window-frame var(--dur-2) linear backwards;
+  animation-delay: var(--window-at);
+}
+
+.motion [data-reveal="window"] [data-reveal-item]::before,
+.motion [data-reveal="window"] [data-reveal-item]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  visibility: visible;
+  scale: 0 1;
+}
+
+.motion [data-reveal="window"] [data-reveal-item]::before {
+  background: var(--accent);
+}
+
+.motion [data-reveal="window"] [data-reveal-item]::after {
+  background: var(--primary);
+}
+
+.motion [data-reveal="window"][data-revealed] [data-reveal-item]::before {
+  animation: window-panel-under var(--dur-2) var(--ease-in-out) backwards;
+  animation-delay: var(--window-at);
+}
+
+.motion [data-reveal="window"][data-revealed] [data-reveal-item]::after {
+  animation: window-panel-over var(--dur-2) var(--ease-in-out) backwards;
+  animation-delay: var(--window-at);
+}
+
+.motion [data-reveal="window"][data-revealed] .window-cover {
+  animation: window-cover var(--dur-3) var(--ease-out) backwards;
+  animation-delay: calc(var(--window-at) + 700ms);
+}
+
+.motion [data-reveal="window"][data-revealed] .window-cover img {
+  animation: window-zoom var(--dur-3) var(--ease-out) backwards;
+  animation-delay: calc(var(--window-at) + 700ms);
+}
+
+.motion [data-reveal="window"][data-revealed] .window-bar {
+  animation: window-bar var(--dur-1) var(--ease-out) backwards;
+  animation-delay: calc(var(--window-at) + 650ms);
+}
+
+.motion [data-reveal="window"][data-revealed] .window-body {
+  animation: window-body var(--dur-2) var(--ease-out) backwards;
+  animation-delay: calc(var(--window-at) + 950ms);
+}
+
+/* The card stays hidden until the first panel covers it. */
+@keyframes window-frame {
+  0%,
+  42% {
+    visibility: hidden;
+  }
+  42.01%,
+  100% {
+    visibility: visible;
+  }
+}
+
+/* The accent panel: in first, out last. */
+@keyframes window-panel-under {
+  0% {
+    scale: 0 1;
+    transform-origin: 0 50%;
+  }
+  40% {
+    scale: 1 1;
+    transform-origin: 0 50%;
+  }
+  60% {
+    scale: 1 1;
+    transform-origin: 0 50%;
+  }
+  60.01% {
+    scale: 1 1;
+    transform-origin: 100% 50%;
+  }
+  100% {
+    scale: 0 1;
+    transform-origin: 100% 50%;
+  }
+}
+
+/* The primary panel, on top: in second, out first. */
+@keyframes window-panel-over {
+  0%,
+  10% {
+    scale: 0 1;
+    transform-origin: 0 50%;
+  }
+  50% {
+    scale: 1 1;
+    transform-origin: 0 50%;
+  }
+  50.01% {
+    scale: 1 1;
+    transform-origin: 100% 50%;
+  }
+  90%,
+  100% {
+    scale: 0 1;
+    transform-origin: 100% 50%;
+  }
+}
+
+@keyframes window-cover {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes window-zoom {
+  from {
+    scale: 1.2;
+    filter: blur(12px);
+  }
+}
+
+@keyframes window-bar {
+  from {
+    opacity: 0;
+    translate: 0 -100%;
+  }
+}
+
+@keyframes window-body {
+  from {
+    opacity: 0;
+    translate: 0 -40px;
+    filter: blur(8px);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * trace: a primary line traces the card's border, slowly: left to right
+ * along the top, then down the sides, glowing as it goes. Both
+ * pseudo-elements carry the full rounded border and are clipped to what's
+ * drawn so far, so the corners stay true. The real border waits
+ * underneath; the line fades to its color, so the hand-off at the end is
+ * invisible. The content comes out of a blur as the line goes.
+ */
+.motion [data-reveal="trace"]::before,
+.motion [data-reveal="trace"]::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 1px solid var(--primary);
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.motion [data-reveal="trace"][data-revealed] {
+  animation: trace-frame var(--dur-2) linear backwards;
+  animation-delay: calc(var(--i) * var(--stagger) + 450ms);
+}
+
+.motion [data-reveal="trace"][data-revealed]::before {
+  animation: trace-top var(--dur-2) var(--ease-in-out) backwards;
+  animation-delay: calc(var(--i) * var(--stagger));
+}
+
+.motion [data-reveal="trace"][data-revealed]::after {
+  animation: trace-sides var(--dur-2) var(--ease-in-out) backwards;
+  animation-delay: calc(var(--i) * var(--stagger) + 450ms);
+}
+
+.motion [data-reveal="trace"][data-revealed] .trace-content {
+  animation: trace-content var(--dur-2) var(--ease-out) backwards;
+  animation-delay: calc(var(--i) * var(--stagger) + 550ms);
+}
+
+/* The real border stays clear until the traced line hands over. */
+@keyframes trace-frame {
+  from,
+  to {
+    border-color: transparent;
+  }
+}
+
+/* Only a band along the top, drawn left to right. */
+@keyframes trace-top {
+  from {
+    opacity: 1;
+    clip-path: inset(0 100% calc(100% - 12px) 0);
+    box-shadow: inset 0 0 16px -6px var(--primary);
+  }
+  45%,
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 calc(100% - 12px) 0);
+    box-shadow: inset 0 0 16px -6px var(--primary);
+  }
+}
+
+/* The whole outline, drawn top to bottom, then settling to the border
+   color as its glow fades. */
+@keyframes trace-sides {
+  from {
+    opacity: 1;
+    clip-path: inset(0 0 100% 0);
+    box-shadow: inset 0 0 16px -6px var(--primary);
+  }
+  55% {
+    opacity: 1;
+    clip-path: inset(0);
+    border-color: var(--primary);
+    box-shadow: inset 0 0 16px -6px var(--primary);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+    border-color: var(--border);
+    box-shadow: inset 0 0 16px -6px transparent;
+  }
+}
+
+@keyframes trace-content {
+  from {
+    opacity: 0;
+    translate: 0 -40px;
+    filter: blur(10px);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * focus: a rack focus. The header comes out of a deep blur as it drifts
+ * down into place.
+ */
+.motion [data-reveal="focus"] > * {
+  animation: focus-rack var(--dur-2) var(--ease-out) backwards;
+  animation-delay: calc(150ms + var(--i, 0) * var(--stagger));
+}
+
+@keyframes focus-rack {
+  from {
+    opacity: 0;
+    filter: blur(16px);
+    translate: 0 -24px;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * stack: blog cards cascade in with depth, top to bottom. Each falls from
+ * above, tipped back on its top edge and out of a blur, and settles flat;
+ * then its accent bar grows downward from the top.
+ */
+.motion [data-reveal="stack"][data-revealed] [data-reveal-item] {
+  transform-origin: 50% 0;
+  animation: stack-drop var(--dur-2) var(--ease-out) backwards;
+  animation-delay: calc(var(--i) * var(--stagger));
+}
+
+.motion [data-reveal="stack"][data-revealed] .stack-bar {
+  animation: stack-bar var(--dur-2) var(--ease-in-out) backwards;
+  animation-delay: calc(var(--i) * var(--stagger) + 450ms);
+}
+
+@keyframes stack-drop {
+  from {
+    opacity: 0;
+    transform: perspective(1200px) translateY(-60px) rotateX(24deg);
+    filter: blur(10px);
+  }
+  45% {
+    opacity: 1;
+  }
+}
+
+@keyframes stack-bar {
+  from {
+    scale: 1 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * rule: a rule draws slowly left to right beside the post's file name.
+ * Then the meta drops in, the title's words drop out of their masks, and
+ * the description and tags follow.
+ */
+.motion [data-reveal="rule"] .rule-file {
+  animation: rule-file var(--dur-1) var(--ease-out) backwards;
+}
+
+.motion [data-reveal="rule"] .rule-line {
+  transform-origin: 0 50%;
+  animation: rule-draw var(--dur-3) var(--ease-in-out) 150ms backwards;
+}
+
+.motion [data-reveal="rule"] .rule-drop {
+  animation: rule-drop var(--dur-2) var(--ease-out) backwards;
+  animation-delay: calc(650ms + var(--i) * var(--stagger));
+}
+
+.motion [data-reveal="rule"] .rule-title .split-word > span {
+  animation: rule-word var(--dur-2) var(--ease-out) backwards;
+  animation-delay: calc(900ms + var(--si) * 70ms);
+}
+
+@keyframes rule-file {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rule-draw {
+  from {
+    scale: 0 1;
+  }
+}
+
+@keyframes rule-drop {
+  from {
+    opacity: 0;
+    translate: 0 -40px;
+    filter: blur(8px);
+  }
+}
+
+/* Each word starts just above its mask and drops into place. */
+@keyframes rule-word {
+  from {
+    translate: 0 -110%;
+  }
+}

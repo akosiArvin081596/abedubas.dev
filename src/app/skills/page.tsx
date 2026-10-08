@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { SkillBadge, ScrollReveal } from "@/components";
+import { SectionLabel, SkillBadge } from "@/components";
+import { Decode } from "@/components/Decode";
 
 export const metadata: Metadata = {
   title: "Skills",
@@ -95,83 +96,98 @@ const coreStrengths = [
   },
 ];
 
+// Inline stagger index for the on-load header (see styles/motion/core.css)
+const at = (i: number) => ({ "--i": i }) as React.CSSProperties;
+
 export default function SkillsPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-16">
+    <div className="container-site py-16 md:py-24">
       {/* Header */}
-      <ScrollReveal animation="fade-down" duration={800}>
-        <div className="mb-12 text-center">
-          <h1 className="mb-4 text-4xl font-bold text-foreground">
-            Skills & Expertise
-          </h1>
-          <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-            A comprehensive toolkit built over years of professional experience
-            across various technologies and domains
-          </p>
-        </div>
-      </ScrollReveal>
+      <div
+        data-reveal="decode"
+        data-reveal-on="load"
+        className="mb-16 text-center md:mb-24"
+      >
+        <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground md:text-6xl">
+          <Decode text="Skills & Expertise" />
+        </h1>
+        <p
+          className="decode-sub mx-auto max-w-3xl text-lg text-muted-foreground md:text-xl"
+          style={at(1)}
+        >
+          A comprehensive toolkit built over years of professional experience
+          across various technologies and domains
+        </p>
+      </div>
 
       {/* Core Strengths */}
-      <section className="mb-16">
-        <ScrollReveal animation="blur-in" duration={800}>
-          <h2 className="mb-6 text-2xl font-semibold text-foreground">
+      <section data-reveal="scan" className="mb-20 md:mb-28">
+        <div data-reveal-item className="scan-sweep mb-8 w-fit">
+          <SectionLabel>core strengths</SectionLabel>
+          <h2 className="mt-2 text-2xl font-semibold text-foreground md:text-3xl">
             Core Strengths
           </h2>
-        </ScrollReveal>
-        <div className="grid gap-6 md:grid-cols-2">
+        </div>
+        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
           {coreStrengths.map((strength, index) => (
-            <ScrollReveal
+            <div
               key={strength.title}
-              animation="bounce-in"
-              delay={index * 150}
-              duration={700}
-              easing="elastic"
+              data-reveal-item
+              className="scan-card relative overflow-hidden rounded-xl border border-border bg-card p-6 transition-[border-color,box-shadow] duration-200 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 md:p-8"
             >
-              <div className="rounded-lg border border-border bg-card p-6 h-full transition-all hover:-translate-y-1 hover:shadow-lg hover:border-primary/50">
-                <h3 className="mb-2 text-lg font-medium text-card-foreground">
+              <div className="scan-sweep">
+                <span
+                  aria-hidden="true"
+                  className="mb-6 block font-mono text-xs text-muted-foreground"
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <h3 className="mb-3 text-lg font-medium text-card-foreground md:text-xl">
                   {strength.title}
                 </h3>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm leading-relaxed text-muted-foreground md:text-base">
                   {strength.description}
                 </p>
               </div>
-            </ScrollReveal>
+            </div>
           ))}
         </div>
       </section>
 
       {/* Technical Skills */}
       <section>
-        <ScrollReveal animation="blur-in" duration={800}>
-          <h2 className="mb-6 text-2xl font-semibold text-foreground">
+        <div data-reveal="wipe" className="relative mb-8 w-fit">
+          <SectionLabel>technical skills</SectionLabel>
+          <h2 className="mt-2 text-2xl font-semibold text-foreground md:text-3xl">
             Technical Skills
           </h2>
-        </ScrollReveal>
-        <div className="space-y-8">
-          {skillCategories.map((category, index) => (
-            <ScrollReveal
+        </div>
+        <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
+          {skillCategories.map((category) => (
+            <div
               key={category.category}
-              animation={index % 2 === 0 ? "slide-right" : "slide-left"}
-              delay={index * 100}
-              duration={800}
-              easing="bounce"
+              data-reveal="wipe"
+              className="relative rounded-xl border border-border bg-card p-6 transition-[border-color,box-shadow] duration-200 hover:border-primary/50 hover:shadow-lg md:p-8"
             >
-              <div className="rounded-lg border border-border bg-card p-6 transition-all hover:border-primary/50 hover:shadow-lg">
-                <div className="mb-4">
-                  <h3 className="text-xl font-semibold text-card-foreground">
+              <div className="mb-6 flex items-start justify-between gap-4">
+                <div>
+                  <h3 className="text-xl font-semibold text-card-foreground md:text-2xl">
                     {category.category}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="mt-1 text-sm text-muted-foreground md:text-base">
                     {category.description}
                   </p>
                 </div>
-                <div className="flex flex-wrap gap-3">
-                  {category.skills.map((skill) => (
-                    <SkillBadge key={skill} name={skill} />
-                  ))}
-                </div>
+                <span className="shrink-0 rounded-md border border-border px-2 py-0.5 font-mono text-xs text-muted-foreground">
+                  {category.skills.length} skills
+                </span>
               </div>
-            </ScrollReveal>
+              <div className="flex flex-wrap gap-3">
+                {category.skills.map((skill) => (
+                  <SkillBadge key={skill} name={skill} revealItem />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </section>
