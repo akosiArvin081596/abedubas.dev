@@ -1,0 +1,266 @@
+/*
+ * Motion core: the contract every page's effects build on.
+ * Slices: home.css (home), site.css (navbar, footer, about, contact, 404),
+ * work.css (skills, projects, blog).
+ *
+ * Reveal API. Pages stay Server Components and RevealObserver does the rest.
+ * - data-reveal="<effect>" marks a section's container. Each effect name
+ *   belongs to one section, site-wide, though a section may put it on
+ *   several containers (one per timeline entry, say).
+ * - data-reveal-item marks the children that stagger. When the container
+ *   scrolls into view, RevealObserver gives each item --i (reading order:
+ *   rows top to bottom, then left to right) and --d (diagonal: row + column),
+ *   sets data-revealed on the container and dispatches a `reveal` event on
+ *   it. Containers that reveal together share one count, in reading order,
+ *   and an item-less container gets --i itself.
+ * - data-reveal-on="load" is for above-the-fold sections. Their animations
+ *   run on mount in pure CSS, so set --i inline on the server.
+ * - Start every effect selector with `.motion`. The head script sets it only
+ *   when JS runs and the visitor hasn't asked for reduced motion; everyone
+ *   else gets the final state, unanimated.
+ * - Animate with @keyframes and `animation-fill-mode: backwards`. The from
+ *   keyframe covers the stagger delay, and once the animation ends the
+ *   element's own styles (hover transforms included) apply again.
+ * - Stagger with `calc(var(--i) * var(--stagger))`, or --d for diagonals.
+ * - Motion travels only down or right. Wipes open top to bottom or left to
+ *   right.
+ * - Before its reveal, an item (or an item-less container) is opacity: 0,
+ *   not visibility: hidden, so keyboard, screen reader, find-in-page and
+ *   print users still reach it. RevealObserver also reveals a container the
+ *   moment something inside it takes focus, and reveals everything before
+ *   printing. Anything else you animate needs its own hidden state under
+ *   [data-reveal]:not([data-revealed]), and should hide it the same way.
+ * - Scroll-linked effects (animation-timeline) are the one exception to
+ *   both rules: they keep `animation-fill-mode: both` so they stay drawn,
+ *   and they run backwards when the visitor scrolls back up.
+ *
+ * Pace and scale are cinematic, not subtle:
+ * - A section's main move runs --dur-2 (1.2 s), the biggest reveals --dur-3
+ *   (1.6 s), supporting details --dur-1 (0.7 s). Items stagger by --stagger.
+ * - Travel is 40-96px, or a full mask height. Layer the moves: a colored
+ *   panel sweeps across before the content shows, a clip opens while an
+ *   image settles from 1.2x to 1x, blur clears from 12px.
+ */
+
+:root {
+  /* Long, soft landings for entrances; a firm in-out for panels and wipes. */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+  --dur-1: 700ms;
+  --dur-2: 1200ms;
+  --dur-3: 1600ms;
+  --stagger: 150ms;
+}
+
+/* Hide what is about to animate, so nothing flashes before its reveal.
+   Opacity, not visibility, keeps it in the accessibility tree. */
+.motion [data-reveal]:not([data-revealed], [data-reveal-on="load"]) [data-reveal-item],
+.motion
+  [data-reveal]:not([data-revealed], [data-reveal-on="load"]):not(
+    :has([data-reveal-item])
+  ) {
+  opacity: 0;
+}
+
+/* Paper gets the final state: no effects, no curtain. */
+@media print {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .motion [data-reveal] [data-reveal-item],
+  .motion [data-reveal] {
+    opacity: 1 !important;
+  }
+
+  .route-curtain,
+  .scroll-progress {
+    display: none !important;
+  }
+}
+
+/* SplitText pieces. Each word clips its own pieces; --si numbers them. */
+.split-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* Room for descenders inside the clip */
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+.split-word > span {
+  display: inline-block;
+}
+
+/* Route curtain (components/motion/RouteCurtain.tsx). On an internal link
+   click, layered panels sweep in to cover the page, a shell prompt types the
+   destination, the new page renders underneath, and the panels sweep out
+   the far side. The panels' geometry and timing come from the component. */
+.route-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* While it runs it's visible, and it takes the clicks, so nobody can start a
+   second navigation halfway through. */
+.route-curtain[data-active] {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.rc-stage {
+  position: absolute;
+  inset: 0;
+}
+
+.rc-panel {
+  position: absolute;
+}
+
+/* Three layers per panel: accent leads, primary follows, and the dark stage
+   the prompt types on arrives last. */
+.rc-layer {
+  position: absolute;
+  inset: 0;
+  transform: scale(0);
+}
+
+.rc-layer:nth-child(1) {
+  background: var(--accent);
+}
+
+.rc-layer:nth-child(2) {
+  background: var(--primary);
+}
+
+.rc-layer:nth-child(3) {
+  background: #0b1120;
+}
+
+.rc-term {
+  position: absolute;
+  top: 50%;
+  left: clamp(1.5rem, 8vw, 8rem);
+  right: 1.5rem;
+  translate: 0 -50%;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  /* Large on wide screens, but never so large that the command (--cmd-chars
+     long, set by the component) overflows its line. Mono glyphs are about
+     0.6em wide. */
+  font-size: min(
+    clamp(1rem, 2.4vw, 2rem),
+    calc((100vw - 4.5rem) / (var(--cmd-chars, 24) * 0.62))
+  );
+  line-height: 1.5;
+  color: #e2e8f0;
+  opacity: 0;
+}
+
+/* The prompt and the command are each one unbroken line. When both don't
+   fit side by side, the command drops onto its own line, and a long prompt
+   trims with an ellipsis instead of pushing the command out of view. */
+.rc-prompt,
+.rc-line {
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+.rc-prompt {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #94a3b8;
+}
+
+@media (max-width: 640px) {
+  .rc-host {
+    display: none;
+  }
+}
+
+.rc-prompt b {
+  font-weight: inherit;
+  color: #818cf8;
+}
+
+.rc-cmd {
+  display: inline-block;
+  white-space: pre;
+  vertical-align: bottom;
+}
+
+.rc-caret {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.1em;
+  margin-left: 0.15em;
+  vertical-align: -0.2em;
+  background: #818cf8;
+}
+
+/* Blink only while the curtain is up; hidden, it shouldn't animate at all. */
+.route-curtain[data-active] .rc-caret {
+  animation: rc-blink 1s steps(1, end) infinite;
+}
+
+@keyframes rc-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* While the curtain covers the page, hold the page's own effects at their
+   start, so the new page's entrance plays as the curtain lifts. */
+html[data-curtain] main *,
+html[data-curtain] main *::before,
+html[data-curtain] main *::after {
+  animation-play-state: paused !important;
+}
+
+/* Reading bar: fills left to right as the page scrolls. Browsers without
+   scroll-driven animations never show it. */
+.scroll-progress {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 60;
+  display: none;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(to right, var(--primary), var(--accent));
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+@supports (animation-timeline: scroll()) {
+  .scroll-progress {
+    display: block;
+    animation: scroll-progress linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+
+@keyframes scroll-progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .scroll-progress {
+    display: none;
+  }
+}
