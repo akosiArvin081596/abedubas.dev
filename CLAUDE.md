@@ -23,6 +23,11 @@ There is no test suite. Verify changes with `npm run lint` plus `npx tsc --noEmi
 There is no CMS or database. Page copy and data (projects, skills, work history, services) are hardcoded in the page files under `src/app/`, mostly as arrays at the top of each `page.tsx`.
 
 - The email address and GitHub/LinkedIn links are duplicated in `src/components/Footer.tsx` and `src/app/contact/page.tsx`. Update both.
+- Years of experience are counted from `WEB_DEV_SINCE` (2013) in `src/lib/career.ts`, which both the home stats and the About page read. Don't hardcode the number anywhere.
+- The home stats band's GitHub numbers come from `src/data/github-stats.json`, a snapshot of totals across the personal (`akosiArvin081596`) and Alchemy (`abedubas-alchemydev`) accounts. It holds aggregates only, with no repo names.
+  - To refresh it, run `npm run stats:github` and commit the JSON.
+  - The script reads each account through the local `gh` login, calling the `gh` binary directly. In an interactive shell, the per-directory `gh` wrapper function ignores `GH_TOKEN`.
+  - No tokens go to CI or the VPS.
 - Site-wide SEO (title template `%s | Arvin Baghari Edubas`, OpenGraph, Twitter) is the `metadata` export in `src/app/layout.tsx`. Each page exports only `title` and `description`.
 - `POST /api/contact` only validates the submission and logs it with `console.log`. No email delivery or storage is wired up.
 - `resume.html` at the repo root is a standalone, print-ready (US Letter) resume. It is not part of the Next app and is not served, because it sits outside `public/`. It repeats the about page's work history and the projects page's project list, so update both places when either changes.
