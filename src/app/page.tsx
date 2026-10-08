@@ -1,29 +1,47 @@
-import { Fragment, type CSSProperties } from "react";
+import { Fragment, type CSSProperties, type ReactNode } from "react";
 import Link from "next/link";
-import {
-  CodeWindow,
-  SectionLabel,
-  SplitText,
-} from "@/components";
+import { SectionLabel, SplitText } from "@/components";
 import githubStats from "@/data/github-stats.json";
+import { otherLiveSites } from "@/data/live-sites";
+import { projects } from "@/data/projects";
 import { WEB_DEV_SINCE, yearsOfExperience } from "@/lib/career";
 import { WindowDots } from "@/components/WindowDots";
 import { HeroBackdrop } from "./HeroBackdrop";
+import { HeroClock } from "./HeroClock";
 import { HeroPortrait } from "./HeroPortrait";
+import { HeroShell } from "./HeroShell";
+import { HomeSnap } from "./HomeSnap";
 import { Odometer } from "./Odometer";
 import { ParallaxHero } from "./ParallaxHero";
 import { Spotlight } from "./Spotlight";
 
+// The hero's stack, DevOps and security lists (its fastfetch readout and
+// engineer.ts): the stack runs frontend, backend, then databases; DevOps
+// and security match their categories on the Skills page.
 const techStack = [
   "Vue",
   "Nuxt",
-  "Laravel",
   "React",
   "Next.js",
   "TypeScript",
-  "Node.js",
-  "PostgreSQL",
   "Tailwind CSS",
+  "Laravel",
+  "Node.js",
+  "Express.js",
+  "Python",
+  "MySQL",
+  "PostgreSQL",
+  "MongoDB",
+];
+
+const devOps = ["Docker", "CI/CD", "Linux", "Nginx", "AWS", "Vercel"];
+
+const security = [
+  "Secure Coding",
+  "OWASP Top 10",
+  "Auth & Access Control",
+  "SSL/TLS",
+  "Network Security",
 ];
 
 // The stats band's metric cards. Experience counts from WEB_DEV_SINCE; the
@@ -196,6 +214,17 @@ function StatChart({ chart }: { chart: (typeof stats)[number]["chart"] }) {
   );
 }
 
+// Everything running live on its own domain, for the band's wide card: the
+// Projects page's live projects, then the other live sites.
+const liveProjects = [
+  ...projects.flatMap((project) =>
+    project.liveUrl
+      ? [{ name: project.title.split(" ")[0], url: project.liveUrl }]
+      : [],
+  ),
+  ...otherLiveSites,
+].map((site) => ({ ...site, host: new URL(site.url).host }));
+
 // When the GitHub snapshot was taken, for the band's footnote
 const githubUpdated = new Date(
   `${githubStats.generatedAt}T00:00:00Z`,
@@ -227,8 +256,9 @@ const services = [
   },
 ];
 
-// engineer.ts, as syntax-colored tokens. The colors are the blog's --code-*
-// palette, which meets AA on --muted (the <pre> background).
+// engineer.ts, as syntax-colored tokens, for the hero terminal's
+// `cat engineer.ts`. The colors are the blog's --code-* palette; the
+// terminal pins its dark values (.hero-window in styles/motion/home.css).
 type TokenKind = "keyword" | "title" | "property" | "string" | "literal";
 type Token = readonly [text: string, kind?: TokenKind];
 
@@ -240,22 +270,33 @@ const tokenColor: Record<TokenKind, string> = {
   literal: "text-(--code-constant)",
 };
 
-const stackRows = [0, 3, 6].map((start) => techStack.slice(start, start + 3));
+// A list as engineer.ts lines of three: each a quoted, comma-separated row.
+const arrayRows = (list: readonly string[]) =>
+  range(Math.ceil(list.length / 3)).map((row): Token[] => [
+    ["    "],
+    ...list
+      .slice(row * 3, row * 3 + 3)
+      .flatMap((item): Token[] => [[`"${item}"`, "string"], [","], [" "]])
+      .slice(0, -1),
+  ]);
 
 // The AI tools Arvin pairs with: the terminal's `ai --pair` and engineer.ts.
-const AI_PEERS = ["Claude Code (CLI)", "Cursor AI"];
+const AI_PEERS = ["Claude Code (CLI)", "Cursor AI", "Gemini", "ChatGPT"];
 
 const engineerTs: Token[][] = [
   [["export", "keyword"], [" "], ["const", "keyword"], [" "], ["engineer", "title"], [" = {"]],
   [["  "], ["name", "property"], [": "], ['"Arvin Baghari Edubas"', "string"], [","]],
-  [["  "], ["role", "property"], [": "], ['"Web Developer & Software Engineer"', "string"], [","]],
+  [["  "], ["role", "property"], [": "], ['"Information Technologist & Software Engineer"', "string"], [","]],
   [["  "], ["location", "property"], [": "], ['"Philippines"', "string"], [","]],
   [["  "], ["since", "property"], [": "], [String(WEB_DEV_SINCE), "literal"], [","]],
   [["  "], ["stack", "property"], [": ["]],
-  ...stackRows.map((row): Token[] => [
-    ["    "],
-    ...row.flatMap((tech): Token[] => [[`"${tech}"`, "string"], [","], [" "]]).slice(0, -1),
-  ]),
+  ...arrayRows(techStack),
+  [["  ],"]],
+  [["  "], ["devops", "property"], [": ["]],
+  ...arrayRows(devOps),
+  [["  ],"]],
+  [["  "], ["security", "property"], [": ["]],
+  ...arrayRows(security),
   [["  ],"]],
   [
     ["  "],
@@ -268,36 +309,132 @@ const engineerTs: Token[][] = [
   [["} "], ["as", "keyword"], [" "], ["const", "keyword"], [";"]],
 ];
 
+// What `cat engineer.ts` prints in the hero's terminal
+const engineerSource = (
+  <pre className="shell-code">
+    <code className="block">
+      {engineerTs.map((tokens, line) => (
+        <span key={line} className="block w-max">
+          <span
+            aria-hidden="true"
+            className="mr-4 inline-block w-5 select-none text-right text-(--code-comment)"
+          >
+            {line + 1}
+          </span>
+          {tokens.map(([text, kind], t) =>
+            kind ? (
+              <span key={t} className={tokenColor[kind]}>
+                {text}
+              </span>
+            ) : (
+              <Fragment key={t}>{text}</Fragment>
+            ),
+          )}
+        </span>
+      ))}
+    </code>
+  </pre>
+);
+
 // The role line types one character per step, so it needs its length.
-const ROLE = "Web Developer & Software Engineer";
+const ROLE = "Information Technologist & Software Engineer";
+
+// The hero's summary, in plain professional prose. `cat about.md` prints it
+// too.
+const SUMMARY =
+  "I build modern web applications end to end, combining intuitive user experiences with clean, maintainable code and scalable, enterprise-ready architecture. I welcome opportunities to collaborate on meaningful projects.";
+
+const sparkle = (
+  <svg
+    aria-hidden="true"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className="h-3 w-3 shrink-0 text-sky-400"
+  >
+    <path d="M12 2.5 13.9 9.6 21 12l-7.1 2.4L12 21.5l-1.9-7.1L3 12l7.1-2.4z" />
+  </svg>
+);
+
+// The AI tools, as chips. In the boot they pop in left to right (--c).
+function AiPeers() {
+  return (
+    <span className="inline-flex flex-wrap items-center gap-1.5 align-middle">
+      {AI_PEERS.map((tool, c) => (
+        <span
+          key={tool}
+          className="boot-chip inline-flex items-center gap-1 rounded border border-white/10 bg-white/5 px-1.5 leading-[1.4] text-indigo-200"
+          style={{ "--c": c } as CSSProperties}
+        >
+          {sparkle}
+          {tool}
+        </span>
+      ))}
+    </span>
+  );
+}
+
+// A list joined with dots. Each dot stays with the name before it, so no
+// line starts with one when the list wraps.
+const dotted = (list: readonly string[]) =>
+  list.map((item, k) => (
+    <Fragment key={item}>
+      <span className="whitespace-nowrap">
+        {item}
+        {k < list.length - 1 && <span className="text-slate-500"> ·</span>}
+      </span>{" "}
+    </Fragment>
+  ));
+
+// `fastfetch`'s readout: engineer.ts's facts as system info, keys in the
+// accent color, then the terminal's color palette, as fastfetch prints it.
+const fetchRows: { key: string; value: ReactNode }[] = [
+  { key: "location", value: "Philippines (UTC+8)" },
+  {
+    key: "uptime",
+    value: `${yearsOfExperience()} years, since ${WEB_DEV_SINCE}`,
+  },
+  { key: "stack", value: dotted(techStack) },
+  { key: "devops", value: dotted(devOps) },
+  { key: "security", value: dotted(security) },
+  { key: "ai peers", value: <AiPeers /> },
+];
+
+const PALETTE = [
+  "#1e293b",
+  "#f87171",
+  "#4ade80",
+  "#facc15",
+  "#818cf8",
+  "#e879f9",
+  "#38bdf8",
+  "#e2e8f0",
+];
 
 // When a hero step starts (the `boot` effect in styles/motion/home.css). The
-// hero builds strictly in reading order: the portrait, then the terminal
-// session top to bottom (each command, then its output), then engineer.ts,
-// each step once the one before has landed.
+// hero builds in reading order: the window, then the left pane (the photo
+// renders in), then the right pane top to bottom (each command, then its
+// output; then the summary and the buttons), and last the tmux status bar.
 const startAt = (ms: number) => ({ "--t": `${ms}ms` }) as CSSProperties;
 const HERO_START = {
-  portrait: 150,
-  terminal: 600,
-  whoami: 850,
-  heading: 1050,
-  roleCmd: 1650,
-  role: 1950,
-  aiCmd: 2650,
-  ai: 2950,
-  aboutCmd: 3400,
-  paragraph: 3700,
-  linksCmd: 4450,
-  work: 4700,
-  contact: 4850,
-  prompt: 5050,
-  code: 5250,
+  window: 150,
+  divider: 450,
+  imgCmd: 600,
+  image: 1150,
+  whoami: 1700,
+  heading: 1950,
+  role: 2550,
+  fetchCmd: 3300,
+  fetch: 3600,
+  summary: 4500,
+  work: 5250,
+  contact: 5400,
+  prompt: 5750,
+  status: 5900,
 };
 
-// A shell prompt line in the hero's terminal, typed on during the boot. With
-// no command, it's the last prompt, waiting with a cursor. Decorative: the
-// content is the output under each one.
-function TermLine({ command, start }: { command?: string; start: number }) {
+// A shell prompt line in the hero's terminal, typed on during the boot.
+// Decorative: the content is the output under each one.
+function TermLine({ command, start }: { command: string; start: number }) {
   return (
     <p
       aria-hidden="true"
@@ -305,19 +442,18 @@ function TermLine({ command, start }: { command?: string; start: number }) {
       style={startAt(start)}
     >
       <span className="text-green-400">$</span>{" "}
-      {command ? (
-        <span
-          className="boot-cmd inline-block"
-          style={{ "--n": command.length } as CSSProperties}
-        >
-          {command}
-        </span>
-      ) : (
-        <span className="term-caret" />
-      )}
+      <span
+        className="boot-cmd inline-block"
+        style={{ "--n": command.length } as CSSProperties}
+      >
+        {command}
+      </span>
     </p>
   );
 }
+
+// A segment of the tmux status bar; they slide in left to right (--c).
+const segment = (c: number) => ({ "--c": c }) as CSSProperties;
 
 const arrow = (className: string) => (
   <svg
@@ -333,6 +469,32 @@ const arrow = (className: string) => (
       strokeLinecap="round"
       strokeLinejoin="round"
       d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+    />
+  </svg>
+);
+
+// The hero buttons' icons: a 2x2 grid of tiles (top left, top right,
+// bottom left, bottom right) and a paper plane.
+const GRID_TILES = [
+  [3.75, 3.75],
+  [13.5, 3.75],
+  [3.75, 13.5],
+  [13.5, 13.5],
+] as const;
+
+const plane = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.75}
+    stroke="currentColor"
+    className="h-full w-full"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
     />
   </svg>
 );
@@ -354,228 +516,252 @@ const check = (
 export default function HomePage() {
   return (
     <ParallaxHero>
-      {/* Hero: one screen tall. Three columns from xl (portrait, intro,
-          engineer.ts), two at lg, stacked below. */}
+      <HomeSnap />
+      {/* Hero: a full-screen terminal, edge to edge under the navbar and at
+          least the rest of the screen tall. tmux splits it in two: the
+          photo, as imgcat prints it, and the intro as a shell session. Side
+          by side from lg, stacked below. The window is dark in both themes,
+          like a real terminal, and its panes are translucent, so the
+          backdrop's circuit loop glows faintly through. */}
       <section className="relative">
         <div
           data-reveal="boot"
           data-reveal-on="load"
-          className="hero-frame container-site flex min-h-[calc(100svh-4.5rem)] items-center py-12 lg:py-16"
+          className="flex min-h-[calc(100svh-4.5rem)] flex-col"
         >
-          <div className="grid w-full items-center justify-items-center gap-10 lg:grid-cols-[auto_minmax(0,1fr)] lg:justify-items-stretch lg:gap-x-14 lg:gap-y-10 xl:grid-cols-[auto_minmax(0,1fr)_clamp(25rem,30vw,30rem)] xl:gap-x-12 2xl:gap-x-16">
-            {/* Profile Image */}
+          <div className="hero-window flex w-full flex-1 flex-col">
             <div
-              data-reveal-item
-              className="boot-slide lg:row-span-2 xl:row-span-1"
-              style={startAt(HERO_START.portrait)}
+              className="boot-term flex flex-1 flex-col overflow-hidden bg-[#0b1120]/85 lg:min-h-0"
+              style={startAt(HERO_START.window)}
             >
-              <HeroPortrait
-                video={{
-                  webm: "/media/portrait.webm",
-                  mp4: "/media/portrait.mp4",
-                }}
-              />
-            </div>
+              {/* Title bar, with a highlight along its top edge */}
+              <div className="relative flex items-center gap-3 border-b border-white/10 bg-[#111a2e] px-4 py-2.5">
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-x-12 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent"
+                />
+                <WindowDots />
+                <span className="hidden min-w-0 flex-1 truncate text-center font-mono text-xs text-slate-400 sm:block">
+                  arvin@abedubas.dev: ~ — tmux
+                </span>
+                {/* Status */}
+                <span className="ml-auto flex shrink-0 items-center gap-2 font-mono text-xs text-slate-300">
+                  <span className="relative flex h-2 w-2">
+                    <span className="status-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 motion-safe:animate-ping" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+                  </span>
+                  Available for new projects
+                </span>
+              </div>
 
-            {/* Intro, as a terminal session: each command types on, then its
-                output appears, top to bottom. The prompts are decoration;
-                the heading, role, paragraph and links are the content. The
-                window stays dark in both themes, like a real terminal. */}
-            <div className="@container w-full min-w-0 text-left xl:flex xl:flex-col xl:self-stretch">
-              <div
-                data-reveal-item
-                className="boot-term overflow-hidden rounded-xl border border-white/10 bg-[#0b1120] shadow-2xl shadow-primary/10 xl:flex xl:flex-1 xl:flex-col"
-                style={startAt(HERO_START.terminal)}
-              >
-                <div className="flex items-center gap-3 border-b border-white/10 bg-[#111a2e] px-4 py-2.5">
-                  <WindowDots />
-                  <span className="hidden min-w-0 flex-1 truncate text-center font-mono text-xs text-slate-400 sm:block">
-                    arvin@abedubas.dev: ~
-                  </span>
-                  {/* Status */}
-                  <span className="ml-auto flex shrink-0 items-center gap-2 font-mono text-xs text-slate-300">
-                    <span className="relative flex h-2 w-2">
-                      <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 motion-safe:animate-ping" />
-                      <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-                    </span>
-                    Available for new projects
-                  </span>
+              <div className="grid flex-1 lg:min-h-0 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:grid-rows-[minmax(0,1fr)] xl:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] 2xl:grid-cols-[minmax(0,42rem)_minmax(0,1fr)]">
+                {/* Left pane: the photos, rendered in like terminal images,
+                    one after another */}
+                <div className="hero-pane relative flex flex-col border-b border-white/10 p-4 font-mono sm:p-6 lg:border-b-0 lg:border-r lg:p-8">
+                  {/* tmux marks the active pane's border */}
+                  <span
+                    aria-hidden="true"
+                    className="tmux-active pointer-events-none absolute z-10"
+                    style={startAt(HERO_START.divider)}
+                  />
+                  <TermLine
+                    command="imgcat ~/photos/*.jpg"
+                    start={HERO_START.imgCmd}
+                  />
+                  <div
+                    className="relative h-72 sm:h-96 lg:h-auto lg:max-h-[46rem] lg:min-h-72 lg:flex-1"
+                    style={startAt(HERO_START.image)}
+                  >
+                    <HeroPortrait />
+                  </div>
                 </div>
 
-                <div className="hero-term-body flex flex-col gap-3 p-5 font-mono text-slate-200 sm:p-7 xl:flex-1">
+                {/* Right pane: the session. Each command types on, then its
+                    output appears, top to bottom. The prompts are decoration;
+                    the heading, role, readout, paragraph and links are the
+                    content. Its last prompt is live (HeroShell). */}
+                <div className="hero-pane hero-session @container flex min-w-0 flex-col p-5 font-mono text-slate-200 sm:p-7 lg:p-8 xl:px-12">
                   <TermLine command="whoami" start={HERO_START.whoami} />
-                  {/* Main Heading: the name always gets a line of its own */}
-                  <h1
-                    className="boot-heading text-[clamp(1.5rem,7.2cqi,3.75rem)] font-bold leading-[1.1] tracking-tight text-white"
-                    style={startAt(HERO_START.heading)}
-                  >
-                    <SplitText text="Hi, I'm" />{" "}
-                    <span className="block whitespace-nowrap">
-                      <SplitText
-                        text="Arvin Baghari Edubas"
-                        start={2}
-                        className="boot-name bg-gradient-to-r from-indigo-400 via-sky-400 to-indigo-400 bg-[length:200%_auto] bg-clip-text text-transparent motion-safe:animate-[gradient_3s_linear_infinite]"
-                      />
-                    </span>
-                  </h1>
-
-                  <TermLine command="cat role.txt" start={HERO_START.roleCmd} />
-                  {/* Role, typed on */}
-                  <p
-                    className="text-[clamp(0.8125rem,4cqi,1.125rem)] font-medium text-slate-100"
-                    style={startAt(HERO_START.role)}
-                  >
-                    <span
-                      className="boot-role inline-block"
-                      style={{ "--n": ROLE.length } as CSSProperties}
+                  <div className="flex flex-col gap-1.5">
+                    {/* Main Heading: the name always gets a line of its own */}
+                    <h1
+                      className="boot-heading font-bold tracking-tight text-white"
+                      style={startAt(HERO_START.heading)}
                     >
-                      {ROLE}
-                    </span>
-                  </p>
-
-                  <TermLine command="ai --pair" start={HERO_START.aiCmd} />
-                  {/* AI as a coding peer: the tools pop in left to right */}
-                  <p
-                    className="flex flex-wrap items-center gap-2 text-sm text-slate-300 sm:text-[0.9375rem]"
-                    style={startAt(HERO_START.ai)}
-                  >
-                    {AI_PEERS.map((tool, c) => (
-                      <span
-                        key={tool}
-                        className="boot-chip inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-indigo-200"
-                        style={{ "--c": c } as CSSProperties}
-                      >
-                        <svg
-                          aria-hidden="true"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          className="h-3.5 w-3.5 text-sky-400"
-                        >
-                          <path d="M12 2.5 13.9 9.6 21 12l-7.1 2.4L12 21.5l-1.9-7.1L3 12l7.1-2.4z" />
-                        </svg>
-                        {tool}
+                      <span className="block text-[clamp(1.125rem,3.4cqi,1.875rem)] leading-tight text-slate-300">
+                        <SplitText text="Hi, I'm" />
+                      </span>{" "}
+                      <span className="block whitespace-nowrap text-[clamp(1.375rem,7.4cqi,4.25rem)] leading-[1.12]">
+                        <SplitText
+                          text="Arvin Baghari Edubas"
+                          start={2}
+                          className="boot-name bg-gradient-to-r from-indigo-400 via-sky-400 to-indigo-400 bg-[length:200%_auto] bg-clip-text text-transparent motion-safe:animate-[gradient_3s_linear_3]"
+                        />
                       </span>
-                    ))}
-                    <span
-                      className="boot-chip text-slate-400"
-                      style={{ "--c": AI_PEERS.length } as CSSProperties}
+                    </h1>
+                    {/* Role, typed on */}
+                    <p
+                      className="text-[clamp(0.9375rem,2.8cqi,1.375rem)] font-medium text-slate-100"
+                      style={startAt(HERO_START.role)}
                     >
-                      — my coding peers
-                    </span>
-                  </p>
+                      <span
+                        className="boot-role inline-block"
+                        style={{ "--n": ROLE.length } as CSSProperties}
+                      >
+                        {ROLE}
+                      </span>
+                    </p>
+                  </div>
 
-                  <TermLine command="cat about.md" start={HERO_START.aboutCmd} />
-                  {/* Description */}
-                  <p
-                    className="boot-paragraph max-w-2xl text-sm leading-relaxed text-slate-300 sm:text-[0.9375rem]"
-                    style={startAt(HERO_START.paragraph)}
+                  <TermLine command="fastfetch" start={HERO_START.fetchCmd} />
+                  <dl
+                    className="fetch my-1 grid grid-cols-[auto_minmax(0,1fr)] gap-x-5 gap-y-2 text-sm sm:text-[0.9375rem]"
+                    style={startAt(HERO_START.fetch)}
                   >
-                    Clean code, intuitive user experiences, and scalable,
-                    enterprise-ready architecture—brought together to build
-                    modern web applications. Open to collaborating on
-                    something meaningful.
+                    {fetchRows.map((row, r) => (
+                      <Fragment key={row.key}>
+                        <dt
+                          className="fetch-key font-semibold text-indigo-300"
+                          style={{ "--r": r } as CSSProperties}
+                        >
+                          {row.key}
+                        </dt>
+                        <dd
+                          className="fetch-value text-slate-200"
+                          style={{ "--r": r } as CSSProperties}
+                        >
+                          {row.value}
+                        </dd>
+                      </Fragment>
+                    ))}
+                    <dd aria-hidden="true" className="col-start-2 flex pt-1.5">
+                      {PALETTE.map((color, c) => (
+                        <span
+                          key={color}
+                          className="fetch-swatch h-3 w-6 sm:w-7"
+                          style={{ background: color, "--c": c } as CSSProperties}
+                        />
+                      ))}
+                    </dd>
+                  </dl>
+
+                  {/* Summary: plain, professional prose in the sans face,
+                      set off by an accent rule. It opens a line at a time. */}
+                  <p
+                    className="hero-summary boot-paragraph mt-1.5 max-w-3xl border-l-2 border-indigo-400/70 pl-4 font-sans text-[0.9375rem] leading-relaxed text-slate-200 sm:text-base 2xl:text-lg"
+                    style={startAt(HERO_START.summary)}
+                  >
+                    {SUMMARY}
                   </p>
 
-                  <TermLine command="ls links/" start={HERO_START.linksCmd} />
-                  {/* CTA Links */}
-                  <div className="flex flex-wrap gap-x-6 gap-y-3 pt-0.5">
+                  {/* Calls to action, each led by an icon that animates on
+                      hover: the grid lights up a tile at a time, and the
+                      paper plane flies off to the right as another follows.
+                      Styles in styles/motion/home.css (.cta-*). */}
+                  <div className="hero-ctas mt-1.5 flex flex-wrap items-center gap-3 font-sans">
                     <Link
                       href="/projects"
-                      className="boot-drop group relative inline-flex items-center text-sm font-medium text-indigo-300 transition-colors hover:text-green-300 sm:text-base"
+                      className="cta-primary group relative inline-flex items-center gap-2.5 overflow-hidden rounded-lg px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-950/60 ring-1 ring-inset ring-white/20 transition-[box-shadow,filter] duration-300 hover:shadow-indigo-500/40 hover:brightness-110 sm:text-[0.9375rem] 2xl:px-6 2xl:py-3 2xl:text-base"
                       style={startAt(HERO_START.work)}
                     >
-                      <span className="relative">
-                        View My Work
-                        <span className="absolute -bottom-1 left-0 h-px w-0 bg-current transition-all duration-300 group-hover:w-full" />
-                      </span>
-                      {arrow("ml-2 h-4 w-4 transition-transform group-hover:translate-x-1")}
+                      {/* A light sweep crosses left to right on hover, then
+                          snaps back unseen */}
+                      <span
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-y-0 left-0 w-1/2 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-0 ease-out group-hover:translate-x-[250%] group-hover:duration-700 motion-reduce:hidden"
+                      />
+                      <svg
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={1.75}
+                        className="cta-grid h-[1.125rem] w-[1.125rem] shrink-0"
+                      >
+                        {GRID_TILES.map(([x, y], k) => (
+                          <rect
+                            key={k}
+                            x={x}
+                            y={y}
+                            width={6.75}
+                            height={6.75}
+                            rx={1.5}
+                            style={{ "--k": k } as CSSProperties}
+                          />
+                        ))}
+                      </svg>
+                      View My Work
                     </Link>
                     <Link
                       href="/contact"
-                      className="boot-drop group relative inline-flex items-center text-sm font-medium text-slate-300 transition-colors hover:text-green-300 sm:text-base"
+                      className="cta-secondary boot-drop group relative inline-flex items-center gap-2.5 overflow-hidden rounded-lg border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-semibold text-slate-100 transition-colors duration-300 hover:border-sky-400/60 hover:bg-sky-400/10 hover:text-white sm:text-[0.9375rem] 2xl:px-6 2xl:py-3 2xl:text-base"
                       style={startAt(HERO_START.contact)}
                     >
-                      <span className="relative">
-                        Get in Touch
-                        <span className="absolute -bottom-1 left-0 h-px w-0 bg-current transition-all duration-300 group-hover:w-full" />
+                      <span
+                        aria-hidden="true"
+                        className="cta-plane relative h-[1.125rem] w-[1.125rem] shrink-0 overflow-hidden text-sky-300 transition-colors duration-300 group-hover:text-white"
+                      >
+                        {plane}
+                        {plane}
                       </span>
-                      {arrow("ml-2 h-4 w-4 transition-transform group-hover:translate-x-1")}
+                      Get in Touch
                     </Link>
                   </div>
 
-                  <TermLine start={HERO_START.prompt} />
+                  <HeroShell
+                    start={HERO_START.prompt}
+                    files={{
+                      "about.md": <p>{SUMMARY}</p>,
+                      "engineer.ts": engineerSource,
+                      "role.txt": <p>{ROLE}</p>,
+                    }}
+                    peers={<AiPeers />}
+                  />
                 </div>
               </div>
-            </div>
 
-            {/* Tech Stack, as code. A colored panel passes over it first.
-                From xl it stretches to the terminal's height, with a status
-                bar along its bottom like an editor's. */}
-            <div
-              data-reveal-item
-              className="boot-window relative w-full max-w-lg text-left lg:col-start-2 lg:max-w-xl xl:col-start-3 xl:flex xl:max-w-none xl:flex-col xl:self-stretch"
-              style={startAt(HERO_START.code)}
-            >
-              <CodeWindow
-                title="engineer.ts"
-                className="xl:flex xl:flex-1 xl:flex-col"
-                bodyClassName="xl:flex xl:flex-1 xl:flex-col"
-              >
-                <pre className="hero-code overflow-x-auto text-foreground">
-                  <code className="block">
-                    {engineerTs.map((tokens, line) => (
-                      <span
-                        key={line}
-                        className="boot-code-line block w-max"
-                        style={{ "--line": line } as CSSProperties}
-                      >
-                        <span
-                          aria-hidden="true"
-                          className="mr-4 hidden w-5 select-none text-right text-(--code-comment) sm:inline-block"
-                        >
-                          {line + 1}
-                        </span>
-                        {tokens.map(([text, kind], t) =>
-                          kind ? (
-                            <span key={t} className={tokenColor[kind]}>
-                              {text}
-                            </span>
-                          ) : (
-                            <Fragment key={t}>{text}</Fragment>
-                          ),
-                        )}
-                      </span>
-                    ))}
-                  </code>
-                </pre>
-                {/* Editor status bar */}
-                <div
-                  aria-hidden="true"
-                  className="mt-auto flex items-center justify-between gap-3 border-t border-border bg-muted/40 px-4 py-1.5 font-mono text-[10px] text-muted-foreground"
-                >
-                  <span className="flex items-center gap-1.5">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      className="h-3 w-3"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M6 3v12m12-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm0 0a9 9 0 0 1-9 9m-3 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
-                      />
-                    </svg>
-                    main
-                  </span>
-                  <span>TypeScript · UTF-8 · LF</span>
-                </div>
-              </CodeWindow>
-              <span
+              {/* tmux's status bar: the session, its windows, and the clock */}
+              <div
                 aria-hidden="true"
-                className="boot-sweep pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-r from-primary to-accent"
-              />
+                className="tmux-status flex items-center justify-between gap-4 border-t border-white/10 bg-[#0d1527] py-1.5 pl-3 pr-10 font-mono text-[11px] leading-4 text-slate-400"
+                style={startAt(HERO_START.status)}
+              >
+                <span className="flex min-w-0 items-center gap-1.5">
+                  <span
+                    className="tmux-seg rounded-[3px] bg-green-400 px-1.5 font-semibold text-[#0b1120]"
+                    style={segment(0)}
+                  >
+                    abedubas
+                  </span>
+                  <span
+                    className="tmux-seg rounded-[3px] bg-indigo-500/25 px-1.5 text-indigo-100"
+                    style={segment(1)}
+                  >
+                    0:zsh*
+                  </span>
+                  <span className="tmux-seg px-1" style={segment(2)}>
+                    1:nvim
+                  </span>
+                  <span className="tmux-seg hidden px-1 sm:inline" style={segment(3)}>
+                    2:claude
+                  </span>
+                </span>
+                <span className="flex shrink-0 items-center gap-2">
+                  <span className="tmux-seg hidden sm:inline" style={segment(4)}>
+                    Philippines
+                  </span>
+                  <HeroClock
+                    part="time"
+                    className="tmux-seg rounded-[3px] bg-white/5 px-1.5 text-slate-200 empty:invisible"
+                    style={segment(5)}
+                  />
+                  <HeroClock
+                    part="date"
+                    className="tmux-seg hidden empty:invisible sm:inline"
+                    style={segment(6)}
+                  />
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -586,7 +772,7 @@ export default function HomePage() {
       {/* Stats Section: a row of live metric cards */}
       <section
         data-reveal="count"
-        className="stat-band relative overflow-hidden border-y border-border bg-muted/30 py-16 xl:py-20"
+        className="stat-band relative overflow-hidden border-y border-border bg-muted/30 py-12 lg:py-6"
       >
         <span
           aria-hidden="true"
@@ -604,7 +790,7 @@ export default function HomePage() {
         </span>
 
         <div className="container-site relative">
-          <div data-reveal-item className="stat-eyebrow mb-8 xl:mb-10">
+          <div data-reveal-item className="stat-eyebrow mb-6 lg:mb-4">
             <SectionLabel>by the numbers</SectionLabel>
           </div>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 xl:gap-6">
@@ -612,7 +798,7 @@ export default function HomePage() {
               <article
                 key={stat.label}
                 data-reveal-item
-                className="stat-card group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card/70 p-6 shadow-sm backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/50 hover:shadow-[0_0_32px_-8px_var(--primary)] xl:p-7"
+                className="stat-card group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card/70 p-6 shadow-sm backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/50 hover:shadow-[0_0_32px_-8px_var(--primary)] xl:p-6"
               >
                 <Spotlight />
                 <span aria-hidden="true" className="stat-scan" />
@@ -647,22 +833,99 @@ export default function HomePage() {
                   </span>
                 </div>
 
-                <div className="stat-value count-num relative mt-6 text-5xl font-bold leading-none tabular-nums text-foreground xl:text-6xl">
+                <div className="stat-value count-num relative mt-4 text-5xl font-bold leading-none tabular-nums text-foreground xl:text-6xl">
                   <Odometer value={stat.value} suffix={stat.suffix} />
                 </div>
                 <div className="count-label relative mt-2 text-sm font-medium text-muted-foreground xl:text-base">
                   {stat.label}
                 </div>
 
-                <div className="relative mt-6 flex min-h-16 flex-1 items-end">
+                <div className="relative mt-4 flex min-h-14 flex-1 items-end">
                   <StatChart chart={stat.chart} />
                 </div>
               </article>
             ))}
+
+            {/* The live projects, by domain, across the whole row */}
+            <article
+              data-reveal-item
+              className="stat-card group relative flex flex-col gap-6 overflow-hidden rounded-2xl border border-border bg-card/70 p-6 shadow-sm backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/50 hover:shadow-[0_0_32px_-8px_var(--primary)] sm:col-span-2 lg:col-span-4 lg:flex-row lg:items-center lg:gap-10 lg:p-5"
+            >
+              <Spotlight />
+              <span aria-hidden="true" className="stat-scan" />
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent"
+              />
+
+              <div className="relative flex shrink-0 flex-col lg:w-64">
+                <div className="flex items-center justify-between gap-3">
+                  <span
+                    aria-hidden="true"
+                    className="stat-icon grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/25 transition-shadow duration-300 group-hover:shadow-[0_0_20px_-4px_var(--primary)]"
+                  >
+                    {/* Heroicons "globe-alt" */}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="h-5 w-5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"
+                      />
+                    </svg>
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="stat-key truncate font-mono text-xs text-muted-foreground"
+                    style={{ "--n": "projects.live".length } as CSSProperties}
+                  >
+                    projects.live
+                  </span>
+                </div>
+                <div className="stat-value count-num relative mt-4 text-5xl font-bold leading-none tabular-nums text-foreground xl:text-6xl">
+                  <Odometer value={liveProjects.length} suffix="" />
+                </div>
+                <div className="count-label relative mt-2 text-sm font-medium text-muted-foreground xl:text-base">
+                  Live Projects, on their own domains
+                </div>
+              </div>
+
+              {/* A cloud of domain chips, each linking to its live site.
+                  The project's name shows on hover and to screen readers. */}
+              <ul className="relative flex flex-1 flex-wrap content-center gap-2">
+                {liveProjects.map((project, c) => (
+                  <li
+                    key={project.host}
+                    className="live-row"
+                    style={{ "--c": c } as CSSProperties}
+                  >
+                    <a
+                      href={project.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={project.name}
+                      className="group/live inline-flex items-center gap-2 rounded-lg border border-border bg-background/50 px-2.5 py-1.5 font-mono text-xs text-foreground transition-colors duration-200 hover:border-primary/50 hover:bg-primary/5 hover:text-primary"
+                    >
+                      <span aria-hidden="true" className="h-1.5 w-1.5 shrink-0 rounded-full bg-green-500 shadow-[0_0_6px_#22c55e]" />
+                      {project.host}
+                      <span className="sr-only">
+                        , {project.name} (opens in a new tab)
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </article>
           </div>
           <p
             data-reveal-item
-            className="stat-source mt-6 text-right font-mono text-xs text-muted-foreground"
+            className="stat-source mt-4 text-right font-mono text-xs text-muted-foreground lg:pr-16"
           >
             <span aria-hidden="true">{"// "}</span>
             GitHub data from {githubStats.accounts} accounts, updated{" "}
@@ -672,8 +935,8 @@ export default function HomePage() {
       </section>
 
       {/* Services Section */}
-      <section className="container-site relative py-24 xl:py-32">
-        <div data-reveal="curtain" className="mb-16 text-center xl:mb-20">
+      <section className="container-site relative py-24 lg:py-10">
+        <div data-reveal="curtain" className="services-head mb-16 text-center lg:mb-12">
           <div data-reveal-item className="curtain-open mb-4">
             <SectionLabel>services</SectionLabel>
           </div>
@@ -733,7 +996,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative overflow-hidden border-t border-border py-24 xl:py-32">
+      <section className="relative overflow-hidden border-t border-border py-24 lg:py-12">
         {/* Background effects */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0">
           <div className="home-orb absolute -top-20 left-1/4 h-64 w-64 rounded-full bg-primary/10 blur-3xl xl:h-96 xl:w-96" />

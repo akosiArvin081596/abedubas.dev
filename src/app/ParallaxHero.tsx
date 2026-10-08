@@ -11,10 +11,12 @@ const drift = (x: string, y: string) =>
 // down and to the right, by --drift-x/--drift-y over the full scroll. It's a
 // CSS scroll-driven animation (.home-drift in styles/motion/home.css), so
 // scrolling never re-renders. `isolate` keeps the hero backdrop's -z-10
-// layers inside this wrapper, under the color fields.
+// layers inside this wrapper, under the color fields. It clips rather than
+// hides its overflow: a hidden overflow would make it a scroll container,
+// which would capture its sections' snap points (`home-snap`, home.css).
 export function ParallaxHero({ children }: ParallaxHeroProps) {
   return (
-    <div className="relative isolate overflow-hidden">
+    <div className="home-snap relative isolate overflow-clip">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 overflow-hidden"

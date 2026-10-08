@@ -4,96 +4,133 @@
  */
 
 /* ---------------------------------------------------------------- boot ---
-   Hero, on load, about 5 s. It builds strictly in reading order, one column
-   at a time, each step starting once the one before has visibly landed.
-   The start times are --t, set inline on the server (page.tsx):
-   1. The portrait: an iris opens from the top-left corner while a colored
-      panel passes left to right and the photo settles from 1.2x out of blur.
-   2. The intro, top to bottom: the badge wipes open, the heading's words drop
-      out of their masks, the role line types behind a block caret, the
-      paragraph opens a line at a time, and the links drop in.
-   3. engineer.ts: a colored panel sweeps across, the window shows behind it
-      as it passes, and the code types on a line at a time.
+   Hero, on load, about 6 s: one terminal window, split by tmux into the
+   photo (left pane) and a shell session (right pane). It builds in reading
+   order, each step starting once the one before has begun to land. The
+   start times are --t, set inline on the server (page.tsx):
+   1. The window unrolls top to bottom, and tmux's active-pane border draws
+      in.
+   2. Left pane: `imgcat` types on, then the photo renders in like a
+      terminal image. Three pixelated passes print a row of blocks at a
+      time, each sharper than the last, then the photo wipes down behind a
+      scan line.
+   3. Right pane, top to bottom, each command typing on before its output:
+      the heading's words drop out of their masks, the role types, and the
+      fastfetch readout prints a row at a time as its swatches pop in. Then
+      the summary opens a line at a time and the buttons drop in. The last
+      prompt waits, live (HeroShell).
+   4. tmux's status bar fills in left to right.
    Stacked on smaller screens, the same order reads top to bottom. */
 
-/* 1. Portrait */
-.motion [data-reveal="boot"] .boot-slide {
-  animation: boot-fade var(--dur-1) var(--ease-out)
-    var(--t, 0ms) backwards;
+/* The terminal is dark in both themes, so the code it prints
+   (`cat engineer.ts`) keeps the dark syntax palette, and focus rings keep
+   the dark theme's primary. */
+.hero-window {
+  --primary: #818cf8;
+  --code-keyword: #ff7b72;
+  --code-title: #d2a8ff;
+  --code-constant: #79c0ff;
+  --code-string: #a5d6ff;
+  --code-comment: #8b949e;
 }
 
-@keyframes boot-fade {
-  from {
-    opacity: 0;
+/* Pane spacing. Unlayered, so it outranks Tailwind's utilities. */
+.hero-pane {
+  --hero-gap: 0.75rem;
+  gap: var(--hero-gap);
+}
+
+/* Laptop-height screens: tighten the panes' padding and line spacing so the
+   whole terminal still fits one screen. */
+@media (min-width: 1024px) and (max-height: 880px) {
+  .hero-pane {
+    --hero-gap: 0.45rem;
+    padding-block: 1.1rem;
+  }
+
+}
+
+/* Shorter still: the panes tighten again, and the fastfetch readout, the
+   summary and the buttons lose their extra spacing. */
+@media (min-width: 1024px) and (max-height: 800px) {
+  .hero-pane {
+    --hero-gap: 0.35rem;
+    padding-block: 0.9rem;
+  }
+
+  .fetch {
+    row-gap: 0.25rem;
+    margin-block: 0;
+  }
+
+  .hero-summary,
+  .hero-ctas {
+    margin-top: 0;
   }
 }
 
-.motion [data-reveal="boot"] .boot-portrait {
-  animation: boot-iris var(--dur-3) var(--ease-out)
-    var(--t, 0ms) backwards;
-}
-
-@keyframes boot-iris {
-  from {
-    clip-path: circle(0% at 0% 0%);
-  }
-  to {
-    clip-path: circle(145% at 0% 0%);
-  }
-}
-
-.motion [data-reveal="boot"] .boot-portrait :is(img, video) {
-  animation: boot-settle var(--dur-3) var(--ease-out)
-    var(--t, 0ms) backwards;
-}
-
-@keyframes boot-settle {
-  from {
-    scale: 1.2;
-    filter: blur(12px);
-  }
-}
-
-/* A colored panel passes left to right: its leading edge crosses, then its
-   trailing edge follows, uncovering what's behind. Parked out of view (a
-   zero-width clip) whenever it isn't running. */
-.boot-panel,
-.boot-sweep {
-  clip-path: inset(0 0 0 100%);
-}
-
-.motion [data-reveal="boot"] .boot-panel {
-  animation: boot-pass var(--dur-2) var(--ease-in-out)
-    calc(var(--t, 0ms) + 150ms) backwards;
-}
-
-@keyframes boot-pass {
-  0% {
-    clip-path: inset(0 100% 0 0);
-  }
-  45% {
-    clip-path: inset(0);
-  }
-  100% {
-    clip-path: inset(0 0 0 100%);
-  }
-}
-
-/* 2. Intro, as a terminal session. The window unrolls top to bottom. Then,
-   line by line, each prompt appears and its command types on before its
-   output: the heading's words drop out of their masks, the role types on,
-   the paragraph opens a line at a time, and the links drop in. A last
-   prompt waits with a blinking cursor. */
+/* 1. The window unrolls down from the navbar. */
 .motion [data-reveal="boot"] .boot-term {
   animation: boot-unroll var(--dur-2) var(--ease-out) var(--t, 0ms) backwards;
 }
 
 @keyframes boot-unroll {
   from {
-    clip-path: inset(0 0 100% 0 round 0.75rem);
+    clip-path: inset(0 0 100% 0);
   }
   to {
-    clip-path: inset(0 0 0 0 round 0.75rem);
+    clip-path: inset(0);
+  }
+}
+
+/* tmux colors the active pane's border. It sits on the left pane's edge
+   (that pane never scrolls): along its bottom while the panes stack,
+   drawing left to right, and down its right side from lg, drawing down. */
+.tmux-active {
+  inset-inline: 0;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    #4ade80,
+    color-mix(in srgb, #4ade80 30%, transparent) 55%,
+    transparent
+  );
+}
+
+.motion [data-reveal="boot"] .tmux-active {
+  animation: tmux-draw-x var(--dur-2) var(--ease-out) var(--t, 0ms) backwards;
+}
+
+@media (min-width: 64rem) {
+  .tmux-active {
+    inset-inline: auto;
+    top: 0;
+    right: -1px;
+    width: 1px;
+    height: auto;
+    background: linear-gradient(
+      to bottom,
+      #4ade80,
+      color-mix(in srgb, #4ade80 30%, transparent) 55%,
+      transparent
+    );
+  }
+
+  .motion [data-reveal="boot"] .tmux-active {
+    animation-name: tmux-draw-y;
+  }
+}
+
+@keyframes tmux-draw-x {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+
+@keyframes tmux-draw-y {
+  from {
+    clip-path: inset(0 0 100% 0);
   }
 }
 
@@ -113,21 +150,198 @@
     calc(var(--t, 0ms) + 80ms) backwards;
 }
 
-/* Laptop-height screens: tighten the hero's padding and the terminal's
-   line spacing so the whole hero still fits one screen. This is unlayered,
-   so it overrides the Tailwind spacing utilities on those elements. */
-@media (min-width: 1024px) and (max-height: 860px) {
-  .hero-frame {
-    padding-block: 1.5rem;
+@keyframes boot-type {
+  from {
+    clip-path: inset(0 100% 0 0);
   }
-
-  .hero-term-body {
-    gap: 0.4rem;
-    padding-block: 1.1rem;
+  to {
+    clip-path: inset(0);
   }
 }
 
-/* `ai --pair`'s output: the tools pop in left to right. */
+/* 2. Left pane. The photo renders in (HeroPortrait): each pixelated pass
+   prints over the one before, one row of blocks per step (--rows), from
+   --pass-at for --pass-ms. Then the photo wipes down, led by the scan line,
+   which travels with the wipe's edge. Without motion the photo simply
+   covers the passes. */
+.motion [data-reveal="boot"] .imgcat {
+  animation: boot-show 1ms linear var(--t, 0ms) backwards;
+}
+
+.motion [data-reveal="boot"] .imgcat-pass {
+  animation: imgcat-print var(--pass-ms) steps(var(--rows), end)
+    calc(var(--t, 0ms) + var(--pass-at)) backwards;
+}
+
+.motion [data-reveal="boot"] .imgcat-photo {
+  animation: imgcat-print var(--dur-1) var(--ease-in-out)
+    calc(var(--t, 0ms) + 1400ms) backwards;
+}
+
+@keyframes imgcat-print {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+.imgcat-scan,
+.slide-scan {
+  opacity: 0;
+  translate: 0 -100%;
+  background: linear-gradient(
+    to bottom,
+    transparent calc(100% - 4rem),
+    color-mix(in srgb, #4ade80 22%, transparent) calc(100% - 2px),
+    #bbf7d0 calc(100% - 2px)
+  );
+}
+
+.motion [data-reveal="boot"] .imgcat-scan {
+  animation: imgcat-scan var(--dur-1) var(--ease-in-out)
+    calc(var(--t, 0ms) + 1400ms) backwards;
+}
+
+@keyframes imgcat-scan {
+  from {
+    opacity: 1;
+    translate: 0 -100%;
+  }
+  85% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    translate: 0 0;
+  }
+}
+
+/* The slideshow (HeroPortrait), after the entrance. The photo on show sits
+   on top, the one before it stays under it while it prints, and the rest
+   wait hidden. Each new photo prints down the way the first one did, behind
+   a fresh scan line. A progress line along the caption bar times each photo
+   and fills left to right; when it ends, the next photo comes, so pausing
+   it (hover, keyboard focus, or the pause button) pauses the slideshow.
+   Without motion it never runs, and the buttons switch photos at once. */
+.slide {
+  z-index: 1;
+  visibility: hidden;
+}
+
+.slide[data-state="previous"] {
+  z-index: 2;
+  visibility: visible;
+}
+
+.slide[data-state="current"] {
+  z-index: 3;
+  visibility: visible;
+}
+
+.motion .slide[data-enter] {
+  animation: slide-print 900ms var(--ease-in-out) backwards;
+}
+
+@keyframes slide-print {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+.motion .slide-scan {
+  animation: imgcat-scan 900ms var(--ease-in-out) backwards;
+}
+
+.motion .slide-bar {
+  animation: slide-bar 600ms var(--ease-out) backwards;
+}
+
+@keyframes slide-bar {
+  from {
+    opacity: 0;
+    translate: 0 -0.5rem;
+  }
+}
+
+.slide-progress {
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+.motion .slide-progress {
+  animation: slide-progress 6s linear forwards;
+}
+
+/* Keyboard focus inside pauses it too, but a clicked button doesn't, so
+   Play and Next don't leave it paused. */
+.imgcat:is(:hover, :has(:focus-visible)) .slide-progress,
+.slide-progress[data-paused] {
+  animation-play-state: paused;
+}
+
+@keyframes slide-progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* 3. Right pane. Heading words drop out of their masks, 120 ms apart. The
+   name keeps its gradient shimmer, which runs as a second animation. */
+.motion [data-reveal="boot"] .boot-heading .split-word > span {
+  animation: boot-drop var(--dur-2) var(--ease-out)
+    calc(var(--t, 0ms) + var(--si) * 120ms) backwards;
+}
+
+.motion [data-reveal="boot"] .boot-heading .split-word > .boot-name {
+  animation:
+    boot-drop var(--dur-2) var(--ease-out)
+      calc(var(--t, 0ms) + var(--si) * 120ms) backwards,
+    gradient 3s linear 3;
+}
+
+@keyframes boot-drop {
+  from {
+    translate: 0 calc(-110% - 0.1em);
+    filter: blur(8px);
+  }
+}
+
+/* The role types on: --n characters of monospace, one step each. */
+.motion [data-reveal="boot"] .boot-role {
+  animation: boot-type calc(var(--n) * 22ms) steps(var(--n), end)
+    var(--t, 0ms) backwards;
+}
+
+/* fastfetch's readout prints a row at a time (--r): the key wipes open left
+   to right, then its value. The AI chips in the last row pop in once their
+   row opens, and the palette swatches pop in left to right after it. */
+.motion [data-reveal="boot"] .fetch-key {
+  animation: boot-type var(--dur-1) var(--ease-out)
+    calc(var(--t, 0ms) + var(--r) * 160ms) backwards;
+}
+
+.motion [data-reveal="boot"] .fetch-value {
+  animation: boot-type var(--dur-1) var(--ease-out)
+    calc(var(--t, 0ms) + var(--r) * 160ms + 120ms) backwards;
+}
+
+.motion [data-reveal="boot"] .fetch-value .boot-chip {
+  animation-delay: calc(
+    var(--t, 0ms) + var(--r) * 160ms + 240ms + var(--c) * 140ms
+  );
+}
+
+.motion [data-reveal="boot"] .fetch-swatch {
+  animation: boot-pop var(--dur-1) var(--ease-out)
+    calc(var(--t, 0ms) + 760ms + var(--c) * 70ms) backwards;
+}
+
+/* The AI tools pop in left to right: in the readout and in `ai --pair`. */
 .motion [data-reveal="boot"] .boot-chip {
   animation: boot-pop var(--dur-1) var(--ease-out)
     calc(var(--t, 0ms) + var(--c) * 140ms) backwards;
@@ -139,62 +353,6 @@
     scale: 0.6;
     filter: blur(4px);
   }
-}
-
-/* The cursor at the last prompt. It blinks only with motion on. */
-.term-caret {
-  display: inline-block;
-  width: 0.6em;
-  height: 1.15em;
-  vertical-align: -0.2em;
-  background: #4ade80;
-}
-
-.motion [data-reveal="boot"] .term-caret {
-  animation: term-blink 1.1s steps(1, end) var(--t, 0ms) infinite;
-}
-
-@keyframes term-blink {
-  50% {
-    opacity: 0;
-  }
-}
-
-@keyframes boot-type {
-  from {
-    clip-path: inset(0 100% 0 0);
-  }
-  to {
-    clip-path: inset(0);
-  }
-}
-
-/* Heading words drop out of their masks, 120 ms apart. The name keeps its
-   gradient shimmer, which runs as a second animation. */
-.motion [data-reveal="boot"] .boot-heading .split-word > span {
-  animation: boot-drop var(--dur-2) var(--ease-out)
-    calc(var(--t, 0ms) + var(--si) * 120ms) backwards;
-}
-
-.motion [data-reveal="boot"] .boot-heading .split-word > .boot-name {
-  animation:
-    boot-drop var(--dur-2) var(--ease-out)
-      calc(var(--t, 0ms) + var(--si) * 120ms) backwards,
-    gradient 3s linear infinite;
-}
-
-@keyframes boot-drop {
-  from {
-    translate: 0 calc(-110% - 0.1em);
-    filter: blur(8px);
-  }
-}
-
-/* The role (cat role.txt's output) types on: --n characters of monospace,
-   one step each. */
-.motion [data-reveal="boot"] .boot-role {
-  animation: boot-type calc(var(--n) * 22ms) steps(var(--n), end)
-    var(--t, 0ms) backwards;
 }
 
 /* The paragraph opens a line at a time, wherever it wraps. Each band of the
@@ -258,63 +416,225 @@
   }
 }
 
-/* 3. engineer.ts: the panel sweeps across, the window shows behind its
-   trailing edge (same timing, so they move together), then each line types
-   on, starting while the panel is still leaving. */
-.motion [data-reveal="boot"] .boot-sweep {
-  animation: boot-pass var(--dur-2) var(--ease-in-out)
-    var(--t, 0ms) backwards;
+/* The hero's buttons. The primary's gradient flows left to right without
+   end (a 300% wide background, moved one full period per loop), and it
+   drops in with the boot like the secondary. On hover the primary's grid
+   icon lights up a tile at a time in reading order (--k), and the
+   secondary's paper plane flies off to the right as a second one flies in
+   from the left. Both icons snap back unseen when the hover ends, so they
+   never travel leftward. */
+.cta-primary {
+  background: linear-gradient(90deg, #4f46e5, #2563eb, #7c3aed, #4f46e5);
+  background-size: 300% 100%;
 }
 
-.motion [data-reveal="boot"] .boot-window > .code-window {
-  animation: boot-behind var(--dur-2) var(--ease-in-out)
-    var(--t, 0ms) backwards;
+.motion [data-reveal="boot"] .cta-primary {
+  animation:
+    boot-fall var(--dur-2) var(--ease-out) var(--t, 0ms) backwards,
+    cta-flow 9s linear 3;
 }
 
-@keyframes boot-behind {
-  0%,
-  45% {
-    clip-path: inset(-1rem 100% -2rem -1rem);
+@keyframes cta-flow {
+  from {
+    background-position: 150% 0;
   }
-  100% {
-    clip-path: inset(-1rem -1rem -2rem -1rem);
+  to {
+    background-position: 0% 0;
   }
 }
 
-.motion [data-reveal="boot"] .boot-code-line {
-  animation: boot-type var(--dur-1) var(--ease-out)
-    calc(var(--t, 0ms) + 480ms + var(--line) * 45ms) backwards;
+.cta-grid rect {
+  fill: currentColor;
+  fill-opacity: 0;
+  transition: fill-opacity 200ms ease;
 }
 
-/* engineer.ts. globals.css styles pre and code outside any layer, so they
-   outrank utilities; the window's type and padding are set here instead.
-   Geist Mono, to match the role line and the window's title. In the
-   three-column hero the window is narrower, so the type steps down. */
-.hero-code {
-  border-radius: 0;
-  padding: 1rem;
+.group:is(:hover, :focus-visible) .cta-grid rect {
+  fill-opacity: 1;
+  transition-delay: calc(var(--k) * 90ms);
+}
+
+.cta-plane svg {
+  position: absolute;
+  inset: 0;
+}
+
+.cta-plane svg + svg {
+  translate: -150% 0;
+}
+
+.motion .group:is(:hover, :focus-visible) .cta-plane svg {
+  translate: 150% 0;
+  transition: translate 500ms var(--ease-in-out);
+}
+
+.motion .group:is(:hover, :focus-visible) .cta-plane svg + svg {
+  translate: 0 0;
+}
+
+/* A light runs along the secondary's bottom edge every few seconds, left
+   to right. */
+.cta-secondary::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 45%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #38bdf8, transparent);
+  translate: -100% 0;
+}
+
+.motion .cta-secondary::after {
+  animation: cta-comet 4s var(--ease-in-out) 1s 3;
+}
+
+@keyframes cta-comet {
+  to {
+    translate: 225% 0;
+  }
+}
+
+/* 4. tmux's status bar: its segments slide in left to right (--c). */
+.motion [data-reveal="boot"] .tmux-seg {
+  animation: tmux-seg var(--dur-1) var(--ease-out)
+    calc(var(--t, 0ms) + var(--c) * 90ms) backwards;
+}
+
+@keyframes tmux-seg {
+  from {
+    opacity: 0;
+    translate: -0.75rem 0;
+  }
+}
+
+/* The live prompt (HeroShell). The caret is a block drawn at the cursor:
+   hollow while the prompt doesn't have focus, as terminals show an inactive
+   window, and solid while it does, blinking a few times after focus with
+   motion on. It only works with JS, so without it the prompt stays hidden. */
+html:not(.js) .shell-prompt {
+  display: none;
+}
+
+.term-caret {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.15em;
+  vertical-align: -0.2em;
+  background: #4ade80;
+}
+
+.shell-prompt:not(:focus-within) .term-caret {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px #4ade80;
+}
+
+.motion .shell-prompt:focus-within .term-caret {
+  animation: term-blink 1.1s steps(1, end) 4;
+}
+
+@keyframes term-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Focus shows as the solid caret plus an underline on the prompt line. The
+   transparent outline stands in for the global one, and forced-colors mode
+   draws it. There, the drawn caret would vanish, so the native one returns. */
+.shell-input:focus-visible {
+  outline: 2px solid transparent;
+}
+
+.shell-prompt:has(.shell-input:focus-visible) {
+  box-shadow: 0 2px 0 #4ade80;
+}
+
+@media (forced-colors: active) {
+  .shell-input {
+    caret-color: auto;
+  }
+
+  .term-caret {
+    display: none;
+  }
+}
+
+.shell-entry {
+  margin-bottom: var(--hero-gap);
+}
+
+/* While there's output (HeroShell sets data-shell), from lg the hero holds
+   at one screen and the session pane scrolls inside it. Below lg the panes
+   stack and the page scrolls, so the pane simply grows. */
+@media (min-width: 64rem) {
+  .hero-window:has(.hero-session[data-shell]) {
+    height: calc(100svh - 4.5rem);
+  }
+
+  .hero-session[data-shell] {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(255 255 255 / 0.18) transparent;
+  }
+}
+
+/* The availability ping in the title bar pulses a few times, then rests. */
+.status-ping {
+  animation-iteration-count: 5;
+}
+
+/* Command output drops in. */
+.motion .shell-out {
+  animation: shell-out 360ms var(--ease-out) backwards;
+}
+
+@keyframes shell-out {
+  from {
+    opacity: 0;
+    translate: 0 -0.35rem;
+  }
+}
+
+/* "opening ~/page..." counts its dots while the curtain comes down. */
+.shell-dots::after {
+  content: "...";
+  display: inline-block;
+  width: 3ch;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.motion .shell-dots::after {
+  animation: shell-dots 900ms steps(4, end) infinite;
+}
+
+@keyframes shell-dots {
+  from {
+    width: 0;
+  }
+  to {
+    width: 4ch;
+  }
+}
+
+/* What `cat engineer.ts` prints. globals.css styles pre and code outside
+   any layer (the background with !important), so this is unlayered too. */
+.shell-code {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-radius: 0.5rem;
+  background: rgb(255 255 255 / 0.03) !important;
+  color: #e2e8f0;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 0.75rem;
-  line-height: 1.25rem;
+  font-size: 0.8125rem;
+  line-height: 1.6;
 }
 
-.hero-code code {
+.shell-code code {
   font: inherit;
-}
-
-@media (min-width: 40rem) {
-  .hero-code {
-    padding: 1rem 1.25rem;
-    font-size: 0.875rem;
-    line-height: 1.5rem;
-  }
-}
-
-@media (min-width: 80rem) {
-  .hero-code {
-    font-size: clamp(0.75rem, 0.88vw, 0.875rem);
-    line-height: 1.7;
-  }
 }
 
 /* --------------------------------------------------------------- count ---
@@ -576,6 +896,12 @@
   }
 }
 
+/* The live projects' rows drop in left to right after their card lands. */
+.motion [data-reveal="count"][data-revealed] .live-row {
+  animation: stat-drop var(--dur-1) var(--ease-out)
+    calc(var(--i) * var(--stagger) + 500ms + var(--c) * 45ms) backwards;
+}
+
 /* Odometer (Odometer.tsx). The digits are real text. While a column rolls,
    its digit turns transparent and a strip of digits, one per line, rolls
    down over it from --n lines up. The strip's first line is the digit
@@ -788,6 +1114,49 @@
   }
 }
 
+/* The home page moves a screen at a time where its sections fit one: from
+   lg, on screens at least 700px tall. Each section fills the screen below
+   the sticky header with its content centered, and HomeSnap pages through
+   them, a smooth glide per gesture. On phones the sections run taller than
+   the screen, so the page scrolls freely. */
+@media (min-width: 1024px) and (min-height: 700px) {
+  html:has(.home-snap) {
+    scroll-padding-top: 4.5rem;
+  }
+
+  .home-snap > section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100svh - 4.5rem);
+  }
+
+  /* Services on short screens: smaller numbers and spacing, so the
+     section still fits one screen. */
+  @media (max-height: 800px) {
+    .services-head {
+      margin-bottom: 2rem;
+    }
+
+    .curtain-number {
+      font-size: 4.5rem;
+    }
+
+    .curtain-line {
+      height: 2rem;
+    }
+  }
+
+  /* While the page moves (RevealObserver sets data-scrolling, HomeSnap's
+     glide included), hold every effect in place, so a section's entrance
+     plays once the page comes to rest. */
+  html[data-scrolling]:has(.home-snap) main *,
+  html[data-scrolling]:has(.home-snap) main *::before,
+  html[data-scrolling]:has(.home-snap) main *::after {
+    animation-play-state: paused !important;
+  }
+}
+
 /* ParallaxHero's color fields drift down and right as the page scrolls. */
 @supports (animation-timeline: scroll()) {
   .motion .home-drift {
@@ -803,38 +1172,14 @@
 }
 
 /* Hero backdrop (HeroBackdrop). The loop is a dark circuit board with light
-   pulses. Dark mode screens it onto the page, so only the pulses show, and
-   light mode inverts it into a pale blueprint. Under the scrim it moves the
-   page color only a few percent, which keeps the hero text at AA. */
+   pulses, screened onto a dark base in both themes. It shows only through
+   the hero terminal's translucent panes, so the pulses glow faintly behind
+   the text, which stays well above AA on the dark glass. */
 .hero-video {
-  opacity: 0.2;
-  filter: invert(1) hue-rotate(180deg);
-  mix-blend-mode: multiply;
-}
-
-.dark .hero-video {
-  opacity: 0.45;
-  filter: none;
+  opacity: 0.5;
   mix-blend-mode: screen;
 }
 
 .hero-backdrop[data-video="failed"] .hero-video {
   display: none;
-}
-
-.hero-scrim {
-  background: linear-gradient(
-    to bottom,
-    var(--background),
-    color-mix(in srgb, var(--background) 60%, transparent) 30% 70%,
-    var(--background)
-  );
-}
-
-.hero-grid {
-  mask-image: radial-gradient(
-    ellipse 75% 65% at 50% 45%,
-    #000 30%,
-    transparent 100%
-  );
 }

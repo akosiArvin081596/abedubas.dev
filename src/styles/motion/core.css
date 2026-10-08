@@ -78,7 +78,8 @@
   }
 
   .route-curtain,
-  .scroll-progress {
+  .scroll-progress,
+  .site-loader {
     display: none !important;
   }
 }
@@ -219,12 +220,165 @@
   }
 }
 
-/* While the curtain covers the page, hold the page's own effects at their
-   start, so the new page's entrance plays as the curtain lifts. */
+/* While the curtain or the loading screen covers the page, hold the page's
+   own effects at their start, so its entrance plays as the cover lifts. */
 html[data-curtain] main *,
 html[data-curtain] main *::before,
-html[data-curtain] main *::after {
+html[data-curtain] main *::after,
+html[data-loader=""] :is(header, main) *,
+html[data-loader=""] :is(header, main) *::before,
+html[data-loader=""] :is(header, main) *::after {
   animation-play-state: paused !important;
+}
+
+/* Loading screen (components/motion/SiteLoader.tsx), on every full page
+   load, with motion on. Dark in both themes, like the curtain's stage. The
+   logo wipes in left to right, the bar fills left to right with the page's
+   real loading progress, and on data-loader="out" the screen wipes down and
+   away while its content drops out. */
+.site-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  display: none;
+  place-items: center;
+  padding: 1.5rem;
+  background:
+    radial-gradient(
+      40rem 26rem at 50% 45%,
+      color-mix(in srgb, #818cf8 14%, transparent),
+      transparent 70%
+    ),
+    #060a14;
+  color: #e2e8f0;
+}
+
+.motion[data-loader] .site-loader {
+  display: grid;
+}
+
+.motion[data-loader="out"] .site-loader {
+  pointer-events: none;
+  animation: sl-out 700ms var(--ease-in-out) both;
+}
+
+@keyframes sl-out {
+  to {
+    clip-path: inset(100% 0 0 0);
+  }
+}
+
+.sl-body {
+  display: grid;
+  justify-items: center;
+  gap: 0.9rem;
+  width: min(100%, 22rem);
+}
+
+.motion[data-loader="out"] .sl-body {
+  animation: sl-drop 500ms var(--ease-in) both;
+}
+
+@keyframes sl-drop {
+  to {
+    opacity: 0;
+    translate: 0 1.5rem;
+  }
+}
+
+.sl-logo {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: clamp(1.875rem, 6vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+  animation: sl-wipe 700ms var(--ease-out) 100ms both;
+}
+
+.sl-mark {
+  color: #818cf8;
+}
+
+.sl-name {
+  background: linear-gradient(to right, #818cf8, #60a5fa);
+  background-clip: text;
+  color: transparent;
+}
+
+.sl-tld {
+  color: #94a3b8;
+}
+
+.sl-role {
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+  color: #94a3b8;
+  animation: sl-wipe 700ms var(--ease-out) 300ms both;
+}
+
+@keyframes sl-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 -1% 0 0);
+  }
+}
+
+.sl-track {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  margin-top: 0.75rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.1);
+}
+
+.sl-fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, #818cf8, #60a5fa);
+  box-shadow: 0 0 12px #818cf8;
+  transform-origin: 0 50%;
+  transform: scaleX(calc(var(--sl-pct) / 100));
+}
+
+.sl-status {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* The progress is real. The head script in the root layout sets --sl-pct
+   on <html> as the page loads: the document parsed, then each image as it
+   lands, then the load event at 100. It's a registered integer, so the bar
+   and the percentage (printed through a counter) glide to each new value
+   together instead of jumping. */
+@property --sl-pct {
+  syntax: "<integer>";
+  inherits: true;
+  initial-value: 0;
+}
+
+html[data-loader] {
+  transition:
+    --sl-pct 600ms var(--ease-out),
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.sl-pct {
+  color: #cbd5e1;
+  font-variant-numeric: tabular-nums;
+  counter-reset: sl-pct var(--sl-pct);
+}
+
+.sl-pct::after {
+  content: counter(sl-pct) "%";
 }
 
 /* Reading bar: fills left to right as the page scrolls. Browsers without

@@ -1,50 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ProjectCard, SplitText } from "@/components";
-import type { Project } from "@/types";
+import { projects } from "@/data/projects";
 
 export const metadata: Metadata = {
   title: "Projects",
   description:
     "Portfolio of web development and software engineering projects by Arvin Baghari Edubas.",
 };
-
-// Mirrors the "Selected Projects" section of resume.html.
-const projects: Project[] = [
-  {
-    title: "DROMIC Reporting Web Application",
-    description:
-      "Centralized disaster response platform enabling LGUs to submit real-time assistance requests with automated notifications to regional offices. Features dashboard analytics, beneficiary tracking, and multi-level approval workflows.",
-    techStack: ["Laravel", "Vue", "MySQL"],
-    liveUrl: "https://dromic.dswd-caraga-drmd.online/",
-    image: "/images/projects/dromic.webp",
-  },
-  {
-    title: "ECT Post Monitoring App",
-    description:
-      "Mobile-first monitoring system for tracking emergency cash transfer disbursements to disaster-affected beneficiaries. Includes GPS-enabled field verification, photo documentation, and offline data sync capabilities.",
-    techStack: ["React", "Laravel", "MySQL"],
-    liveUrl: "https://ect-beneficiary-validation.abedubas.dev/",
-    image: "/images/projects/ect.webp",
-  },
-  {
-    title: "Vendora POS & Local E-Commerce",
-    description:
-      "Integrated retail solution combining point-of-sale operations with local e-commerce storefront. Features real-time inventory management, sales analytics, customer ordering, and multi-branch support.",
-    techStack: ["React Native", "Laravel", "MySQL"],
-    liveUrl: "https://app.vendoraph.com/",
-    image: "/images/projects/vendora.webp",
-  },
-  {
-    title: "LogisX - Logistics Web Application",
-    description:
-      "Comprehensive logistics management platform for tracking shipments, managing fleet operations, and optimizing delivery routes. Features real-time tracking, automated dispatch, warehouse inventory management, and analytics dashboards.",
-    techStack: ["Vue", "Laravel", "MySQL", "React Native"],
-    // The legacy subdomain 301-redirects to the app's new home, app.logisx.com.
-    liveUrl: "https://logistics-app.abedubas.dev",
-    image: "/images/projects/logisx.webp",
-  },
-];
 
 // The command the header types out (the `type` effect in work.css)
 const PROMPT = "ls ~/projects";

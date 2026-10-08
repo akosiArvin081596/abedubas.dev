@@ -81,6 +81,22 @@ export function RevealObserver() {
       if (fresh.length > 0) reveal(fresh);
     };
 
+    // While the page scrolls, html[data-scrolling] is set, and cleared 150 ms
+    // after the last scroll event. (Not at scrollend: a scripted glide, like
+    // HomeSnap's, fires one per frame.) The home page holds its effects on
+    // it (home.css), so a section's entrance plays once the page is at rest.
+    const html = document.documentElement;
+    let settle = 0;
+    const settled = () => {
+      window.clearTimeout(settle);
+      delete html.dataset.scrolling;
+    };
+    const onScroll = () => {
+      if (!("scrolling" in html.dataset)) html.dataset.scrolling = "";
+      window.clearTimeout(settle);
+      settle = window.setTimeout(settled, 150);
+    };
+
     const io = new IntersectionObserver(
       (entries) =>
         flush(
@@ -156,12 +172,15 @@ export function RevealObserver() {
     mo.observe(document.body, { childList: true, subtree: true });
     scheduleBottomCheck();
     window.addEventListener("scroll", scheduleBottomCheck, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", scheduleBottomCheck, { passive: true });
     document.addEventListener("focusin", onFocus);
     window.addEventListener("beforeprint", onBeforePrint);
 
     return () => {
       window.removeEventListener("scroll", scheduleBottomCheck);
+      window.removeEventListener("scroll", onScroll);
+      settled();
       window.removeEventListener("resize", scheduleBottomCheck);
       document.removeEventListener("focusin", onFocus);
       window.removeEventListener("beforeprint", onBeforePrint);

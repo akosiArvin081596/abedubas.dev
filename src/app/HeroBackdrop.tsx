@@ -7,10 +7,12 @@ type NetworkInformation = { saveData?: boolean };
 // sessionStorage key for the visitor's pause choice.
 const PAUSED_KEY = "hero-video-paused";
 
-// Behind the hero: a looping circuit-board video at low opacity, under a
-// theme-aware scrim and the blueprint grid (styles in motion/home.css).
-// Render it as the hero section's last child. Its layers sit at -z-10, so
-// they paint behind the hero, and the pause button comes last in tab order.
+// Behind the hero: a looping circuit-board video on a dark base, dark in both
+// themes like the terminal in front of it, whose translucent panes let its
+// light pulses glow through (styles in motion/home.css). Render it as the
+// hero section's last child. Its layers sit at -z-10, so they paint behind
+// the hero, and the pause button comes last in tab order. The button sits
+// in the bottom-right corner, which is the end of the terminal's status bar.
 //
 // The video never autoplays. Playback starts once the browser is idle, and
 // only with `.motion` on and Save-Data off. It pauses while the hero is off
@@ -146,7 +148,7 @@ export function HeroBackdrop() {
       <div
         ref={rootRef}
         aria-hidden="true"
-        className="hero-backdrop pointer-events-none absolute inset-0 -z-10 overflow-hidden bg-background"
+        className="hero-backdrop pointer-events-none absolute inset-0 -z-10 overflow-hidden bg-[#060a14]"
       >
         <video
           ref={videoRef}
@@ -168,8 +170,6 @@ export function HeroBackdrop() {
           <source src="/media/hero-loop.webm" type="video/webm" />
           <source src="/media/hero-loop.mp4" type="video/mp4" />
         </video>
-        <div className="hero-scrim absolute inset-0" />
-        <div className="hero-grid bg-grid absolute inset-0" />
       </div>
 
       <button
@@ -177,14 +177,14 @@ export function HeroBackdrop() {
         type="button"
         aria-label="Pause background video"
         aria-pressed="false"
-        className="group absolute bottom-4 right-4 z-10 hidden h-10 w-10 items-center justify-center rounded-full border border-border bg-card/70 text-muted-foreground shadow-sm backdrop-blur-md transition-colors hover:border-primary/50 hover:text-primary data-[state]:inline-flex"
+        className="group absolute bottom-0.5 right-2 z-10 hidden h-6 w-6 items-center justify-center rounded-[3px] text-slate-400 transition-colors hover:bg-white/10 hover:text-green-300 data-[state]:inline-flex"
       >
         {/* Pause while playing, play while paused */}
         <svg
           aria-hidden="true"
           viewBox="0 0 24 24"
           fill="currentColor"
-          className="h-4 w-4 group-data-[state=paused]:hidden"
+          className="h-3 w-3 group-data-[state=paused]:hidden"
         >
           <path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" />
         </svg>
@@ -192,7 +192,7 @@ export function HeroBackdrop() {
           aria-hidden="true"
           viewBox="0 0 24 24"
           fill="currentColor"
-          className="hidden h-4 w-4 group-data-[state=paused]:block"
+          className="hidden h-3 w-3 group-data-[state=paused]:block"
         >
           <path d="M7.5 5.14v13.72a1 1 0 0 0 1.5.86l10-6.86a1 1 0 0 0 0-1.72l-10-6.86a1 1 0 0 0-1.5.86Z" />
         </svg>

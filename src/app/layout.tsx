@@ -3,10 +3,12 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { Bintoy } from "@/components/Bintoy";
 import {
   RevealObserver,
   RouteCurtain,
   ScrollProgress,
+  SiteLoader,
 } from "@/components/motion";
 import "./globals.css";
 
@@ -23,12 +25,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://abedubas.dev"),
   title: {
-    default: "Arvin Baghari Edubas | Web Developer & Software Engineer",
+    default: "Arvin Baghari Edubas | Information Technologist & Software Engineer",
     template: "%s | Arvin Baghari Edubas",
   },
   description:
-    "Professional portfolio of Arvin Baghari Edubas, a Web Developer and Software Engineer specializing in modern web technologies, full-stack development, and enterprise solutions.",
+    "Professional portfolio of Arvin Baghari Edubas, an Information Technologist and Software Engineer specializing in modern web technologies, full-stack development, and enterprise solutions.",
   keywords: [
+    "Information Technologist",
     "Web Developer",
     "Software Engineer",
     "Full Stack Developer",
@@ -45,15 +48,15 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Arvin Baghari Edubas Portfolio",
-    title: "Arvin Baghari Edubas | Web Developer & Software Engineer",
+    title: "Arvin Baghari Edubas | Information Technologist & Software Engineer",
     description:
-      "Professional portfolio of Arvin Baghari Edubas, a Web Developer and Software Engineer specializing in modern web technologies.",
+      "Professional portfolio of Arvin Baghari Edubas, an Information Technologist and Software Engineer specializing in modern web technologies.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Arvin Baghari Edubas | Web Developer & Software Engineer",
+    title: "Arvin Baghari Edubas | Information Technologist & Software Engineer",
     description:
-      "Professional portfolio of Arvin Baghari Edubas, a Web Developer and Software Engineer.",
+      "Professional portfolio of Arvin Baghari Edubas, an Information Technologist and Software Engineer.",
   },
   robots: {
     index: true,
@@ -70,18 +73,25 @@ export default function RootLayout({
     // data-scroll-behavior lets Next pause smooth scrolling during navigation
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
-        {/* Before paint: apply the theme, and opt into motion (`.motion`)
-            unless reduced motion is requested. If RevealObserver hasn't
-            mounted 3 s later, drop `.motion` so no content stays hidden. */}
+        {/* Before paint: mark that JS runs (`.js`), apply the theme, and
+            opt into motion (`.motion`) unless reduced motion is requested.
+            With motion, every full page load shows the loading screen
+            (data-loader, SiteLoader), for 5 s at most, and its progress
+            (--sl-pct) follows the real load: 10 at the start, 50 once the
+            document is parsed, up to 90 as its eager images land, and 100
+            at the load event. It only ever rises. If RevealObserver hasn't
+            mounted 3 s in, drop `.motion` (which also hides the screen) so
+            no content stays hidden. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem('theme');if(!t)t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}try{var d=document.documentElement;if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('motion');setTimeout(function(){if(!window.__revealReady)d.classList.remove('motion')},3000)}}catch(e){}`,
+            __html: `document.documentElement.classList.add('js');try{var t=localStorage.getItem('theme');if(!t)t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}try{var d=document.documentElement;if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('motion');d.setAttribute('data-loader','');setTimeout(function(){d.removeAttribute('data-loader')},5000);var c=0,p=function(v){if(v>c){c=v;d.style.setProperty('--sl-pct',String(v))}};p(10);document.addEventListener('DOMContentLoaded',function(){p(50);var m=[].filter.call(document.images,function(i){return i.loading!=='lazy'}),k=0,f=function(){k++;p(50+Math.round(40*k/m.length))};m.forEach(function(i){if(i.complete)f();else{i.addEventListener('load',f);i.addEventListener('error',f)}})});window.addEventListener('load',function(){p(100)});setTimeout(function(){if(!window.__revealReady)d.classList.remove('motion')},3000)}}catch(e){}`,
           }}
         />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <SiteLoader />
         <ThemeProvider>
           <ScrollProgress />
           <RevealObserver />
@@ -91,6 +101,7 @@ export default function RootLayout({
             <main className="flex-1">{children}</main>
             <Footer />
           </div>
+          <Bintoy />
         </ThemeProvider>
       </body>
     </html>
