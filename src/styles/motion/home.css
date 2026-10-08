@@ -285,10 +285,14 @@
 }
 
 /* --------------------------------------------------------------- count ---
-   Stats band. A tinted panel sweeps the band left to right while each
-   number's digit columns roll down a full turn and land, odometer style.
-   Labels slide in from the left out of blur, and a highlight runs along the
-   band's top edge. */
+   Stats band: a row of live metric cards. A tinted panel sweeps the band
+   left to right and a highlight runs along its top edge. Then, card by card
+   in reading order, each card drops in while a scanline passes down it: its
+   icon pops, its metric key types on, its number's digit columns roll down
+   odometer style, its label slides in from the left, and its chart fills.
+   The experience bars and the meter fill left to right, the project matrix
+   lights up one cell at a time in reading order, and the stack chips pop
+   in left to right. */
 
 .count-panel,
 .count-beam {
@@ -349,6 +353,200 @@
     opacity: 0;
     translate: -48px 0;
     filter: blur(8px);
+  }
+}
+
+/* The metric cards at rest (these apply with or without motion). The glow
+   is a soft layer behind the number, not a text-shadow, because the
+   odometer's digit columns clip their overflow and would box it in. */
+.stat-value {
+  isolation: isolate;
+  width: fit-content;
+}
+
+.stat-value::before {
+  content: "";
+  position: absolute;
+  inset: -35% -20%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--primary) 28%, transparent),
+    transparent
+  );
+  pointer-events: none;
+}
+
+.stat-value .odo-suffix {
+  color: var(--primary);
+}
+
+/* A glow that follows the pointer (Spotlight.tsx sets --mx/--my). */
+.stat-spotlight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    260px circle at var(--mx, 50%) var(--my, 0%),
+    color-mix(in srgb, var(--primary) 16%, transparent),
+    transparent 70%
+  );
+  transition: opacity 300ms ease;
+}
+
+.stat-card:hover .stat-spotlight {
+  opacity: 1;
+}
+
+.stat-bar {
+  width: var(--w);
+}
+
+.stat-cell {
+  opacity: var(--level);
+}
+
+.stat-scan {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 45%;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--primary) 12%, transparent) 80%,
+    color-mix(in srgb, var(--accent) 55%, transparent) 99%,
+    transparent
+  );
+}
+
+/* The eyebrow drops in first. */
+.motion [data-reveal="count"][data-revealed] .stat-eyebrow {
+  animation: stat-drop var(--dur-1) var(--ease-out)
+    calc(var(--i) * var(--stagger)) backwards;
+}
+
+@keyframes stat-drop {
+  from {
+    opacity: 0;
+    translate: 0 -16px;
+  }
+}
+
+/* Each card drops in from above and settles to full size. */
+.motion [data-reveal="count"][data-revealed] .stat-card {
+  animation: stat-card var(--dur-2) var(--ease-out)
+    calc(var(--i) * var(--stagger)) backwards;
+}
+
+@keyframes stat-card {
+  from {
+    opacity: 0;
+    translate: 0 -48px;
+    scale: 0.96;
+  }
+}
+
+/* A scanline passes down the card as it lands. */
+.motion [data-reveal="count"][data-revealed] .stat-scan {
+  animation: stat-scan var(--dur-2) var(--ease-in-out)
+    calc(var(--i) * var(--stagger) + 250ms);
+}
+
+@keyframes stat-scan {
+  from {
+    opacity: 1;
+    translate: 0 -100%;
+  }
+  80% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    translate: 0 240%;
+  }
+}
+
+.motion [data-reveal="count"][data-revealed] .stat-icon {
+  animation: stat-pop var(--dur-1) var(--ease-out)
+    calc(var(--i) * var(--stagger) + 350ms) backwards;
+}
+
+@keyframes stat-pop {
+  from {
+    opacity: 0;
+    scale: 0.4;
+  }
+}
+
+/* The metric key types on, a character at a time. */
+.motion [data-reveal="count"][data-revealed] .stat-key {
+  animation: stat-type calc(var(--n) * 30ms) steps(var(--n), end)
+    calc(var(--i) * var(--stagger) + 450ms) backwards;
+}
+
+@keyframes stat-type {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+/* Charts. Experience bars and meter segments fill left to right. */
+.motion [data-reveal="count"][data-revealed] .stat-bar {
+  transform-origin: 0 50%;
+  animation: stat-fill var(--dur-2) var(--ease-out)
+    calc(var(--i) * var(--stagger) + 650ms + var(--c) * 120ms) backwards;
+}
+
+@keyframes stat-fill {
+  from {
+    scale: 0 1;
+  }
+}
+
+.motion [data-reveal="count"][data-revealed] .stat-seg {
+  animation: stat-light 500ms var(--ease-out)
+    calc(var(--i) * var(--stagger) + 650ms + var(--c) * 80ms) backwards;
+}
+
+@keyframes stat-light {
+  from {
+    opacity: 0.12;
+    filter: saturate(0);
+  }
+}
+
+/* The project matrix lights up a cell at a time, in reading order. */
+.motion [data-reveal="count"][data-revealed] .stat-cell {
+  animation: stat-cell 500ms var(--ease-out)
+    calc(var(--i) * var(--stagger) + 650ms + var(--c) * 16ms) backwards;
+}
+
+@keyframes stat-cell {
+  from {
+    opacity: 0;
+    scale: 0.2;
+  }
+}
+
+/* The stack chips pop in left to right. */
+.motion [data-reveal="count"][data-revealed] .stat-chip {
+  animation: stat-chip var(--dur-1) var(--ease-out)
+    calc(var(--i) * var(--stagger) + 650ms + var(--c) * 60ms) backwards;
+}
+
+@keyframes stat-chip {
+  from {
+    opacity: 0;
+    translate: -12px 0;
+    filter: blur(4px);
   }
 }
 
