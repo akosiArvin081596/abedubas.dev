@@ -7,6 +7,7 @@ import {
 } from "@/components";
 import githubStats from "@/data/github-stats.json";
 import { WEB_DEV_SINCE, yearsOfExperience } from "@/lib/career";
+import { WindowDots } from "@/components/WindowDots";
 import { HeroBackdrop } from "./HeroBackdrop";
 import { HeroPortrait } from "./HeroPortrait";
 import { Odometer } from "./Odometer";
@@ -257,22 +258,57 @@ const engineerTs: Token[][] = [
 
 // The role line types one character per step, so it needs its length.
 const ROLE = "Web Developer & Software Engineer";
-const ROLE_PROMPT = "> ";
+
+// The AI tools Arvin pairs with, shown by the terminal's `ai --pair`.
+const AI_PEERS = ["Claude Code (CLI)", "Cursor AI"];
 
 // When a hero step starts (the `boot` effect in styles/motion/home.css). The
-// hero builds strictly in reading order: the portrait, then the intro top to
-// bottom, then engineer.ts, each step once the one before has landed.
+// hero builds strictly in reading order: the portrait, then the terminal
+// session top to bottom (each command, then its output), then engineer.ts,
+// each step once the one before has landed.
 const startAt = (ms: number) => ({ "--t": `${ms}ms` }) as CSSProperties;
 const HERO_START = {
   portrait: 150,
-  badge: 750,
-  heading: 1000,
-  role: 1700,
-  paragraph: 2450,
-  work: 3000,
-  contact: 3150,
-  code: 3450,
+  terminal: 600,
+  whoami: 850,
+  heading: 1050,
+  roleCmd: 1650,
+  role: 1950,
+  aiCmd: 2650,
+  ai: 2950,
+  aboutCmd: 3400,
+  paragraph: 3700,
+  linksCmd: 4450,
+  work: 4700,
+  contact: 4850,
+  prompt: 5050,
+  code: 5250,
 };
+
+// A shell prompt line in the hero's terminal, typed on during the boot. With
+// no command, it's the last prompt, waiting with a cursor. Decorative: the
+// content is the output under each one.
+function TermLine({ command, start }: { command?: string; start: number }) {
+  return (
+    <p
+      aria-hidden="true"
+      className="boot-line text-sm text-slate-400 sm:text-base"
+      style={startAt(start)}
+    >
+      <span className="text-green-400">$</span>{" "}
+      {command ? (
+        <span
+          className="boot-cmd inline-block"
+          style={{ "--n": command.length } as CSSProperties}
+        >
+          {command}
+        </span>
+      ) : (
+        <span className="term-caret" />
+      )}
+    </p>
+  );
+}
 
 const arrow = (className: string) => (
   <svg
@@ -315,7 +351,7 @@ export default function HomePage() {
         <div
           data-reveal="boot"
           data-reveal-on="load"
-          className="container-site flex min-h-[calc(100svh-4.5rem)] items-center py-12 lg:py-16"
+          className="hero-frame container-site flex min-h-[calc(100svh-4.5rem)] items-center py-12 lg:py-16"
         >
           <div className="grid w-full items-center justify-items-center gap-10 lg:grid-cols-[auto_minmax(0,1fr)] lg:justify-items-stretch lg:gap-x-14 lg:gap-y-10 xl:grid-cols-[auto_minmax(0,1fr)_clamp(25rem,30vw,30rem)] xl:gap-x-12 2xl:gap-x-16">
             {/* Profile Image */}
@@ -332,109 +368,133 @@ export default function HomePage() {
               />
             </div>
 
-            {/* Intro. A size container, so the heading scales to it. */}
-            <div className="@container w-full min-w-0 text-center lg:text-left">
-              {/* The copy sits on a soft clearing (.hero-halo) over the
-                  color fields, video and grid, so it always reads at AA. */}
-              <div className="relative isolate">
-                <div
-                  aria-hidden="true"
-                  className="hero-halo pointer-events-none absolute -z-10"
-                />
-
-                {/* Status Badge */}
-                <div
-                  data-reveal-item
-                  className="boot-type mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card/50 px-4 py-2 backdrop-blur-sm"
-                  style={startAt(HERO_START.badge)}
-                >
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 motion-safe:animate-ping"></span>
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
+            {/* Intro, as a terminal session: each command types on, then its
+                output appears, top to bottom. The prompts are decoration;
+                the heading, role, paragraph and links are the content. The
+                window stays dark in both themes, like a real terminal. */}
+            <div className="@container w-full min-w-0 text-left">
+              <div
+                data-reveal-item
+                className="boot-term overflow-hidden rounded-xl border border-white/10 bg-[#0b1120] shadow-2xl shadow-primary/10"
+                style={startAt(HERO_START.terminal)}
+              >
+                <div className="flex items-center gap-3 border-b border-white/10 bg-[#111a2e] px-4 py-2.5">
+                  <WindowDots />
+                  <span className="hidden min-w-0 flex-1 truncate text-center font-mono text-xs text-slate-400 sm:block">
+                    arvin@abedubas.dev: ~
                   </span>
-                  <span className="text-sm font-medium text-muted-foreground">
+                  {/* Status */}
+                  <span className="ml-auto flex shrink-0 items-center gap-2 font-mono text-xs text-slate-300">
+                    <span className="relative flex h-2 w-2">
+                      <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 motion-safe:animate-ping" />
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+                    </span>
                     Available for new projects
                   </span>
                 </div>
 
-                {/* Main Heading: the name always gets a line of its own */}
-                <h1
-                  data-reveal-item
-                  className="boot-heading mb-5 text-[clamp(1.75rem,10cqi,4.5rem)] font-bold leading-[1.08] tracking-tight text-foreground"
-                  style={startAt(HERO_START.heading)}
-                >
-                  <SplitText text="Hi, I'm" />{" "}
-                  <span className="block whitespace-nowrap">
-                    <SplitText
-                      text="Arvin Baghari Edubas"
-                      start={2}
-                      className="boot-name bg-gradient-to-r from-primary via-accent to-primary bg-[length:200%_auto] bg-clip-text text-transparent motion-safe:animate-[gradient_3s_linear_infinite]"
-                    />
-                  </span>
-                </h1>
-
-                {/* Role, typed on like a terminal line */}
-                <p
-                  data-reveal-item
-                  className="mb-5 font-mono text-[clamp(0.8125rem,4.4cqi,1.25rem)] font-medium text-foreground/80"
-                  style={startAt(HERO_START.role)}
-                >
-                  <span
-                    className="relative inline-block"
-                    style={
-                      {
-                        "--n": ROLE_PROMPT.length + ROLE.length,
-                      } as CSSProperties
-                    }
+                <div className="hero-term-body flex flex-col gap-3 p-5 font-mono text-slate-200 sm:p-7">
+                  <TermLine command="whoami" start={HERO_START.whoami} />
+                  {/* Main Heading: the name always gets a line of its own */}
+                  <h1
+                    className="boot-heading text-[clamp(1.5rem,7.2cqi,3.75rem)] font-bold leading-[1.1] tracking-tight text-white"
+                    style={startAt(HERO_START.heading)}
                   >
-                    <span className="boot-role inline-block">
-                      <span aria-hidden="true" className="text-primary">
-                        {ROLE_PROMPT}
-                      </span>
+                    <SplitText text="Hi, I'm" />{" "}
+                    <span className="block whitespace-nowrap">
+                      <SplitText
+                        text="Arvin Baghari Edubas"
+                        start={2}
+                        className="boot-name bg-gradient-to-r from-indigo-400 via-sky-400 to-indigo-400 bg-[length:200%_auto] bg-clip-text text-transparent motion-safe:animate-[gradient_3s_linear_infinite]"
+                      />
+                    </span>
+                  </h1>
+
+                  <TermLine command="cat role.txt" start={HERO_START.roleCmd} />
+                  {/* Role, typed on */}
+                  <p
+                    className="text-[clamp(0.8125rem,4cqi,1.125rem)] font-medium text-slate-100"
+                    style={startAt(HERO_START.role)}
+                  >
+                    <span
+                      className="boot-role inline-block"
+                      style={{ "--n": ROLE.length } as CSSProperties}
+                    >
                       {ROLE}
                     </span>
-                    <span aria-hidden="true" className="boot-caret" />
-                  </span>
-                </p>
+                  </p>
 
-                {/* Description */}
-                <p
-                  data-reveal-item
-                  className="boot-paragraph mx-auto mb-8 max-w-2xl text-base text-muted-foreground sm:text-lg lg:mx-0 xl:text-base 2xl:text-lg"
-                  style={startAt(HERO_START.paragraph)}
-                >
-                  Clean code, intuitive user experiences, and scalable,
-                  enterprise-ready architecture—brought together to build
-                  modern web applications. Open to collaborating on something
-                  meaningful.
-                </p>
+                  <TermLine command="ai --pair" start={HERO_START.aiCmd} />
+                  {/* AI as a coding peer: the tools pop in left to right */}
+                  <p
+                    className="flex flex-wrap items-center gap-2 text-sm text-slate-300 sm:text-[0.9375rem]"
+                    style={startAt(HERO_START.ai)}
+                  >
+                    {AI_PEERS.map((tool, c) => (
+                      <span
+                        key={tool}
+                        className="boot-chip inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-indigo-200"
+                        style={{ "--c": c } as CSSProperties}
+                      >
+                        <svg
+                          aria-hidden="true"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          className="h-3.5 w-3.5 text-sky-400"
+                        >
+                          <path d="M12 2.5 13.9 9.6 21 12l-7.1 2.4L12 21.5l-1.9-7.1L3 12l7.1-2.4z" />
+                        </svg>
+                        {tool}
+                      </span>
+                    ))}
+                    <span
+                      className="boot-chip text-slate-400"
+                      style={{ "--c": AI_PEERS.length } as CSSProperties}
+                    >
+                      — my coding peers
+                    </span>
+                  </p>
 
-                {/* CTA Links */}
-                <div className="flex flex-col items-center justify-center gap-6 sm:flex-row lg:justify-start">
-                  <Link
-                    href="/projects"
-                    data-reveal-item
-                    className="boot-drop group relative inline-flex items-center text-base font-medium text-foreground transition-colors hover:text-primary"
-                    style={startAt(HERO_START.work)}
+                  <TermLine command="cat about.md" start={HERO_START.aboutCmd} />
+                  {/* Description */}
+                  <p
+                    className="boot-paragraph max-w-2xl text-sm leading-relaxed text-slate-300 sm:text-[0.9375rem]"
+                    style={startAt(HERO_START.paragraph)}
                   >
-                    <span className="relative">
-                      View My Work
-                      <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
-                    </span>
-                    {arrow("ml-2 h-4 w-4 transition-transform group-hover:translate-x-1")}
-                  </Link>
-                  <Link
-                    href="/contact"
-                    data-reveal-item
-                    className="boot-drop group relative inline-flex items-center text-base font-medium text-muted-foreground transition-colors hover:text-primary"
-                    style={startAt(HERO_START.contact)}
-                  >
-                    <span className="relative">
-                      Get in Touch
-                      <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
-                    </span>
-                    {arrow("ml-2 h-4 w-4 transition-transform group-hover:translate-x-1")}
-                  </Link>
+                    Clean code, intuitive user experiences, and scalable,
+                    enterprise-ready architecture—brought together to build
+                    modern web applications. Open to collaborating on
+                    something meaningful.
+                  </p>
+
+                  <TermLine command="ls links/" start={HERO_START.linksCmd} />
+                  {/* CTA Links */}
+                  <div className="flex flex-wrap gap-x-6 gap-y-3 pt-0.5">
+                    <Link
+                      href="/projects"
+                      className="boot-drop group relative inline-flex items-center text-sm font-medium text-indigo-300 transition-colors hover:text-green-300 sm:text-base"
+                      style={startAt(HERO_START.work)}
+                    >
+                      <span className="relative">
+                        View My Work
+                        <span className="absolute -bottom-1 left-0 h-px w-0 bg-current transition-all duration-300 group-hover:w-full" />
+                      </span>
+                      {arrow("ml-2 h-4 w-4 transition-transform group-hover:translate-x-1")}
+                    </Link>
+                    <Link
+                      href="/contact"
+                      className="boot-drop group relative inline-flex items-center text-sm font-medium text-slate-300 transition-colors hover:text-green-300 sm:text-base"
+                      style={startAt(HERO_START.contact)}
+                    >
+                      <span className="relative">
+                        Get in Touch
+                        <span className="absolute -bottom-1 left-0 h-px w-0 bg-current transition-all duration-300 group-hover:w-full" />
+                      </span>
+                      {arrow("ml-2 h-4 w-4 transition-transform group-hover:translate-x-1")}
+                    </Link>
+                  </div>
+
+                  <TermLine start={HERO_START.prompt} />
                 </div>
               </div>
             </div>

@@ -191,8 +191,12 @@ export default function AboutPage() {
             <div className="highlight-line" data-reveal-item>
               <p>
                 To move faster without sacrificing quality, I also use AI tools
-                as a coding partner—like a peer reviewer for ideas, refactors,
-                edge cases, and documentation. I stay accountable for the final
+                as a coding partner:{" "}
+                <span className="text-primary font-medium">Claude Code</span> in
+                the terminal and{" "}
+                <span className="text-primary font-medium">Cursor AI</span> in
+                the editor, like a peer reviewer for ideas, refactors, edge
+                cases, and documentation. I stay accountable for the final
                 decisions, architecture, and code quality.
               </p>
             </div>

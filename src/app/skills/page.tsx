@@ -71,6 +71,22 @@ const skillCategories = [
       "Playwright",
     ],
   },
+  {
+    category: "AI-Assisted Development",
+    description:
+      "Pairing with AI as a coding peer for ideas, refactors, edge cases, and documentation, while I own the final decisions",
+    skills: [
+      "Claude Code (CLI)",
+      "Cursor AI",
+      "AI Pair Programming",
+      "AI Code Review",
+      "AI-Assisted Refactoring",
+      "Edge-Case Discovery",
+      "AI-Assisted Documentation",
+    ],
+    // Spans the full row, so it doesn't sit alone under the other four
+    featured: true,
+  },
 ];
 
 const coreStrengths = [
@@ -167,7 +183,11 @@ export default function SkillsPage() {
             <div
               key={category.category}
               data-reveal="wipe"
-              className="relative rounded-xl border border-border bg-card p-6 transition-[border-color,box-shadow] duration-200 hover:border-primary/50 hover:shadow-lg md:p-8"
+              className={`relative rounded-xl border bg-card p-6 transition-[border-color,box-shadow] duration-200 hover:border-primary/50 hover:shadow-lg md:p-8 ${
+                category.featured
+                  ? "border-primary/40 bg-gradient-to-br from-primary/10 via-card to-card lg:col-span-2"
+                  : "border-border"
+              }`}
             >
               <div className="mb-6 flex items-start justify-between gap-4">
                 <div>
