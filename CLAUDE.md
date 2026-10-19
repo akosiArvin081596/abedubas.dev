@@ -38,7 +38,7 @@ There is no CMS or database. Page copy and data (projects, skills, work history,
 
 ### Blog
 
-Posts are `src/content/blog/*.mdx`, and the filename is the slug. `src/lib/blog.ts` reads them from disk, using gray-matter for frontmatter and reading-time for the read time. `src/app/blog/[slug]/page.tsx` prerenders each post via `generateStaticParams` and renders it with `MDXRemote` from `next-mdx-remote/rsc`. The element overrides in `src/components/MDXComponents.tsx` provide the styling.
+Posts are `src/content/blog/*.mdx`, and the filename is the slug. `src/lib/blog.ts` reads them from disk, using `@11ty/gray-matter` (Eleventy's maintained fork of gray-matter) for frontmatter and reading-time for the read time. `src/app/blog/[slug]/page.tsx` prerenders each post via `generateStaticParams` and renders it with `MDXRemote` from `next-mdx-remote/rsc`. The element overrides in `src/components/MDXComponents.tsx` provide the styling.
 
 ```yaml
 ---
@@ -111,6 +111,12 @@ The hero loop, the project covers and the OG artwork were generated with Higgsfi
 - `public/images/hero/mosaic-{12,24,48}.png`: the first photo shrunk with ffmpeg to 12×15, 24×30 and 48×60 (`-vf "scale=W:H:flags=area"`), for its pixelated render-in. Regenerate them whenever the first photo changes.
 - `public/images/projects/*.webp` (1600×900, set through each project's `image` field) and `src/assets/og-background.jpg` (1200×630): GPT Image 2.5. The four covers share one isometric style.
 - With reduced motion, visitors get the poster and the still photo, never video.
+
+### Dependencies
+
+- The `overrides` in `package.json` swap `fast-glob` for `tinyglobby` inside `@next/eslint-plugin-next`. fast-glob pulls in `braces`, whose advisory (GHSA-vfj7-8cjw-p6xm) had no patched release as of October 2026, and the plugin's only call is `globSync(rootDir, { onlyDirectories: true })`.
+- The two differ only when `settings.next.rootDir` is set, which this repo doesn't do. For a plain directory, tinyglobby also returns all its subdirectories, and for an absolute pattern it returns relative paths. Remove the override before setting `rootDir`.
+- Drop the override once `braces` ships a fix (`npm view braces version` newer than 3.0.3), then check that `npm audit` stays clean.
 
 ### Deployment
 
