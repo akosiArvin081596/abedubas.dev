@@ -277,7 +277,7 @@ const services = [
     title: "DevOps & Security",
     key: "service.devsecops",
     description:
-      "Deploying and running applications reliably and securely, with containerized builds, CI/CD pipelines, Linux and Nginx servers, and secure coding from the first commit.",
+      "Deploying applications with Docker and CI/CD pipelines, and running them on Linux servers behind Nginx. Keeping them secure from the first commit with OWASP practices and SSL/TLS.",
     command: "ls ~/stack/ops",
     tools: ["Docker", "CI/CD", "Linux", "Nginx", "AWS", "OWASP", "SSL/TLS"],
     // Heroicons "shield-check"
