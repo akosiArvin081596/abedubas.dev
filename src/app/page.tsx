@@ -235,24 +235,53 @@ const githubUpdated = new Date(
   timeZone: "UTC",
 });
 
+// The services cards. Each ends on a terminal line (`command`) with its
+// tools as chips; `key` is the mono label across its top, like the stats
+// band's metric keys.
 const services = [
   {
     number: "01",
     title: "Frontend Development",
+    key: "service.frontend",
     description:
       "Building responsive, performant user interfaces with React, Next.js, Vue, Nuxt.js, and modern CSS frameworks. Focused on creating seamless experiences across all devices.",
+    command: "ls ~/stack/frontend",
+    tools: ["Vue", "Nuxt", "React", "Next.js", "TypeScript", "Tailwind CSS"],
+    // Heroicons "computer-desktop"
+    icon: "M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0V12a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 12V5.25",
   },
   {
     number: "02",
     title: "Backend Development",
+    key: "service.backend",
     description:
       "Designing scalable APIs and server architectures with Laravel, Node.js, and various databases. Building secure, reliable systems that power modern applications.",
+    command: "ls ~/stack/backend",
+    tools: ["Laravel", "Node.js", "Express.js", "Python", "MySQL", "PostgreSQL", "MongoDB"],
+    // Heroicons "server-stack"
+    icon: "M5.25 14.25h13.5m-13.5 0a3 3 0 0 1-3-3m3 3a3 3 0 1 0 0 6h13.5a3 3 0 1 0 0-6m-16.5-3a3 3 0 0 1 3-3h13.5a3 3 0 0 1 3 3m-19.5 0a4.5 4.5 0 0 1 .9-2.7L5.737 5.1a3.375 3.375 0 0 1 2.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 0 1 .9 2.7m0 0a3 3 0 0 1-3 3m0 3h.008v.008h-.008v-.008Zm0-6h.008v.008h-.008v-.008Zm-3 6h.008v.008h-.008v-.008Zm0-6h.008v.008h-.008v-.008Z",
   },
   {
     number: "03",
     title: "Full-Stack Solutions",
+    key: "service.fullstack",
     description:
       "End-to-end development from concept to deployment. Combining frontend expertise with backend knowledge to deliver complete, production-ready applications.",
+    command: "cat ~/workflow.txt",
+    tools: ["Plan", "Design", "Build", "Test", "Ship"],
+    // Heroicons "rectangle-stack"
+    icon: "M6 6.878V6a2.25 2.25 0 0 1 2.25-2.25h7.5A2.25 2.25 0 0 1 18 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 0 0 4.5 9v.878m13.5-3A2.25 2.25 0 0 1 19.5 9v.878m0 0a2.246 2.246 0 0 0-.75-.128H5.25c-.263 0-.515.045-.75.128m15 0A2.25 2.25 0 0 1 21 12v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6c0-.98.626-1.813 1.5-2.122",
+  },
+  {
+    number: "04",
+    title: "DevOps & Security",
+    key: "service.devsecops",
+    description:
+      "Deploying and running applications reliably and securely, with containerized builds, CI/CD pipelines, Linux and Nginx servers, and secure coding from the first commit.",
+    command: "ls ~/stack/ops",
+    tools: ["Docker", "CI/CD", "Linux", "Nginx", "AWS", "OWASP", "SSL/TLS"],
+    // Heroicons "shield-check"
+    icon: "M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z",
   },
 ];
 
@@ -934,64 +963,125 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Services Section */}
-      <section className="container-site relative py-24 lg:py-10">
-        <div data-reveal="curtain" className="services-head mb-16 text-center lg:mb-12">
-          <div data-reveal-item className="curtain-open mb-4">
-            <SectionLabel>services</SectionLabel>
-          </div>
-          <h2
-            data-reveal-item
-            className="curtain-open mb-4 text-4xl font-bold text-foreground sm:text-5xl xl:text-6xl"
-          >
-            What I <span className="text-primary">Do</span>
-          </h2>
+      {/* Services Section: the same band and cards as the stats above, with
+          the same entrance (it shares their `count` effect). Each card ends
+          on a terminal line that lists its tools, where a stat card's chart
+          sits. */}
+      <section
+        data-reveal="count"
+        className="stat-band relative overflow-hidden border-y border-border bg-muted/30 py-12 lg:py-6"
+      >
+        <span
+          aria-hidden="true"
+          className="bg-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,#000_30%,transparent_75%)]"
+        />
+        <span
+          aria-hidden="true"
+          className="count-panel pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-primary/10 to-transparent"
+        />
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 -top-px h-0.5 overflow-hidden"
+        >
+          <span className="count-beam block h-full w-2/5 bg-gradient-to-r from-transparent via-primary to-transparent" />
+        </span>
+
+        <div className="container-site relative">
           <div
             data-reveal-item
-            aria-hidden="true"
-            className="curtain-rule mx-auto mt-4 h-1 w-24 bg-gradient-to-r from-transparent via-primary to-transparent"
-          />
-          <p
-            data-reveal-item
-            className="curtain-open mx-auto mt-6 max-w-2xl text-lg text-muted-foreground xl:text-xl"
+            className="stat-eyebrow services-head mb-6 flex flex-wrap items-end justify-between gap-x-8 gap-y-3"
           >
-            Building end-to-end web solutions that are fast, accessible, and
-            built to scale.
-          </p>
-        </div>
+            <div>
+              <SectionLabel>what i do</SectionLabel>
+              <h2 className="mt-2 text-3xl font-bold text-foreground sm:text-4xl xl:text-5xl">
+                What I{" "}
+                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  Do
+                </span>
+              </h2>
+            </div>
+            <p className="max-w-md text-sm text-muted-foreground lg:text-right xl:text-base">
+              Building end-to-end web solutions that are fast, accessible, and
+              built to scale.
+            </p>
+          </div>
 
-        <div className="grid gap-14 md:grid-cols-3 xl:gap-20">
-          {services.map((service) => (
-            <div
-              key={service.number}
-              data-reveal="curtain"
-              className="curtain-card group relative text-center md:text-left"
-            >
-              <div className="curtain-body">
-                <div className="mb-6 flex flex-col items-center md:items-start">
-                  <span className="curtain-mask block overflow-hidden">
-                    <span className="curtain-number block text-7xl font-black leading-none text-primary/15 transition-colors group-hover:text-primary/30 xl:text-8xl">
-                      {service.number}
-                    </span>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 xl:gap-6">
+            {services.map((service) => (
+              <article
+                key={service.number}
+                data-reveal-item
+                className="stat-card group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card/70 p-6 shadow-sm backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/50 hover:shadow-[0_0_32px_-8px_var(--primary)] xl:p-6"
+              >
+                <Spotlight />
+                <span aria-hidden="true" className="stat-scan" />
+                {/* A hairline of the brand gradient along the top edge */}
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent"
+                />
+
+                <div className="relative flex items-center justify-between gap-3">
+                  <span
+                    aria-hidden="true"
+                    className="stat-icon grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/25 transition-shadow duration-300 group-hover:shadow-[0_0_20px_-4px_var(--primary)]"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="h-5 w-5"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d={service.icon} />
+                    </svg>
                   </span>
                   <span
                     aria-hidden="true"
-                    className="curtain-line mt-2 h-12 w-px bg-gradient-to-b from-primary/50 to-transparent transition-colors group-hover:from-primary"
-                  />
+                    className="stat-key truncate font-mono text-xs text-muted-foreground"
+                    style={{ "--n": service.key.length } as CSSProperties}
+                  >
+                    {service.key}
+                  </span>
                 </div>
-                <h3 className="mb-3 text-2xl font-bold text-foreground transition-colors group-hover:text-primary xl:text-3xl">
+
+                <div
+                  aria-hidden="true"
+                  className="stat-value count-num relative mt-4 text-5xl font-bold leading-none tabular-nums text-foreground xl:text-6xl"
+                >
+                  {service.number}
+                </div>
+                <h3 className="count-label relative mt-2 text-base font-semibold text-foreground xl:text-lg">
                   {service.title}
                 </h3>
-                <p className="leading-relaxed text-muted-foreground xl:text-lg">
+                <p className="count-label relative mt-2 text-sm leading-relaxed text-muted-foreground">
                   {service.description}
                 </p>
-              </div>
-              <span
-                aria-hidden="true"
-                className="curtain-panel pointer-events-none absolute -inset-3 rounded-2xl bg-gradient-to-r from-primary to-accent"
-              />
-            </div>
-          ))}
+
+                <div className="relative mt-4 flex min-h-14 flex-1 flex-col justify-end">
+                  <p aria-hidden="true" className="font-mono text-[10px] leading-4 text-muted-foreground">
+                    <span className="text-green-600 dark:text-green-400">$</span>{" "}
+                    {service.command}
+                  </p>
+                  <ul
+                    aria-label={`${service.title}: tools`}
+                    className="mt-1.5 flex flex-wrap gap-1.5"
+                  >
+                    {service.tools.map((tool, c) => (
+                      <li
+                        key={tool}
+                        className="svc-chip rounded-md border border-border bg-background/60 px-2 py-0.5 font-mono text-[11px] text-foreground/80 transition-colors duration-200 group-hover:border-primary/30"
+                        style={{ "--c": c } as CSSProperties}
+                      >
+                        {tool}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
