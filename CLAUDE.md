@@ -127,12 +127,8 @@ Pushes to `main` deploy automatically. `.github/workflows/ci-cd.yml` lints and b
 - The repo is public, so the Actions logs are too. The script keeps pm2's table of every app on the VPS out of them. Keep the VPS's other apps out of anything else it prints.
 - CI pins Node 20 because the site builds and runs on the VPS's system Node 20.
 
-<!-- BEGIN:nextjs-agent-rules -->
+## Next.js agent rules
 
-# This is NOT the Next.js you know
+When `next dev` runs under a coding agent, Next.js (16.4 and later) writes its instructions for agents into `AGENTS.md`, and rewrites them whenever an upgrade changes them. It no longer touches this file. Commit `AGENTS.md` with your work, and don't copy its block back here. It's imported:
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
-
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
-
-<!-- END:nextjs-agent-rules -->
+@AGENTS.md
