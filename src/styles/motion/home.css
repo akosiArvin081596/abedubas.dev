@@ -645,7 +645,10 @@ html:not(.js) .shell-prompt {
    odometer style, its label slides in from the left, and its chart fills:
    the year columns drop in left to right, the repository matrix lights up
    one cell at a time in reading order, and the language and activity bars
-   fill left to right. The data source note comes in last. */
+   fill left to right. The data source note comes in last.
+   The services section shares this effect, on purpose: its cards are the
+   same cards, and they enter the same way, their tool chips popping in
+   after the label. */
 
 .count-panel,
 .count-beam {
@@ -896,6 +899,12 @@ html:not(.js) .shell-prompt {
   }
 }
 
+/* The services cards' tool chips pop in, in order, once the card lands. */
+.motion [data-reveal="count"][data-revealed] .svc-chip {
+  animation: stat-pop var(--dur-1) var(--ease-out)
+    calc(var(--i) * var(--stagger) + 600ms + var(--c) * 60ms) backwards;
+}
+
 /* The live projects' rows drop in left to right after their card lands. */
 .motion [data-reveal="count"][data-revealed] .live-row {
   animation: stat-drop var(--dur-1) var(--ease-out)
@@ -970,99 +979,6 @@ html:not(.js) .shell-prompt {
   }
 }
 
-/* ------------------------------------------------------------- curtain ---
-   Services. The header's lines unveil top to bottom out of blur and the rule
-   draws left to right. Then, card by card (left to right), a colored panel
-   sweeps across: the card shows behind its trailing edge, its big number
-   drops out of a mask, and its accent line draws down. */
-
-.motion [data-reveal="curtain"][data-revealed] .curtain-open {
-  animation: curtain-open var(--dur-2) var(--ease-out)
-    calc(var(--i) * var(--stagger)) backwards;
-}
-
-@keyframes curtain-open {
-  from {
-    clip-path: inset(-0.25em -0.25em 100%);
-    filter: blur(10px);
-  }
-  to {
-    clip-path: inset(-0.25em);
-    filter: blur(0);
-  }
-}
-
-.motion [data-reveal="curtain"][data-revealed] .curtain-rule {
-  transform-origin: left;
-  animation: curtain-rule var(--dur-2) var(--ease-out)
-    calc(var(--i) * var(--stagger)) backwards;
-}
-
-@keyframes curtain-rule {
-  from {
-    scale: 0 1;
-  }
-}
-
-.curtain-panel {
-  clip-path: inset(0 0 0 100%);
-}
-
-.motion [data-reveal="curtain"][data-revealed] .curtain-panel {
-  animation: curtain-pass var(--dur-3) var(--ease-in-out)
-    calc(var(--i) * var(--stagger)) backwards;
-}
-
-@keyframes curtain-pass {
-  0% {
-    clip-path: inset(0 100% 0 0);
-  }
-  45% {
-    clip-path: inset(0);
-  }
-  100% {
-    clip-path: inset(0 0 0 100%);
-  }
-}
-
-.motion [data-reveal="curtain"][data-revealed] .curtain-body {
-  animation: curtain-behind var(--dur-3) var(--ease-in-out)
-    calc(var(--i) * var(--stagger)) backwards;
-}
-
-@keyframes curtain-behind {
-  0%,
-  45% {
-    clip-path: inset(-1rem 100% -1rem -1rem);
-  }
-  100% {
-    clip-path: inset(-1rem);
-  }
-}
-
-.motion [data-reveal="curtain"][data-revealed] .curtain-number {
-  animation: curtain-drop var(--dur-2) var(--ease-out)
-    calc(var(--i) * var(--stagger) + var(--dur-3) * 0.45) backwards;
-}
-
-@keyframes curtain-drop {
-  from {
-    translate: 0 calc(-110% - 0.1em);
-  }
-}
-
-.motion [data-reveal="curtain"][data-revealed] .curtain-line {
-  transform-origin: top;
-  animation: curtain-line var(--dur-1) var(--ease-out)
-    calc(var(--i) * var(--stagger) + var(--dur-3) * 0.6) backwards;
-}
-
-@keyframes curtain-line {
-  from {
-    scale: 1 0;
-  }
-}
-
 /* --------------------------------------------------------------- words ---
    CTA. The icon drops in, then the heading's words drop out of their masks
    over --dur-3, 120 ms apart, left to right. The paragraph, link and trust
@@ -1131,19 +1047,11 @@ html:not(.js) .shell-prompt {
     min-height: calc(100svh - 4.5rem);
   }
 
-  /* Services on short screens: smaller numbers and spacing, so the
-     section still fits one screen. */
+  /* Services on short screens: a tighter heading, so the section still
+     fits one screen. */
   @media (max-height: 800px) {
     .services-head {
-      margin-bottom: 2rem;
-    }
-
-    .curtain-number {
-      font-size: 4.5rem;
-    }
-
-    .curtain-line {
-      height: 2rem;
+      margin-bottom: 1rem;
     }
   }
 
