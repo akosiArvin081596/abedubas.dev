@@ -2,33 +2,36 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, type CSSProperties } from "react";
+import { useState, useSyncExternalStore, type CSSProperties } from "react";
+import { SECTIONS, type SectionKey } from "@/data/sections";
+import { spyServerSnapshot, spySnapshot, subscribeSpy } from "@/lib/scroll-spy";
 import { ThemeToggle } from "./ThemeToggle";
-
-const navItems = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Skills", href: "/skills" },
-  { label: "Projects", href: "/projects" },
-  { label: "Blog", href: "/blog" },
-  { label: "Contact", href: "/contact" },
-];
 
 // Stagger order for the `drop` entrance (see styles/motion/site.css)
 const order = (i: number) => ({ "--i": i }) as CSSProperties;
 
-// A link's aria-current: "page" on its own page, "true" on the pages below it
-// (a blog post is in Blog), so its section stays highlighted.
-const currentFor = (pathname: string, href: string) =>
-  pathname === href
-    ? ("page" as const)
-    : href !== "/" && pathname.startsWith(`${href}/`)
-      ? ("true" as const)
-      : undefined;
+// Which nav item to underline. On the home page, the section in view
+// (scroll-spy, lib/scroll-spy.ts), or Home before anything is measured,
+// which is also what the server renders. On a post, Blog.
+function useActive(pathname: string): SectionKey | null {
+  const spied = useSyncExternalStore(subscribeSpy, spySnapshot, spyServerSnapshot);
+  if (pathname.startsWith("/blog/")) return "blog";
+  if (pathname !== "/") return null;
+  if (spied === undefined) return "home";
+  return SECTIONS.some((section) => section.key === spied)
+    ? (spied as SectionKey)
+    : null;
+}
+
+// A link's aria-current: "location" for the section in view on the home
+// page, "true" for Blog on a post (the post is in it).
+const currentFor = (pathname: string, active: SectionKey | null, key: SectionKey) =>
+  active !== key ? undefined : pathname === "/" ? ("location" as const) : ("true" as const);
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+  const active = useActive(pathname);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
@@ -55,8 +58,8 @@ export function Navbar() {
 
         {/* Desktop Navigation */}
         <div className="hidden items-center gap-8 md:flex">
-          {navItems.map((item, index) => {
-            const current = currentFor(pathname, item.href);
+          {SECTIONS.map((item, index) => {
+            const current = currentFor(pathname, active, item.key);
             return (
               <Link
                 key={item.href}
@@ -75,7 +78,7 @@ export function Navbar() {
           <span
             className="flex"
             data-reveal-item
-            style={order(navItems.length + 1)}
+            style={order(SECTIONS.length + 1)}
           >
             <ThemeToggle />
           </span>
@@ -130,15 +133,18 @@ export function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Navigation. Its items drop in top to bottom as it opens. */}
+      {/* Mobile Navigation. Its items drop in top to bottom as it opens. It
+          floats over the page under the header, so opening it never moves
+          the content below: HomeSnap measures a link's target on click,
+          before the menu closes. */}
       {isMenuOpen && (
         <div
           id="mobile-menu"
-          className="border-t border-border bg-background md:hidden"
+          className="absolute inset-x-0 top-full border-y border-border bg-background shadow-lg md:hidden"
         >
           <div className="flex flex-col px-4 py-4">
-            {navItems.map((item, index) => {
-              const current = currentFor(pathname, item.href);
+            {SECTIONS.map((item, index) => {
+              const current = currentFor(pathname, active, item.key);
               return (
                 <Link
                   key={item.href}
@@ -146,7 +152,7 @@ export function Navbar() {
                   onClick={() => setIsMenuOpen(false)}
                   aria-current={current}
                   style={order(index)}
-                  className={`nav-menu-item py-3 text-sm font-medium transition-colors hover:text-primary ${
+                  className={`nav-link nav-menu-item w-fit py-3 text-sm font-medium transition-colors hover:text-primary ${
                     current ? "text-primary" : "text-muted-foreground"
                   }`}
                 >

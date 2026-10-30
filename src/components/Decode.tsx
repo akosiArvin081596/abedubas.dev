@@ -19,26 +19,42 @@ interface DecodeProps {
   text: string;
 }
 
-// Run `start` once the route curtain (components/motion/RouteCurtain.tsx)
-// has lifted, so the effect plays where it can be seen. Returns a canceller.
-function afterCurtain(start: () => void) {
+// Is anything covering or moving the page? The route curtain
+// (RouteCurtain), the loading screen (SiteLoader, until it starts to lift),
+// a scroll (RevealObserver's data-scrolling) or a scripted glide
+// (lib/glide.ts). The page's effects are paused under all four.
+const ATTRIBUTES = ["data-curtain", "data-loader", "data-scrolling", "data-gliding"];
+function busy(html: HTMLElement) {
+  return (
+    html.hasAttribute("data-curtain") ||
+    html.dataset.loader === "" ||
+    html.hasAttribute("data-scrolling") ||
+    html.hasAttribute("data-gliding")
+  );
+}
+
+// Run `start` once nothing covers or moves the page, so the effect plays
+// where it can be seen. Returns a canceller.
+function whenStill(start: () => void) {
   const html = document.documentElement;
-  if (!html.hasAttribute("data-curtain")) {
+  if (!busy(html)) {
     start();
     return () => {};
   }
   const observer = new MutationObserver(() => {
-    if (html.hasAttribute("data-curtain")) return;
+    if (busy(html)) return;
     observer.disconnect();
     start();
   });
-  observer.observe(html, { attributes: true, attributeFilter: ["data-curtain"] });
+  observer.observe(html, { attributes: true, attributeFilter: ATTRIBUTES });
   return () => observer.disconnect();
 }
 
-// Text that scrambles through code glyphs on mount, then settles left to
-// right, one character at a time. It runs only under `.motion`, after the
-// web font is ready and the route curtain has lifted, and writes to the DOM
+// Text that scrambles through code glyphs when its section reveals, then
+// settles left to right, one character at a time. It runs only under
+// `.motion`: once its `decode` container has revealed (RevealObserver's
+// `reveal` event, or at once if it already has), the web font is ready, and
+// the page is still (whenStill). It writes to the DOM
 // through a ref, so there's no React state and no re-render. Each character
 // gets a box sized to its final glyph, so the line never reflows. Screen
 // readers get the sr-only copy, never the scramble. The CSS for the
@@ -131,13 +147,21 @@ export function Decode({ text }: DecodeProps) {
       frame = requestAnimationFrame(tick);
     };
 
-    // Measure with the web font, not the fallback it swaps in for.
-    document.fonts.ready.then(() => {
-      if (!cancelled) stopWaiting = afterCurtain(begin);
-    });
+    // Start when the section reveals, measuring with the web font, not the
+    // fallback it swaps in for.
+    const container = host.closest("[data-reveal]");
+    const onReveal = () => {
+      container?.removeEventListener("reveal", onReveal);
+      document.fonts.ready.then(() => {
+        if (!cancelled) stopWaiting = whenStill(begin);
+      });
+    };
+    if (!container || container.hasAttribute("data-revealed")) onReveal();
+    else container.addEventListener("reveal", onReveal);
 
     // A printout gets the plain title, never a mid-scramble one.
     const onBeforePrint = () => {
+      container?.removeEventListener("reveal", onReveal);
       cancelled = true;
       stopWaiting();
       cancelAnimationFrame(frame);
@@ -148,6 +172,7 @@ export function Decode({ text }: DecodeProps) {
 
     return () => {
       window.removeEventListener("beforeprint", onBeforePrint);
+      container?.removeEventListener("reveal", onReveal);
       cancelled = true;
       stopWaiting();
       cancelAnimationFrame(frame);

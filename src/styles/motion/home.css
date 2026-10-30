@@ -1,6 +1,9 @@
 /*
- * Home page effects: boot (hero, on load), count (stats), curtain (services),
- * words (CTA). The contract, tokens and pace are in core.css.
+ * Home page: boot (hero, on load), count (the stats band, and What I Do,
+ * which shares it), and the snap layout every home section sits in. The
+ * other sections' effects are in site.css (About, Contact, the footer) and
+ * work.css (Skills, Projects, Blog). The contract, tokens and pace are in
+ * core.css.
  */
 
 /* ---------------------------------------------------------------- boot ---
@@ -61,11 +64,26 @@
   .fetch {
     row-gap: 0.25rem;
     margin-block: 0;
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
   }
 
   .hero-summary,
   .hero-ctas {
     margin-top: 0;
+  }
+}
+
+/* The shortest screens HomeSnap pages (under 720px tall): the panes and
+   the fastfetch rows tighten once more. */
+@media (min-width: 1024px) and (max-height: 719px) {
+  .hero-pane {
+    --hero-gap: 0.25rem;
+    padding-block: 0.6rem;
+  }
+
+  .fetch {
+    row-gap: 0.125rem;
   }
 }
 
@@ -568,7 +586,10 @@ html:not(.js) .shell-prompt {
    at one screen and the session pane scrolls inside it. Below lg the panes
    stack and the page scrolls, so the pane simply grows. */
 @media (min-width: 64rem) {
+  /* `flex: none`, or the flex-1 the window carries would size it to its
+     content and the height would never apply. */
   .hero-window:has(.hero-session[data-shell]) {
+    flex: none;
     height: calc(100svh - 4.5rem);
   }
 
@@ -594,28 +615,6 @@ html:not(.js) .shell-prompt {
   from {
     opacity: 0;
     translate: 0 -0.35rem;
-  }
-}
-
-/* "opening ~/page..." counts its dots while the curtain comes down. */
-.shell-dots::after {
-  content: "...";
-  display: inline-block;
-  width: 3ch;
-  overflow: hidden;
-  vertical-align: bottom;
-}
-
-.motion .shell-dots::after {
-  animation: shell-dots 900ms steps(4, end) infinite;
-}
-
-@keyframes shell-dots {
-  from {
-    width: 0;
-  }
-  to {
-    width: 4ch;
   }
 }
 
@@ -979,72 +978,53 @@ html:not(.js) .shell-prompt {
   }
 }
 
-/* --------------------------------------------------------------- words ---
-   CTA. The icon drops in, then the heading's words drop out of their masks
-   over --dur-3, 120 ms apart, left to right. The paragraph, link and trust
-   row cascade in after, top to bottom. */
+/* --------------------------------------------------------------- layout ---
+   The one-page layout the sections snap through (HomeSnap). */
 
-.motion [data-reveal="words"][data-revealed] .words-head .split-word > span {
-  animation: words-drop var(--dur-3) var(--ease-out)
-    calc(var(--i) * var(--stagger) + var(--si) * 120ms) backwards;
-}
-
-@keyframes words-drop {
-  from {
-    translate: 0 calc(-110% - 0.1em);
-    filter: blur(8px);
-  }
-}
-
-/* Items after the heading wait for its words to land. */
-.words-after {
-  --words-after: 600ms;
-}
-
-.motion [data-reveal="words"][data-revealed] .words-follow {
-  animation: words-follow var(--dur-2) var(--ease-out)
-    calc(var(--i) * var(--stagger) + var(--words-after, 0ms)) backwards;
-}
-
-@keyframes words-follow {
-  from {
-    opacity: 0;
-    translate: 0 -48px;
-    filter: blur(10px);
-  }
-}
-
-/* ----------------------------------------------------------- decoration --
-   Not reveal effects. Each one animates only with motion on. */
-
-/* The CTA's backdrop orbs breathe in place rather than travel. */
-.motion .home-orb {
-  animation: home-orb var(--orb-time, 8s) var(--ease-in-out) infinite
-    alternate;
-}
-
-@keyframes home-orb {
-  to {
-    scale: 1.15;
-    opacity: 0.6;
-  }
+/* Every home section, and the footer, lands right under the sticky header
+   when a link (/#projects) or the browser scrolls to it, at every width. */
+.home-snap > section,
+.site-footer {
+  scroll-margin-top: 4.5rem;
 }
 
 /* The home page moves a screen at a time where its sections fit one: from
    lg, on screens at least 700px tall. Each section fills the screen below
    the sticky header with its content centered, and HomeSnap pages through
-   them, a smooth glide per gesture. On phones the sections run taller than
-   the screen, so the page scrolls freely. */
+   them, a smooth glide per gesture, with the footer as the last stop. On
+   phones the sections run taller than the screen, so the page scrolls
+   freely. */
 @media (min-width: 1024px) and (min-height: 700px) {
-  html:has(.home-snap) {
-    scroll-padding-top: 4.5rem;
-  }
-
   .home-snap > section {
     display: flex;
     flex-direction: column;
     justify-content: center;
     min-height: calc(100svh - 4.5rem);
+  }
+
+  /* A section whose content can outgrow the screen (the timeline, the
+     posts, the project explorer) is exactly one screen tall instead: its
+     .snap-body takes the height, and its .snap-pane shrinks to fit and
+     scrolls itself. HomeSnap leaves a wheel over the pane alone until the
+     pane reaches its end, and keys too while focus is in it. */
+  .home-snap > section.snap-fit {
+    height: calc(100svh - 4.5rem);
+  }
+
+  .snap-body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 0;
+  }
+
+  .snap-pane {
+    flex: 0 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
   }
 
   /* Services on short screens: a tighter heading, so the section still
@@ -1057,13 +1037,23 @@ html:not(.js) .shell-prompt {
 
   /* While the page moves (RevealObserver sets data-scrolling, HomeSnap's
      glide included), hold every effect in place, so a section's entrance
-     plays once the page comes to rest. */
-  html[data-scrolling]:has(.home-snap) main *,
-  html[data-scrolling]:has(.home-snap) main *::before,
-  html[data-scrolling]:has(.home-snap) main *::after {
+     plays once the page comes to rest. The footer is the last stop, and
+     sits outside <main>, so it's named too. */
+  html[data-scrolling]:has(.home-snap) :is(main, .site-footer) *,
+  html[data-scrolling]:has(.home-snap) :is(main, .site-footer) *::before,
+  html[data-scrolling]:has(.home-snap) :is(main, .site-footer) *::after {
     animation-play-state: paused !important;
   }
 }
+
+/* A pane that scrolls itself shows its focus ring inside its edge. */
+.snap-pane:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+/* ----------------------------------------------------------- decoration --
+   Not reveal effects. Each one animates only with motion on. */
 
 /* ParallaxHero's color fields drift down and right as the page scrolls. */
 @supports (animation-timeline: scroll()) {

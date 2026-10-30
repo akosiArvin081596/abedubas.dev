@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
+import { PAGE_KEYS, hrefFor } from "@/data/sections";
 
 // A panel's box as fractions of the viewport: [left, top, width, height].
 type Box = [number, number, number, number];
@@ -20,7 +21,9 @@ interface Pattern {
 
 const range = (n: number) => Array.from({ length: n }, (_, i) => i);
 
-// One pattern per page, so every page arrives its own way.
+// The curtain runs between the home page and the blog posts (and from the
+// 404 page), so its patterns go by destination: the home page's top gets
+// the iris, each nav section its own pattern, and a post the sweep.
 const PATTERNS = {
   home: { boxes: [[0, 0, 1, 1]], axis: "x", stagger: 0, iris: true },
   about: {
@@ -40,27 +43,31 @@ const PATTERNS = {
     axis: "x",
     stagger: 28,
   },
-  sweep: { boxes: [[0, 0, 1, 1]], axis: "x", stagger: 0 },
+  post: { boxes: [[0, 0, 1, 1]], axis: "x", stagger: 0 },
 } satisfies Record<string, Pattern>;
 
-// "/blog/" and "/blog" are the same page.
+// A trailing slash doesn't make a different page.
 const normalize = (path: string) =>
   path.length > 1 ? path.replace(/\/+$/, "") : path;
 
-function patternFor(path: string): Pattern {
-  if (path === "/") return PATTERNS.home;
-  if (path.startsWith("/blog/")) return PATTERNS.sweep;
-  const section = path.split("/")[1];
-  return Object.hasOwn(PATTERNS, section)
-    ? PATTERNS[section as keyof typeof PATTERNS]
-    : PATTERNS.sweep;
+// The nav section a URL lands on ("/#about" is about), if any.
+const sectionOf = (url: URL) =>
+  normalize(url.pathname) === "/"
+    ? PAGE_KEYS.find((key) => hrefFor(key) === `/${url.hash}`)
+    : undefined;
+
+function patternFor(url: URL): Pattern {
+  if (url.pathname.startsWith("/blog/")) return PATTERNS.post;
+  return PATTERNS[sectionOf(url) ?? "home"];
 }
 
-// What the prompt types: `cd` into a page, `cat` a post.
-function commandFor(path: string) {
-  const post = path.match(/^\/blog\/([^/]+)\/?$/);
+// What the prompt types: `cd` into a section, `cat` a post.
+function commandFor(url: URL) {
+  const post = url.pathname.match(/^\/blog\/([^/]+)\/?$/);
   if (post) return `cat ~/blog/${post[1]}.mdx`;
-  return path === "/" ? "cd ~" : `cd ~${path.replace(/\/$/, "")}`;
+  const section = sectionOf(url);
+  if (section) return `cd ~/${section}`;
+  return url.pathname === "/" ? "cd ~" : `cd ~${normalize(url.pathname)}`;
 }
 
 const cwdFor = (path: string) => (path === "/" ? "~" : `~${path}`);
@@ -165,10 +172,15 @@ const nextPaint = () =>
 
 // Page changes run through a "terminal curtain": layered panels sweep across
 // to cover the page while a shell prompt types the destination, the new page
-// renders underneath, and the panels sweep out the far side. Each page has
-// its own panel pattern, and every move runs left to right or top to bottom.
-// It works by catching clicks on internal links, so it covers next/link and
-// plain anchors alike, and without `.motion` it never engages.
+// renders underneath, and the panels sweep out the far side. The site is one
+// page plus its posts, so it plays between the home page and a post (and
+// from the 404 page). Each destination has its own panel pattern (a post,
+// the top of the home page, each nav section), and every move runs left to
+// right or top to bottom. For "/#about", Next scrolls to the section under
+// the curtain (scroll-margin-top keeps it under the header), so the curtain
+// lifts on it. It works by catching clicks on internal links, so it covers
+// next/link and plain anchors alike. Links within the page it leaves to
+// HomeSnap, and without `.motion` it never engages.
 export function RouteCurtain() {
   const router = useRouter();
   const pathname = usePathname();
@@ -205,10 +217,10 @@ export function RouteCurtain() {
       window.addEventListener("popstate", onPop);
 
       try {
-        const pattern = patternFor(url.pathname);
+        const pattern = patternFor(url);
         const layers = build(stage, pattern);
         cwd.textContent = cwdFor(normalize(location.pathname));
-        cmd.textContent = commandFor(url.pathname);
+        cmd.textContent = commandFor(url);
         const chars = cmd.textContent.length;
         // Sizes the type so the command (plus the caret) fits on its line.
         term.style.setProperty("--cmd-chars", String(chars + 1));

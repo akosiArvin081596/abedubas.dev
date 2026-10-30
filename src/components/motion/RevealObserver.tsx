@@ -97,13 +97,31 @@ export function RevealObserver() {
       settle = window.setTimeout(settled, 150);
     };
 
+    // While a scripted glide runs (html[data-gliding], lib/glide.ts), hold
+    // every reveal: a glide from the hero to Contact crosses every section
+    // between, and their entrances would play unseen. When it ends, reveal
+    // only what's on screen; the rest stays pending and reveals when it
+    // scrolls in. The trigger line matches the observer's rootMargin.
+    const gliding = () => html.hasAttribute("data-gliding");
+    const onScreen = (el: HTMLElement) => {
+      const rect = el.getBoundingClientRect();
+      return (
+        rect.top < window.innerHeight * 0.88 &&
+        rect.bottom > 0 &&
+        rect.width > 0
+      );
+    };
+    const onGlideEnd = () => flush([...pending].filter(onScreen));
+
     const io = new IntersectionObserver(
-      (entries) =>
+      (entries) => {
+        if (gliding()) return;
         flush(
           entries
             .filter((entry) => entry.isIntersecting)
             .map((entry) => entry.target as HTMLElement),
-        ),
+        );
+      },
       { rootMargin: "0px 0px -12% 0px" },
     );
 
@@ -112,7 +130,7 @@ export function RevealObserver() {
     let frame = 0;
     const revealAtBottom = () => {
       frame = 0;
-      if (pending.size === 0) return;
+      if (pending.size === 0 || gliding()) return;
       const doc = document.documentElement;
       if (window.scrollY + window.innerHeight < doc.scrollHeight - 2) return;
       flush(
@@ -176,8 +194,10 @@ export function RevealObserver() {
     window.addEventListener("resize", scheduleBottomCheck, { passive: true });
     document.addEventListener("focusin", onFocus);
     window.addEventListener("beforeprint", onBeforePrint);
+    window.addEventListener("glideend", onGlideEnd);
 
     return () => {
+      window.removeEventListener("glideend", onGlideEnd);
       window.removeEventListener("scroll", scheduleBottomCheck);
       window.removeEventListener("scroll", onScroll);
       settled();

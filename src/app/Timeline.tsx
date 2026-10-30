@@ -46,11 +46,12 @@ function railGradient(index: number, count: number) {
 // Work history as a git log, newest commit first with the current role at
 // HEAD. Wide screens read it as git log --graph: hash, date and branch on
 // the left, the rail in between, the commit itself on the right. Each entry
-// is its own `gitlog` reveal (see styles/motion/site.css), so entries below
-// the fold animate as they scroll in.
+// is its own `gitlog` reveal (see styles/motion/site.css), so entries
+// further down the Experience section's pane, which scrolls itself on wide
+// screens, animate as they scroll into it.
 export function Timeline({ items }: TimelineProps) {
   return (
-    <ol className="space-y-12 lg:space-y-16">
+    <ol className="space-y-10">
       {items.map((item, index) => {
         const isLast = index === items.length - 1;
         const isHead = item.year.includes("Present");
@@ -58,7 +59,7 @@ export function Timeline({ items }: TimelineProps) {
           <li
             key={item.title}
             data-reveal="gitlog"
-            className="group relative grid grid-cols-[2.5rem_minmax(0,1fr)] lg:grid-cols-[minmax(0,15rem)_5rem_minmax(0,1fr)]"
+            className="group relative grid grid-cols-[2.5rem_minmax(0,1fr)] lg:grid-cols-[minmax(0,13rem)_4rem_minmax(0,1fr)]"
           >
             <div className="gitlog-meta col-start-2 row-start-1 mb-3 lg:col-start-1 lg:mb-0 lg:text-right">
               <p
@@ -97,7 +98,7 @@ export function Timeline({ items }: TimelineProps) {
             >
               <span
                 className={`gitlog-rail absolute left-[7px] top-2 w-px lg:left-1/2 ${
-                  isLast ? "bottom-2" : "-bottom-14 lg:-bottom-[4.5rem]"
+                  isLast ? "bottom-2" : "-bottom-12"
                 }`}
                 style={{ backgroundImage: railGradient(index, items.length) }}
               />
@@ -108,10 +109,10 @@ export function Timeline({ items }: TimelineProps) {
               <p className="text-xs uppercase tracking-wider text-muted-foreground">
                 {item.company}
               </p>
-              <h3 className="mt-1 text-xl font-semibold text-foreground transition-colors group-hover:text-primary lg:text-2xl">
+              <h3 className="mt-1 text-lg font-semibold text-foreground transition-colors group-hover:text-primary xl:text-xl">
                 {item.title}
               </h3>
-              <p className="mt-3 max-w-[70ch] leading-relaxed text-muted-foreground lg:text-lg">
+              <p className="mt-2 max-w-[75ch] text-[0.9375rem] leading-relaxed text-muted-foreground">
                 {item.description}
               </p>
             </div>

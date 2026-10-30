@@ -11,7 +11,9 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from "react";
+import { EMAIL } from "@/data/contact";
 import { projects } from "@/data/projects";
+import { hrefFor } from "@/data/sections";
 import { WEB_DEV_SINCE, yearsOfExperience } from "@/lib/career";
 
 // How long Bintoy "types" before each reply, in ms.
@@ -54,11 +56,22 @@ function answer(question: string, close: () => void): ReactNode {
     return <>Hello! Ask me about Arvin&apos;s work, his stack, or how to reach him.</>;
   }
   if (/(project|work|portfolio|built|app)/.test(q)) {
-    const names = projects.map((project) => project.title.split(" ")[0]);
+    // The featured projects, or the first few if none is featured.
+    const featured = projects.filter((project) => project.featured);
+    const names = (featured.length > 0 ? featured : projects.slice(0, 3)).map(
+      (project) => project.title,
+    );
+    const link = to(hrefFor("projects"), "See the projects →");
+    if (names.length === 0) {
+      return <>He builds web apps for clients and products. {link}</>;
+    }
+    const list =
+      names.length === 1
+        ? names[0]
+        : `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`;
     return (
       <>
-        He has shipped {names.slice(0, -1).join(", ")} and {names.at(-1)},
-        among others. {to("/projects", "See the projects →")}
+        He has shipped {list}, among others. {link}
       </>
     );
   }
@@ -67,7 +80,7 @@ function answer(question: string, close: () => void): ReactNode {
       <>
         Vue and Nuxt or React and Next.js on the front end, Laravel, Node.js
         and Python on the back end, with MySQL, PostgreSQL and MongoDB.{" "}
-        {to("/skills", "All his skills →")}
+        {to(hrefFor("skills"), "All his skills →")}
       </>
     );
   }
@@ -75,7 +88,7 @@ function answer(question: string, close: () => void): ReactNode {
     return (
       <>
         Yes, Arvin is available for new projects.{" "}
-        {to("/contact", "Start a conversation →")}
+        {to(hrefFor("contact"), "Start a conversation →")}
       </>
     );
   }
@@ -83,29 +96,29 @@ function answer(question: string, close: () => void): ReactNode {
     return (
       <>
         The quickest way is the contact form, or email{" "}
-        <a href="mailto:arvin.edubas15@gmail.com" className={linkClass}>
-          arvin.edubas15@gmail.com
+        <a href={`mailto:${EMAIL}`} className={linkClass}>
+          {EMAIL}
         </a>
-        . {to("/contact", "Contact page →")}
+        . {to(hrefFor("contact"), "Go to Contact →")}
       </>
     );
   }
   if (/(blog|article|post|write)/.test(q)) {
-    return <>He writes about web development. {to("/blog", "Read the blog →")}</>;
+    return <>He writes about web development. {to(hrefFor("blog"), "Read the blog →")}</>;
   }
   if (/(\bwho\b|\babout\b|arvin|background|experience|\brole\b|what (does|do) (he|you))/.test(q)) {
     return (
       <>
         Arvin is an Information Technologist &amp; Software Engineer from the
         Philippines, building for the web since {WEB_DEV_SINCE} (
-        {yearsOfExperience()}+ years). {to("/about", "More about him →")}
+        {yearsOfExperience()}+ years). {to(hrefFor("about"), "More about him →")}
       </>
     );
   }
   return (
     <>
       I&apos;m still a preview, so I can&apos;t answer that one yet. Arvin can,
-      though. {to("/contact", "Ask him directly →")}
+      though. {to(hrefFor("contact"), "Ask him directly →")}
     </>
   );
 }
@@ -142,7 +155,7 @@ const closeIcon = (className: string) => (
 // page, opens a small dark chat window, styled like the hero terminal. It
 // settles in as it opens and drops away as it closes. Bintoy greets the
 // visitor with quick replies, "types" for a moment before each answer, and
-// links on to the right page. Escape closes it and puts focus back on the
+// links on to the right section. Escape closes it and puts focus back on the
 // button. From lg it sits clear of the home hero's tmux status bar.
 export function Bintoy() {
   const [open, setOpen] = useState(false);
