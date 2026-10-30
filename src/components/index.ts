@@ -11,3 +11,4 @@ export { SectionLabel } from "./SectionLabel";
 export { SplitText } from "./motion";
 export { LocalClock } from "./LocalClock";
 export { BackToTop } from "./BackToTop";
+export { Glyph, type GlyphName } from "./Glyph";

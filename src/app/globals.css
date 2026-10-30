@@ -3,6 +3,7 @@
 @import "../styles/motion/home.css";
 @import "../styles/motion/site.css";
 @import "../styles/motion/work.css";
+@import "../styles/tone.css";
 
 /* Bind `dark:` to the `.dark` class the theme toggle sets, not the OS setting */
 @custom-variant dark (&:where(.dark, .dark *));

@@ -272,7 +272,7 @@
 /* ---------------------------------------------------------------------------
  * hinge: each philosophy card swings down from a hinge along its top edge,
  * from nearly edge-on, coming into focus as it lands. Cards stagger along
- * the diagonal (--d).
+ * the diagonal (--d). Then the small scene at the card's foot draws on.
  */
 .motion [data-reveal="hinge"][data-revealed] [data-reveal-item] {
   transform-origin: 50% 0;
@@ -292,6 +292,35 @@
   to {
     filter: blur(0);
     transform: perspective(1000px) rotateX(0deg);
+  }
+}
+
+/* Once a card has landed, the scene at its foot (PhilosophyArt) draws on:
+   strokes trace from their start (pathLength 1), and bars grow left to
+   right, in --k order. */
+.motion [data-reveal="hinge"][data-revealed] .art-draw {
+  stroke-dasharray: 1;
+  animation: hinge-draw var(--dur-2) var(--ease-in-out) backwards;
+  animation-delay: calc(var(--d) * var(--stagger) + 800ms + var(--k, 0) * 90ms);
+}
+
+.motion [data-reveal="hinge"][data-revealed] .art-grow {
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+  animation: hinge-grow var(--dur-1) var(--ease-out) backwards;
+  animation-delay: calc(var(--d) * var(--stagger) + 900ms + var(--k, 0) * 90ms);
+}
+
+@keyframes hinge-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@keyframes hinge-grow {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
   }
 }
 

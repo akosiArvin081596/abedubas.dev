@@ -1,0 +1,152 @@
+/*
+ * Tone cards: the at-rest look of the About facts, Philosophy, Core
+ * Strengths and Technical Skills cards. Not a reveal effect: everything
+ * here applies with or without motion.
+ * - A card sets --tone inline (lib/tone.ts: the brand pair or a --code-*
+ *   syntax color, all legible in both themes) and gets .tone-card.
+ * - .tone-tile is its icon tile, .tone-text colors anything in its tone.
+ * - On hover (or focus within) a gradient ring lights the card's edge, the
+ *   tile glows, and Spotlight's glow (home.css) follows the pointer in the
+ *   card's tone.
+ * - The ring is ::before, drawn inside the border so cards that clip their
+ *   overflow (the scan cards) keep it. ::after stays free for the scan bar
+ *   and the wipe panel.
+ */
+.tone-card {
+  --tone: var(--primary);
+  transition:
+    border-color 300ms ease,
+    box-shadow 300ms ease;
+}
+
+.tone-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    var(--tone),
+    transparent 40%,
+    transparent 65%,
+    color-mix(in srgb, var(--accent) 70%, transparent)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.tone-card:is(:hover, :focus-within) {
+  border-color: color-mix(in srgb, var(--tone) 35%, var(--border));
+  box-shadow: 0 18px 48px -24px color-mix(in srgb, var(--tone) 80%, transparent);
+}
+
+.tone-card:is(:hover, :focus-within)::before {
+  opacity: 1;
+}
+
+.tone-text {
+  color: var(--tone);
+}
+
+.tone-tile {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 0.75rem;
+  color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tone) 28%, transparent);
+  transition: box-shadow 300ms ease;
+}
+
+.tone-card:hover .tone-tile {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--tone) 50%, transparent),
+    0 0 22px -4px var(--tone);
+}
+
+/* A hairline of the card's tone along its top edge. */
+.tone-hairline {
+  position: absolute;
+  inset-inline: 1.5rem;
+  top: 0;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in srgb, var(--tone) 70%, transparent),
+    transparent
+  );
+}
+
+/* The Philosophy numerals: outlined in the tone, filled on hover. */
+.tone-numeral {
+  color: transparent;
+  -webkit-text-stroke: 1.5px color-mix(in srgb, var(--tone) 45%, transparent);
+  transition:
+    color 300ms ease,
+    -webkit-text-stroke-color 300ms ease;
+}
+
+.tone-card:hover .tone-numeral {
+  color: color-mix(in srgb, var(--tone) 18%, transparent);
+  -webkit-text-stroke-color: var(--tone);
+}
+
+/* A small dot in the tone, before a proof tag or an industry. */
+.tone-dot {
+  width: 0.375rem;
+  height: 0.375rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background: var(--tone);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--tone) 70%, transparent);
+}
+
+/* Skill chips (components/SkillBadge.tsx). The mark is monochrome at rest;
+   on hover a brand logo takes its brand color (--brand-l on the light card,
+   --brand-d on the dark one) and a generic glyph takes the card's tone. */
+.skill-badge {
+  transition:
+    border-color 200ms ease,
+    color 200ms ease;
+}
+
+.skill-mark {
+  color: var(--muted-foreground);
+  transition: color 200ms ease;
+}
+
+.skill-badge:hover {
+  border-color: color-mix(in srgb, var(--tone, var(--primary)) 55%, var(--border));
+}
+
+.skill-badge:hover .skill-mark {
+  color: var(--tone, var(--primary));
+}
+
+.skill-badge-brand:hover {
+  border-color: color-mix(in srgb, var(--brand-l) 55%, var(--border));
+}
+
+.skill-badge-brand:hover .skill-mark {
+  color: var(--brand-l);
+}
+
+.dark .skill-badge-brand:hover {
+  border-color: color-mix(in srgb, var(--brand-d) 55%, var(--border));
+}
+
+.dark .skill-badge-brand:hover .skill-mark {
+  color: var(--brand-d);
+}
