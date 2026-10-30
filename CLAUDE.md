@@ -61,8 +61,9 @@ There is no CMS or database. Section copy and data (skills, work history, servic
 - The projects live in `src/data/projects.ts` (type `Project` in `src/types/index.ts`), strongest production work first. The Projects explorer renders all of them.
   - Each project has exactly one live link (`liveUrl`) and never a GitHub URL. The link is the production site, a staging host or a subdomain of abedubas.dev. A project with no working live URL stays out.
   - Staging is allowed: `stage: "staging"` gets a "staging" badge in the list and on the card. `access: "login"` marks a login-only system, and the card says "sign-in only".
-  - `shots` (type `ProjectShot`) are 1600x900 viewport screenshots of pages on `liveUrl`, stored in `public/images/projects/<slug>/` as `<nn>-<view>.webp`. Each has a `caption` (what the screen shows) and, optionally, the page's `path`. The first shot is the cover.
-  - Keep a shot only when it shows no error, blank page or personal or client data, and never use AI images. Login-only systems show their sign-in page; a screen inside one must show sample data, never production records. `shots: []` shows a placeholder frame.
+  - `shots` (type `ProjectShot`) are 1600x900 viewport screenshots of pages on `liveUrl`, stored in `public/images/projects/<slug>/` as `<nn>-<view>.webp`. Each has a `caption` (what the screen shows, at most 44 characters: the status strip shows one line, and at 1024px wide that's all that fits beside six dots) and, optionally, the page's `path`. The first shot is the cover.
+  - Keep a shot only when it shows no error, blank page or personal or client data, and never use AI images. `shots: []` shows a placeholder frame.
+  - A login-only system's gallery opens on screens from inside it and ends on its sign-in page. Those screens come from the same app run locally, from its own repo, with invented sample data: never production records, real people's names or real client companies. A detail page's `path` keeps the id from that local run.
   - `featured` marks the subset that resume.html mirrors, and that Bintoy names.
 - The home stats band's "Live Projects" card and the footer's live sites come from `publicLiveSites()` in `src/lib/live-sites.ts`: projects with `stage: "production"` and `access: "public"`, plus `src/data/live-sites.ts`. Keep both to public production sites: no staging hosts, login-only systems, client data or APIs.
 - The home stats band's GitHub numbers come from `src/data/github-stats.json`, a snapshot of totals across the personal (`akosiArvin081596`) and Alchemy (`abedubas-alchemydev`) accounts. It holds aggregates only, with no repo names.
@@ -164,7 +165,7 @@ The hero loop and the OG artwork were generated with Higgsfield AI (the `higgsfi
   - List the new photo in `SLIDES` in `HeroPortrait.tsx`.
   - The slideshow frame also blocks right-click and dragging, which only stops casual saving.
 - `public/images/hero/mosaic-{12,24,48}.png`: the first photo shrunk with ffmpeg to 12×15, 24×30 and 48×60 (`-vf "scale=W:H:flags=area"`), for its pixelated render-in. Regenerate them whenever the first photo changes.
-- `public/images/projects/<slug>/<nn>-<view>.webp` (set through each project's `shots`): headless-Chrome screenshots of pages on the live site at a 1600x900 viewport, converted with `cwebp -q 80`. Never AI images.
+- `public/images/projects/<slug>/<nn>-<view>.webp` (set through each project's `shots`): headless-Chrome screenshots at a 1600x900 viewport, converted with `cwebp -q 80`: pages on the live site, or, inside a login-only system, the same app run locally with invented data. Never AI images.
 - `src/assets/og-background.jpg` (1200×630): GPT Image 2.5.
 - The card icons (`Glyph`) and the Philosophy cards' small scenes (`src/app/PhilosophyArt.tsx`) are hand-drawn inline SVG in the card's tone, not generated art, so they follow the theme. Under `hinge` they draw on: `.art-draw` strokes use `pathLength={1}` on `<path>` elements (basic shapes don't support it everywhere), and `.art-grow` bars grow left to right.
 - With reduced motion, visitors get the poster and the still photo, never video.

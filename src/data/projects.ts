@@ -17,8 +17,11 @@ import type { Project } from "@/types";
 //   the page's path. The first is the cover, and the card shows them as a
 //   gallery. Keep only shots with no error, blank page, or personal or client
 //   data, and never AI images. `shots: []` shows a placeholder frame.
-//   Login-only systems show their sign-in page; a screen inside one must
-//   show sample data, never production records.
+//   A login-only system's gallery opens on screens from inside it and ends on
+//   its sign-in page. Those screens come from the same app run locally with
+//   invented sample data, never production records. Captions stay within 44
+//   characters: the status strip shows one line, and at 1024px wide that's
+//   all that fits beside six dots.
 //
 // Every liveUrl was verified on 2026-10-30: 2xx after redirects, serving the
 // app named here.
@@ -32,7 +35,14 @@ export const projects: Project[] = [
     liveUrl: "https://app.logisx.com/",
     stage: "production",
     access: "login",
-    shots: [{ src: "/images/projects/logisx/01-sign-in.webp", caption: "Sign-in page", path: "/login" }],
+    shots: [
+      { src: "/images/projects/logisx/01-dispatch-board.webp", caption: "Dispatch board: active loads and drivers", path: "/dashboard" },
+      { src: "/images/projects/logisx/02-truck-database.webp", caption: "Truck database: fleet, drivers and owners", path: "/trucks" },
+      { src: "/images/projects/logisx/03-expense-analytics.webp", caption: "Fuel and road spend by vendor and state", path: "/expenses" },
+      { src: "/images/projects/logisx/04-financials.webp", caption: "Fleet profit and loss for the month", path: "/admin/financials" },
+      { src: "/images/projects/logisx/05-investor-payouts.webp", caption: "An investor's monthly payout ledger", path: "/investor-portals/12" },
+      { src: "/images/projects/logisx/06-sign-in.webp", caption: "Sign-in page", path: "/login" },
+    ],
     featured: true,
   },
   {
@@ -44,7 +54,14 @@ export const projects: Project[] = [
     liveUrl: "https://app.lendyph.com/",
     stage: "production",
     access: "login",
-    shots: [{ src: "/images/projects/lendyph/01-sign-in.webp", caption: "Sign-in page", path: "/login" }],
+    shots: [
+      { src: "/images/projects/lendyph/01-dashboard.webp", caption: "Dashboard: portfolio and collections", path: "/dashboard" },
+      { src: "/images/projects/lendyph/02-members.webp", caption: "Members across two branches", path: "/borrowers" },
+      { src: "/images/projects/lendyph/03-loans.webp", caption: "Loan applications from review to release", path: "/loans" },
+      { src: "/images/projects/lendyph/04-loan-ledger.webp", caption: "Loan ledger: principal and interest", path: "/loans/4" },
+      { src: "/images/projects/lendyph/05-collection-report.webp", caption: "Collection efficiency report by branch", path: "/reports/collection_efficiency" },
+      { src: "/images/projects/lendyph/06-sign-in.webp", caption: "Sign-in page", path: "/login" },
+    ],
     featured: true,
   },
   {
@@ -56,7 +73,13 @@ export const projects: Project[] = [
     liveUrl: "https://app.vendoraph.com/",
     stage: "production",
     access: "login",
-    shots: [{ src: "/images/projects/vendora/01-sign-in.webp", caption: "POS sign-in page", path: "/pos/auth/login" }],
+    shots: [
+      { src: "/images/projects/vendora/01-sales-dashboard.webp", caption: "Sales dashboard: the week's sales and orders", path: "/pos/dashboard" },
+      { src: "/images/projects/vendora/02-pos-cart.webp", caption: "POS screen with a sample cart", path: "/pos/pos-screen" },
+      { src: "/images/projects/vendora/03-products.webp", caption: "Products with price, cost and stock", path: "/pos/products" },
+      { src: "/images/projects/vendora/04-orders.webp", caption: "Orders and their status", path: "/pos/orders" },
+      { src: "/images/projects/vendora/05-sign-in.webp", caption: "POS sign-in page", path: "/pos/auth/login" },
+    ],
     featured: true,
   },
   {
@@ -68,7 +91,14 @@ export const projects: Project[] = [
     liveUrl: "https://dromic.dswd-caraga-drmd.online/",
     stage: "production",
     access: "login",
-    shots: [{ src: "/images/projects/dromic/01-sign-in.webp", caption: "Sign-in page", path: "/login" }],
+    shots: [
+      { src: "/images/projects/dromic/01-dashboard.webp", caption: "Dashboard: incidents and LGU coverage", path: "/dashboard" },
+      { src: "/images/projects/dromic/02-incidents.webp", caption: "Incidents with their LGU and report counts", path: "/incidents" },
+      { src: "/images/projects/dromic/03-situational-report.webp", caption: "An LGU's situational progress report", path: "/incidents/1/reports/2" },
+      { src: "/images/projects/dromic/04-consolidated-report.webp", caption: "Consolidated report by cut-off period", path: "/incidents/1/consolidated" },
+      { src: "/images/projects/dromic/05-executive-dashboard.webp", caption: "Regional Director's executive dashboard", path: "/rd-dashboard/1" },
+      { src: "/images/projects/dromic/06-sign-in.webp", caption: "Sign-in page", path: "/login" },
+    ],
     featured: true,
   },
   {
@@ -98,7 +128,14 @@ export const projects: Project[] = [
     liveUrl: "https://ect-post-monitoring.abedubas.dev/",
     stage: "production",
     access: "login",
-    shots: [{ src: "/images/projects/ect/01-sign-in.webp", caption: "Sign-in page", path: "/login" }],
+    shots: [
+      { src: "/images/projects/ect/01-surveys.webp", caption: "Recent surveys and their sync status", path: "/?tab=surveys" },
+      { src: "/images/projects/ect/02-incident-selection.webp", caption: "Survey wizard, step 1: pick the incident", path: "/survey/new" },
+      { src: "/images/projects/ect/03-survey-form.webp", caption: "Form prefilled from a past survey", path: "/survey/new" },
+      { src: "/images/projects/ect/04-beneficiary-search.webp", caption: "Beneficiary search while typing a name", path: "/survey/new" },
+      { src: "/images/projects/ect/05-survey-detail.webp", caption: "Survey: cash received and how it was spent", path: "/survey/6b918f49-983d-49f1-af1d-1b1cef956811" },
+      { src: "/images/projects/ect/06-sign-in.webp", caption: "Sign-in page", path: "/login" },
+    ],
     featured: true,
   },
   {
@@ -156,7 +193,14 @@ export const projects: Project[] = [
     liveUrl: "https://ups.alchemydev.io/",
     stage: "production",
     access: "login",
-    shots: [{ src: "/images/projects/alchemydev-crm/01-sign-in.webp", caption: "Client portal sign-in page", path: "/login" }],
+    shots: [
+      { src: "/images/projects/alchemydev-crm/01-dashboard.webp", caption: "Studio dashboard: tasks and approvals", path: "/admin" },
+      { src: "/images/projects/alchemydev-crm/02-project.webp", caption: "A client's project: tasks and invoices", path: "/portal/projects/cmvutz3cj0003b0v4qyfvqko4" },
+      { src: "/images/projects/alchemydev-crm/03-board.webp", caption: "Board of tasks across every project", path: "/admin/board" },
+      { src: "/images/projects/alchemydev-crm/04-client-requests.webp", caption: "Client requests with status and priority", path: "/admin/client-requests" },
+      { src: "/images/projects/alchemydev-crm/05-team.webp", caption: "Team directory: roles and availability", path: "/admin/team" },
+      { src: "/images/projects/alchemydev-crm/06-sign-in.webp", caption: "Client portal sign-in page", path: "/login" },
+    ],
   },
   {
     slug: "oqg-recorder",
@@ -167,7 +211,13 @@ export const projects: Project[] = [
     liveUrl: "https://screen-recorder.obsidianquantgroup.com/",
     stage: "production",
     access: "login",
-    shots: [{ src: "/images/projects/oqg-recorder/01-sign-in.webp", caption: "Sign-in page", path: "/signin" }],
+    shots: [
+      { src: "/images/projects/oqg-recorder/01-recorder.webp", caption: "Recorder setup: source, mic and camera" },
+      { src: "/images/projects/oqg-recorder/02-recording.webp", caption: "Recording with the camera bubble on screen" },
+      { src: "/images/projects/oqg-recorder/03-ai-notes.webp", caption: "A finished recording with its AI transcript" },
+      { src: "/images/projects/oqg-recorder/04-library.webp", caption: "Recordings library, saved on the device" },
+      { src: "/images/projects/oqg-recorder/05-sign-in.webp", caption: "Sign-in page", path: "/signin" },
+    ],
   },
   {
     slug: "sec-compliance-matrix",
@@ -178,7 +228,14 @@ export const projects: Project[] = [
     liveUrl: "https://sec-compliance-matrix.alchemydev.io/",
     stage: "production",
     access: "login",
-    shots: [{ src: "/images/projects/sec-compliance-matrix/01-sign-in.webp", caption: "Sign-in page", path: "/login" }],
+    shots: [
+      { src: "/images/projects/sec-compliance-matrix/01-dashboard.webp", caption: "CCO dashboard: exposure and risk heatmap", path: "/cco" },
+      { src: "/images/projects/sec-compliance-matrix/02-matrix.webp", caption: "SEC filings with fines and violated rules", path: "/matrix" },
+      { src: "/images/projects/sec-compliance-matrix/03-firm.webp", caption: "A firm's penalties and violated rules", path: "/matrix" },
+      { src: "/images/projects/sec-compliance-matrix/04-heatmap.webp", caption: "Risk heatmap and the bad-actor watchlist", path: "/cco" },
+      { src: "/images/projects/sec-compliance-matrix/05-individual.webp", caption: "An individual's risk breakdown and filings", path: "/cco" },
+      { src: "/images/projects/sec-compliance-matrix/06-sign-in.webp", caption: "Sign-in page", path: "/login" },
+    ],
   },
   {
     slug: "serum72",
@@ -238,7 +295,14 @@ export const projects: Project[] = [
     liveUrl: "https://zoeybrinxx.alchemydev.io/",
     stage: "production",
     access: "login",
-    shots: [{ src: "/images/projects/zoey-binxx/01-sign-in.webp", caption: "Sign-in page", path: "/login" }],
+    shots: [
+      { src: "/images/projects/zoey-binxx/01-dashboard.webp", caption: "Dashboard: spend against what's claimable", path: "/dashboard" },
+      { src: "/images/projects/zoey-binxx/02-transactions.webp", caption: "Transactions read off receipts, by category", path: "/transactions" },
+      { src: "/images/projects/zoey-binxx/03-receipt.webp", caption: "A scanned receipt and the lines it produced", path: "/documents/cmvuu5iu2002nv4oe0cdlqvex" },
+      { src: "/images/projects/zoey-binxx/04-categories.webp", caption: "Spend by category, business vs personal", path: "/dashboard" },
+      { src: "/images/projects/zoey-binxx/05-documents.webp", caption: "Uploaded receipts and bank statements", path: "/documents" },
+      { src: "/images/projects/zoey-binxx/06-sign-in.webp", caption: "Sign-in page", path: "/login" },
+    ],
   },
   {
     slug: "ect-validation",
@@ -249,7 +313,14 @@ export const projects: Project[] = [
     liveUrl: "https://ect-beneficiary-validation.abedubas.dev/",
     stage: "production",
     access: "login",
-    shots: [{ src: "/images/projects/ect-validation/01-sign-in.webp", caption: "Sign-in page", path: "/login" }],
+    shots: [
+      { src: "/images/projects/ect-validation/01-dashboard.webp", caption: "Dashboard: damage and NHTS-PR totals", path: "/dashboard" },
+      { src: "/images/projects/ect-validation/02-barangay-breakdown.webp", caption: "Breakdown by LGU and barangay", path: "/dashboard" },
+      { src: "/images/projects/ect-validation/03-masterlist.webp", caption: "Masterlist with filters and CSV export", path: "/masterlist" },
+      { src: "/images/projects/ect-validation/04-deduplication.webp", caption: "Deduplication: fuzzy first-name matches", path: "/deduplication" },
+      { src: "/images/projects/ect-validation/05-data-cleansing.webp", caption: "Data cleansing: merge exact duplicates", path: "/data-cleansing" },
+      { src: "/images/projects/ect-validation/06-sign-in.webp", caption: "Sign-in page", path: "/login" },
+    ],
   },
   {
     slug: "masterlist-deduplication",
@@ -260,7 +331,12 @@ export const projects: Project[] = [
     liveUrl: "https://masterlist-deduplication.abedubas.dev/",
     stage: "production",
     access: "login",
-    shots: [{ src: "/images/projects/masterlist-deduplication/01-sign-in.webp", caption: "Sign-in page", path: "/login" }],
+    shots: [
+      { src: "/images/projects/masterlist-deduplication/01-dashboard.webp", caption: "Dashboard: duplicates and review progress" },
+      { src: "/images/projects/masterlist-deduplication/02-masterlists.webp", caption: "Masterlists per incident, with dedup runs", path: "/masterlists" },
+      { src: "/images/projects/masterlist-deduplication/03-review-pairs.webp", caption: "Review queue: two records side by side", path: "/masterlists/4/review?filter=pending" },
+      { src: "/images/projects/masterlist-deduplication/04-sign-in.webp", caption: "Sign-in page", path: "/login" },
+    ],
   },
   {
     slug: "akiip",
