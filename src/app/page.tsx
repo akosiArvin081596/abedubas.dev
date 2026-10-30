@@ -103,7 +103,11 @@ const range = (n: number) => Array.from({ length: n }, (_, i) => i);
 const piece = (c: number, extra?: Record<string, string | number>) =>
   ({ "--c": c, ...extra }) as CSSProperties;
 
-const caption = "font-mono text-[10px] leading-4 text-muted-foreground";
+// On screens at least 820px tall (the step the other sections use), the
+// stats and services cards scale up to fill their taller screen, from xl:
+// at lg the four columns are too narrow, and their text wraps too far.
+const caption =
+  "font-mono text-[10px] leading-4 text-muted-foreground [@media(min-height:900px)]:min-[1366px]:text-[11px] [@media(min-height:900px)]:min-[1366px]:leading-5";
 
 // A card's chart. All of it is decorative: the number and label carry it.
 function StatChart({ chart }: { chart: (typeof stats)[number]["chart"] }) {
@@ -115,8 +119,12 @@ function StatChart({ chart }: { chart: (typeof stats)[number]["chart"] }) {
     );
     const githubAt = ((githubSince - WEB_DEV_SINCE) / years.length) * 100;
     return (
-      <div aria-hidden="true" className="w-full">
-        <div className="flex h-10 items-end gap-1">
+      <div
+        aria-hidden="true"
+        className="w-full lg:flex lg:flex-1 lg:flex-col lg:justify-end"
+      >
+        {/* From lg the columns take the card's spare height, within limits */}
+        <div className="flex h-10 items-end gap-1 lg:h-auto lg:max-h-36 lg:min-h-10 lg:flex-1 [@media(min-height:900px)]:min-[1366px]:min-h-20 [@media(min-height:900px)]:min-[1366px]:gap-1.5">
           {years.map((year, c) => (
             <span
               key={year}
@@ -145,7 +153,7 @@ function StatChart({ chart }: { chart: (typeof stats)[number]["chart"] }) {
     return (
       <div aria-hidden="true" className="w-full">
         <div
-          className="grid gap-[3px]"
+          className="grid gap-[3px] [@media(min-height:900px)]:min-[1366px]:gap-1"
           style={{
             gridTemplateColumns: `repeat(${Math.ceil(total / 3)}, minmax(0, 1fr))`,
           }}
@@ -177,13 +185,13 @@ function StatChart({ chart }: { chart: (typeof stats)[number]["chart"] }) {
     // give the true shares.
     const top = githubStats.languages.top;
     return (
-      <ul aria-hidden="true" className="w-full space-y-1.5">
+      <ul aria-hidden="true" className="w-full space-y-1.5 [@media(min-height:900px)]:min-[1366px]:space-y-2">
         {top.map((language, c) => (
           <li key={language.name} className={`flex items-center gap-2 ${caption}`}>
-            <span className="w-16 shrink-0 truncate text-foreground/80">
+            <span className="w-16 shrink-0 truncate text-foreground/80 [@media(min-height:900px)]:min-[1366px]:w-20">
               {language.name}
             </span>
-            <span className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-foreground/10">
+            <span className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-foreground/10 [@media(min-height:900px)]:min-[1366px]:h-2">
               <span
                 className="stat-bar absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary to-accent"
                 style={piece(c, {
@@ -202,7 +210,7 @@ function StatChart({ chart }: { chart: (typeof stats)[number]["chart"] }) {
   const total = githubStats.repos.total;
   return (
     <div aria-hidden="true" className="w-full">
-      <span className="relative block h-2 overflow-hidden rounded-full bg-foreground/10">
+      <span className="relative block h-2 overflow-hidden rounded-full bg-foreground/10 [@media(min-height:900px)]:min-[1366px]:h-3">
         <span
           className="stat-bar absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary to-accent"
           style={piece(0, {
@@ -770,7 +778,7 @@ export default function HomePage() {
       <section
         data-nav="home"
         data-reveal="count"
-        className="stat-band relative overflow-hidden border-y border-border bg-muted/30 py-12 lg:py-6 tight:py-5"
+        className="stat-band relative overflow-hidden border-y border-border bg-muted/30 py-12 lg:py-6 tight:py-5 [@media(min-height:900px)]:lg:py-8"
       >
         <span
           aria-hidden="true"
@@ -787,16 +795,16 @@ export default function HomePage() {
           <span className="count-beam block h-full w-2/5 bg-gradient-to-r from-transparent via-primary to-transparent" />
         </span>
 
-        <div className="container-site relative">
-          <div data-reveal-item className="stat-eyebrow mb-6 lg:mb-4 short:mb-3">
+        <div className="container-site relative lg:flex lg:flex-1 lg:flex-col">
+          <div data-reveal-item className="stat-eyebrow mb-6 lg:mb-4 short:mb-3 [@media(min-height:900px)]:min-[1366px]:mb-5">
             <SectionLabel>by the numbers</SectionLabel>
           </div>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 xl:gap-6 short:gap-4">
+          <div className="grid gap-5 sm:grid-cols-2 lg:flex-1 lg:grid-cols-4 lg:grid-rows-[1fr_auto] xl:gap-6 short:gap-4">
             {stats.map((stat) => (
               <article
                 key={stat.label}
                 data-reveal-item
-                className="stat-card group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card/70 p-6 shadow-sm backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/50 hover:shadow-[0_0_32px_-8px_var(--primary)] xl:p-6 short:p-5"
+                className="stat-card group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card/70 p-6 shadow-sm backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/50 hover:shadow-[0_0_32px_-8px_var(--primary)] short:p-5 [@media(min-height:900px)]:min-[1366px]:p-8"
               >
                 <Spotlight />
                 <span aria-hidden="true" className="stat-scan" />
@@ -809,7 +817,7 @@ export default function HomePage() {
                 <div className="relative flex items-center justify-between gap-3">
                   <span
                     aria-hidden="true"
-                    className="stat-icon grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/25 transition-shadow duration-300 group-hover:shadow-[0_0_20px_-4px_var(--primary)]"
+                    className="stat-icon grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/25 transition-shadow duration-300 group-hover:shadow-[0_0_20px_-4px_var(--primary)] [@media(min-height:900px)]:min-[1366px]:h-12 [@media(min-height:900px)]:min-[1366px]:w-12"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -817,28 +825,28 @@ export default function HomePage() {
                       viewBox="0 0 24 24"
                       strokeWidth={1.5}
                       stroke="currentColor"
-                      className="h-5 w-5"
+                      className="h-5 w-5 [@media(min-height:900px)]:min-[1366px]:h-6 [@media(min-height:900px)]:min-[1366px]:w-6"
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" d={stat.icon} />
                     </svg>
                   </span>
                   <span
                     aria-hidden="true"
-                    className="stat-key truncate font-mono text-xs text-muted-foreground"
+                    className="stat-key truncate font-mono text-xs text-muted-foreground [@media(min-height:900px)]:min-[1366px]:text-sm"
                     style={{ "--n": stat.metric.length } as CSSProperties}
                   >
                     {stat.metric}
                   </span>
                 </div>
 
-                <div className="stat-value count-num relative mt-4 text-5xl font-bold leading-none tabular-nums text-foreground xl:text-6xl">
+                <div className="stat-value count-num relative mt-4 text-5xl font-bold leading-none tabular-nums text-foreground xl:text-6xl [@media(min-height:900px)]:min-[1366px]:mt-6 [@media(min-height:900px)]:min-[1366px]:text-7xl">
                   <Odometer value={stat.value} suffix={stat.suffix} />
                 </div>
-                <div className="count-label relative mt-2 text-sm font-medium text-muted-foreground xl:text-base">
+                <div className="count-label relative mt-2 text-sm font-medium text-muted-foreground xl:text-base [@media(min-height:900px)]:min-[1366px]:mt-3 [@media(min-height:900px)]:min-[1366px]:text-lg">
                   {stat.label}
                 </div>
 
-                <div className="relative mt-4 flex min-h-14 flex-1 items-end">
+                <div className="relative mt-4 flex min-h-14 flex-1 flex-col justify-end [@media(min-height:900px)]:min-[1366px]:mt-6">
                   <StatChart chart={stat.chart} />
                 </div>
               </article>
@@ -847,7 +855,7 @@ export default function HomePage() {
             {/* The live projects, by domain, across the whole row */}
             <article
               data-reveal-item
-              className="stat-card group relative flex flex-col gap-6 overflow-hidden rounded-2xl border border-border bg-card/70 p-6 shadow-sm backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/50 hover:shadow-[0_0_32px_-8px_var(--primary)] sm:col-span-2 lg:col-span-4 lg:flex-row lg:items-center lg:gap-10 lg:p-5"
+              className="stat-card group relative flex flex-col gap-6 overflow-hidden rounded-2xl border border-border bg-card/70 p-6 shadow-sm backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/50 hover:shadow-[0_0_32px_-8px_var(--primary)] sm:col-span-2 lg:col-span-4 lg:flex-row lg:items-center lg:gap-10 lg:p-5 [@media(min-height:900px)]:min-[1366px]:gap-14 [@media(min-height:900px)]:min-[1366px]:px-8 [@media(min-height:900px)]:min-[1366px]:py-6"
             >
               <Spotlight />
               <span aria-hidden="true" className="stat-scan" />
@@ -856,11 +864,11 @@ export default function HomePage() {
                 className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent"
               />
 
-              <div className="relative flex shrink-0 flex-col lg:w-72">
+              <div className="relative flex shrink-0 flex-col lg:w-72 [@media(min-height:900px)]:min-[1366px]:w-80">
                 <div className="flex items-center justify-between gap-3">
                   <span
                     aria-hidden="true"
-                    className="stat-icon grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/25 transition-shadow duration-300 group-hover:shadow-[0_0_20px_-4px_var(--primary)]"
+                    className="stat-icon grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/25 transition-shadow duration-300 group-hover:shadow-[0_0_20px_-4px_var(--primary)] [@media(min-height:900px)]:min-[1366px]:h-12 [@media(min-height:900px)]:min-[1366px]:w-12"
                   >
                     {/* Heroicons "globe-alt" */}
                     <svg
@@ -869,7 +877,7 @@ export default function HomePage() {
                       viewBox="0 0 24 24"
                       strokeWidth={1.5}
                       stroke="currentColor"
-                      className="h-5 w-5"
+                      className="h-5 w-5 [@media(min-height:900px)]:min-[1366px]:h-6 [@media(min-height:900px)]:min-[1366px]:w-6"
                     >
                       <path
                         strokeLinecap="round"
@@ -880,23 +888,23 @@ export default function HomePage() {
                   </span>
                   <span
                     aria-hidden="true"
-                    className="stat-key truncate font-mono text-xs text-muted-foreground"
+                    className="stat-key truncate font-mono text-xs text-muted-foreground [@media(min-height:900px)]:min-[1366px]:text-sm"
                     style={{ "--n": "projects.live".length } as CSSProperties}
                   >
                     projects.live
                   </span>
                 </div>
-                <div className="stat-value count-num relative mt-4 text-5xl font-bold leading-none tabular-nums text-foreground xl:text-6xl">
+                <div className="stat-value count-num relative mt-4 text-5xl font-bold leading-none tabular-nums text-foreground xl:text-6xl [@media(min-height:900px)]:min-[1366px]:mt-6 [@media(min-height:900px)]:min-[1366px]:text-7xl">
                   <Odometer value={liveProjects.length} suffix="" />
                 </div>
-                <div className="count-label relative mt-2 text-sm font-medium text-muted-foreground xl:text-base">
+                <div className="count-label relative mt-2 text-sm font-medium text-muted-foreground xl:text-base [@media(min-height:900px)]:min-[1366px]:mt-3 [@media(min-height:900px)]:min-[1366px]:text-lg">
                   Live Projects, on their own domains
                 </div>
               </div>
 
               {/* A cloud of domain chips, each linking to its live site.
                   The project's name shows on hover and to screen readers. */}
-              <ul className="relative flex flex-1 flex-wrap content-center gap-2">
+              <ul className="relative flex flex-1 flex-wrap content-center gap-2 [@media(min-height:900px)]:min-[1366px]:gap-3">
                 {liveProjects.map((project, c) => (
                   <li
                     key={project.host}
@@ -908,7 +916,7 @@ export default function HomePage() {
                       target="_blank"
                       rel="noopener noreferrer"
                       title={project.name}
-                      className="group/live inline-flex items-center gap-2 rounded-lg border border-border bg-background/50 px-2.5 py-1.5 font-mono text-xs text-foreground transition-colors duration-200 hover:border-primary/50 hover:bg-primary/5 hover:text-primary"
+                      className="group/live inline-flex items-center gap-2 rounded-lg border border-border bg-background/50 px-2.5 py-1.5 font-mono text-xs text-foreground [@media(min-height:900px)]:min-[1366px]:px-3.5 [@media(min-height:900px)]:min-[1366px]:py-2 [@media(min-height:900px)]:min-[1366px]:text-sm transition-colors duration-200 hover:border-primary/50 hover:bg-primary/5 hover:text-primary"
                     >
                       <span aria-hidden="true" className="h-1.5 w-1.5 shrink-0 rounded-full bg-green-500 shadow-[0_0_6px_#22c55e]" />
                       {project.host}
@@ -923,7 +931,7 @@ export default function HomePage() {
           </div>
           <p
             data-reveal-item
-            className="stat-source mt-4 text-right font-mono text-xs text-muted-foreground lg:pr-16 short:mt-3"
+            className="stat-source mt-4 text-right font-mono text-xs text-muted-foreground lg:pr-16 short:mt-3 [@media(min-height:900px)]:min-[1366px]:mt-5"
           >
             <span aria-hidden="true">{"// "}</span>
             GitHub data from {githubStats.accounts} accounts, updated{" "}
@@ -939,7 +947,7 @@ export default function HomePage() {
       <section
         data-nav="home"
         data-reveal="count"
-        className="stat-band relative overflow-hidden border-y border-border bg-muted/30 py-12 lg:py-6 tight:py-4"
+        className="stat-band relative overflow-hidden border-y border-border bg-muted/30 py-12 lg:py-6 tight:py-4 [@media(min-height:900px)]:lg:py-8"
       >
         <span
           aria-hidden="true"
@@ -956,14 +964,14 @@ export default function HomePage() {
           <span className="count-beam block h-full w-2/5 bg-gradient-to-r from-transparent via-primary to-transparent" />
         </span>
 
-        <div className="container-site relative">
+        <div className="container-site relative lg:flex lg:flex-1 lg:flex-col">
           <div
             data-reveal-item
-            className="stat-eyebrow services-head mb-6 flex flex-wrap items-end justify-between gap-x-8 gap-y-3"
+            className="stat-eyebrow services-head mb-6 flex [@media(min-height:900px)]:min-[1366px]:mb-8 flex-wrap items-end justify-between gap-x-8 gap-y-3"
           >
             <div>
               <SectionLabel>what i do</SectionLabel>
-              <h2 className="mt-2 text-3xl font-bold text-foreground sm:text-4xl xl:text-5xl">
+              <h2 className="mt-2 text-3xl font-bold text-foreground sm:text-4xl xl:text-5xl [@media(min-height:900px)]:min-[1366px]:mt-3">
                 What I{" "}
                 <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                   Do
@@ -976,12 +984,12 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 xl:gap-6">
+          <div className="grid gap-5 sm:grid-cols-2 lg:flex-1 lg:grid-cols-4 xl:gap-6">
             {services.map((service) => (
               <article
                 key={service.number}
                 data-reveal-item
-                className="stat-card group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card/70 p-6 shadow-sm backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/50 hover:shadow-[0_0_32px_-8px_var(--primary)] xl:p-6 tight:p-5"
+                className="stat-card group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card/70 p-6 shadow-sm backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/50 hover:shadow-[0_0_32px_-8px_var(--primary)] tight:p-5 [@media(min-height:900px)]:min-[1366px]:p-8"
               >
                 <Spotlight />
                 <span aria-hidden="true" className="stat-scan" />
@@ -994,7 +1002,7 @@ export default function HomePage() {
                 <div className="relative flex items-center justify-between gap-3">
                   <span
                     aria-hidden="true"
-                    className="stat-icon grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/25 transition-shadow duration-300 group-hover:shadow-[0_0_20px_-4px_var(--primary)]"
+                    className="stat-icon grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/25 transition-shadow duration-300 group-hover:shadow-[0_0_20px_-4px_var(--primary)] [@media(min-height:900px)]:min-[1366px]:h-12 [@media(min-height:900px)]:min-[1366px]:w-12"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -1002,14 +1010,14 @@ export default function HomePage() {
                       viewBox="0 0 24 24"
                       strokeWidth={1.5}
                       stroke="currentColor"
-                      className="h-5 w-5"
+                      className="h-5 w-5 [@media(min-height:900px)]:min-[1366px]:h-6 [@media(min-height:900px)]:min-[1366px]:w-6"
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" d={service.icon} />
                     </svg>
                   </span>
                   <span
                     aria-hidden="true"
-                    className="stat-key truncate font-mono text-xs text-muted-foreground"
+                    className="stat-key truncate font-mono text-xs text-muted-foreground [@media(min-height:900px)]:min-[1366px]:text-sm"
                     style={{ "--n": service.key.length } as CSSProperties}
                   >
                     {service.key}
@@ -1018,30 +1026,30 @@ export default function HomePage() {
 
                 <div
                   aria-hidden="true"
-                  className="stat-value count-num relative mt-4 text-5xl font-bold leading-none tabular-nums text-foreground xl:text-6xl tight:mt-3"
+                  className="stat-value count-num relative mt-4 text-5xl font-bold leading-none tabular-nums text-foreground xl:text-6xl tight:mt-3 [@media(min-height:900px)]:min-[1366px]:mt-6 [@media(min-height:900px)]:min-[1366px]:text-7xl"
                 >
                   {service.number}
                 </div>
-                <h3 className="count-label relative mt-2 text-base font-semibold text-foreground xl:text-lg">
+                <h3 className="count-label relative mt-2 text-base font-semibold text-foreground xl:text-lg [@media(min-height:900px)]:min-[1366px]:mt-4 [@media(min-height:900px)]:min-[1366px]:text-xl">
                   {service.title}
                 </h3>
-                <p className="count-label relative mt-2 text-sm leading-relaxed text-muted-foreground">
+                <p className="count-label relative mt-2 text-sm leading-relaxed text-muted-foreground [@media(min-height:900px)]:min-[1366px]:mt-3 [@media(min-height:900px)]:min-[1366px]:text-base [@media(min-height:900px)]:min-[1366px]:leading-relaxed">
                   {service.description}
                 </p>
 
-                <div className="relative mt-4 flex min-h-14 flex-1 flex-col justify-end tight:mt-3">
-                  <p aria-hidden="true" className="font-mono text-[10px] leading-4 text-muted-foreground">
+                <div className="relative mt-4 flex min-h-14 flex-1 flex-col justify-end tight:mt-3 [@media(min-height:900px)]:min-[1366px]:mt-6">
+                  <p aria-hidden="true" className={caption}>
                     <span className="text-green-600 dark:text-green-400">$</span>{" "}
                     {service.command}
                   </p>
                   <ul
                     aria-label={`${service.title}: tools`}
-                    className="mt-1.5 flex flex-wrap gap-1.5"
+                    className="mt-1.5 flex flex-wrap gap-1.5 [@media(min-height:900px)]:min-[1366px]:mt-2.5 [@media(min-height:900px)]:min-[1366px]:gap-2"
                   >
                     {service.tools.map((tool, c) => (
                       <li
                         key={tool}
-                        className="svc-chip rounded-md border border-border bg-background/60 px-2 py-0.5 font-mono text-[11px] text-foreground/80 transition-colors duration-200 group-hover:border-primary/30"
+                        className="svc-chip rounded-md border border-border bg-background/60 px-2 py-0.5 font-mono text-[11px] text-foreground/80 transition-colors duration-200 group-hover:border-primary/30 [@media(min-height:900px)]:min-[1366px]:px-2.5 [@media(min-height:900px)]:min-[1366px]:py-1 [@media(min-height:900px)]:min-[1366px]:text-xs"
                         style={{ "--c": c } as CSSProperties}
                       >
                         {tool}

@@ -236,6 +236,16 @@
   animation-delay: calc(200ms + var(--i) * var(--stagger));
 }
 
+/* From lg a hairline sits between each two paragraphs (AboutSection's
+   BioRule). It isn't an item, so it keeps the container's --i, and its own
+   --k (1-3) places it: it draws left to right as the pass moves from the
+   paragraph above it to the one below. */
+.motion [data-reveal="highlight"][data-revealed] .highlight-rule {
+  transform-origin: 0 50%;
+  animation: highlight-rule var(--dur-2) var(--ease-in-out) backwards;
+  animation-delay: calc(400ms + (var(--i) + var(--k) + 0.5) * var(--stagger));
+}
+
 .motion [data-reveal="highlight"]:not([data-revealed]) .highlight-quote {
   opacity: 0;
 }
@@ -260,6 +270,12 @@
     opacity: 0;
     transform: translateX(-56px);
     filter: blur(12px);
+  }
+}
+
+@keyframes highlight-rule {
+  from {
+    transform: scaleX(0);
   }
 }
 

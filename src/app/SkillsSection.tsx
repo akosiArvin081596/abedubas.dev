@@ -62,11 +62,18 @@ function shippedIn(slugs: string[]) {
 // has its own tone (styles/tone.css) and ends on the projects that show it.
 // The cards share four grid rows (subgrid), so titles, text and the
 // "shipped in" lines align across a row however each one wraps.
+//
+// In the snap layout (lg, at least 700px tall) the section fills the screen
+// under the header: the heading keeps its natural height and the cards take
+// the rest. Their third row (the description) absorbs the extra height, so
+// each card reads header, title and text from the top with its "shipped in"
+// footer pinned to the bottom. `[@media(min-height:900px)]:` steps the type
+// and spacing up on tall screens, where `short:`/`tight:` no longer apply.
 export function SkillsSection() {
   return (
-    <section id="skills" data-nav="skills" className="relative py-16 lg:py-8">
-      <div className="container-site">
-        <div data-reveal="decode" className="mb-12 text-center xl:mb-14 short:mb-5 tight:mb-4">
+    <section id="skills" data-nav="skills" className="relative py-16 lg:py-6">
+      <div className="container-site lg:flex lg:flex-1 lg:flex-col">
+        <div data-reveal="decode" className="mb-12 text-center xl:mb-14 short:mb-5 tight:mb-4 [@media(min-height:821px)_and_(max-height:899px)]:lg:mb-8">
           <SectionLabel className="decode-sub mb-4 short:mb-2">what i bring</SectionLabel>
           <h2 className="mb-5 text-4xl font-bold tracking-tight text-foreground md:text-6xl short:mb-3 short:text-5xl tight:mb-2 tight:text-4xl">
             <Decode text="Skills & Expertise" />
@@ -77,16 +84,16 @@ export function SkillsSection() {
           </p>
         </div>
 
-        <div data-reveal="scan">
+        <div data-reveal="scan" className="lg:flex lg:flex-1 lg:flex-col">
           {/* On short screens the eyebrow alone heads the cards; screen
               readers still get the heading. */}
-          <div data-reveal-item className="scan-sweep mb-6 w-fit short:mb-3">
+          <div data-reveal-item className="scan-sweep mb-6 w-fit short:mb-3 [@media(min-height:821px)_and_(max-height:899px)]:lg:mb-3">
             <SectionLabel>core strengths</SectionLabel>
-            <h3 className="mt-2 text-2xl font-semibold text-foreground md:text-3xl short:sr-only">
+            <h3 className="mt-2 text-2xl font-semibold text-foreground md:text-3xl short:sr-only [@media(min-height:821px)_and_(max-height:899px)]:lg:sr-only">
               Core Strengths
             </h3>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 short:gap-5 tight:gap-4">
+          <div className="grid gap-6 sm:grid-cols-2 lg:flex-1 lg:grid-cols-4 lg:grid-rows-[auto_auto_1fr_auto] short:gap-5 tight:gap-4">
             {coreStrengths.map((strength, index) => {
               const shipped = shippedIn(strength.proof);
               return (
@@ -94,37 +101,37 @@ export function SkillsSection() {
                   key={strength.title}
                   data-reveal-item
                   style={toneStyle(strength.tone)}
-                  className="scan-card tone-card relative row-span-4 grid grid-rows-subgrid gap-0 overflow-hidden rounded-2xl border border-border bg-card p-6 xl:p-7 short:p-5 tight:p-4"
+                  className="scan-card tone-card relative row-span-4 grid grid-rows-subgrid gap-0 overflow-hidden rounded-2xl border border-border bg-card p-6 xl:p-7 short:p-6 tight:p-4 [@media(min-height:900px)]:xl:p-8"
                 >
                   <Spotlight />
                   <span aria-hidden="true" className="tone-hairline" />
                   <div className="scan-sweep relative row-span-4 grid grid-rows-subgrid gap-0">
-                    <div className="mb-4 flex items-center justify-between gap-3 short:mb-3">
-                      <span className="tone-tile h-10 w-10 tight:h-9 tight:w-9">
-                        <Glyph name={strength.icon} className="h-5 w-5" />
+                    <div className="mb-4 flex items-center justify-between gap-3 short:mb-4 tight:mb-3 [@media(min-height:900px)]:lg:mb-6">
+                      <span className="tone-tile h-10 w-10 tight:h-9 tight:w-9 [@media(min-height:900px)]:lg:h-12 [@media(min-height:900px)]:lg:w-12">
+                        <Glyph name={strength.icon} className="h-5 w-5 [@media(min-height:900px)]:lg:h-6 [@media(min-height:900px)]:lg:w-6" />
                       </span>
-                      <span aria-hidden="true" className="font-mono text-xs text-muted-foreground">
+                      <span aria-hidden="true" className="font-mono text-xs text-muted-foreground [@media(min-height:900px)]:lg:text-sm">
                         <span className="tone-text">{String(index + 1).padStart(2, "0")}</span>
                         {" / "}
                         {String(coreStrengths.length).padStart(2, "0")}
                       </span>
                     </div>
-                    <h4 className="mb-2 text-lg font-semibold text-card-foreground xl:text-xl">
+                    <h4 className="mb-2 text-lg font-semibold text-card-foreground xl:text-xl [@media(min-height:900px)]:lg:mb-3">
                       {strength.title}
                     </h4>
-                    <p className="text-sm leading-relaxed text-muted-foreground xl:text-base short:text-sm">
+                    <p className="text-sm leading-relaxed text-muted-foreground xl:text-base tight:text-sm">
                       {strength.description}
                     </p>
                     {shipped.length > 0 ? (
-                      <div className="pt-5 short:pt-4 tight:pt-3">
+                      <div className="pt-5 short:pt-4 tight:pt-3 [@media(min-height:900px)]:lg:pt-6">
                         <div>
-                          <p className="flex items-center gap-2 font-mono text-[11px] leading-4 text-muted-foreground">
+                          <p className="flex items-center gap-2 font-mono text-[11px] leading-4 text-muted-foreground [@media(min-height:900px)]:lg:text-xs">
                             <span>
                               <span aria-hidden="true">{"// "}</span>shipped in
                             </span>
                             <span aria-hidden="true" className="h-px flex-1 border-t border-dashed border-border" />
                           </p>
-                          <ul className="mt-2 flex flex-wrap gap-1.5">
+                          <ul className="mt-2 flex flex-wrap gap-1.5 [@media(min-height:900px)]:lg:mt-3 [@media(min-height:900px)]:lg:gap-2">
                             {shipped.map((title) => (
                               <li
                                 key={title}

@@ -993,10 +993,12 @@ html:not(.js) .shell-prompt {
 
 /* The home page moves a screen at a time where its sections fit one: from
    lg, on screens at least 700px tall. Each section fills the screen below
-   the sticky header with its content centered, and HomeSnap pages through
-   them, a smooth glide per gesture, with the footer as the last stop. On
-   phones the sections run taller than the screen, so the page scrolls
-   freely. */
+   the sticky header, and its content takes that height too: the section's
+   child grows (`lg:flex-1` in the section files), so the centering here
+   only shows if a section's content doesn't stretch. HomeSnap pages
+   through them, a smooth glide per gesture, with the footer as the last
+   stop. On phones the sections run taller than the screen, so the page
+   scrolls freely. */
 @media (min-width: 1024px) and (min-height: 700px) {
   .home-snap > section {
     display: flex;

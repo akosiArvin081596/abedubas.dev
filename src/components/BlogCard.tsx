@@ -9,17 +9,21 @@ interface BlogCardProps {
 }
 
 // The `stack` effect in styles/motion/work.css grows .stack-bar downward.
+// From lg the card may be stretched taller than its content (the home Blog
+// pane fills the screen): the date line heads it, the description takes
+// the slack, and the tags sit on a dashed rule at its foot. On tall screens
+// (`[@media(min-height:820px)]:`) the type and padding step up.
 export function BlogCard({ post, revealItem = false }: BlogCardProps) {
   return (
     <article
       data-reveal-item={revealItem ? "" : undefined}
-      className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card p-6 pl-7 transition-[border-color,box-shadow] duration-200 hover:border-primary/50 hover:shadow-lg md:p-8 md:pl-9"
+      className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card p-6 pl-7 transition-[border-color,box-shadow] duration-200 hover:border-primary/50 hover:shadow-lg md:p-8 md:pl-9 tight:p-6 tight:pl-7 [@media(min-height:820px)]:xl:p-10 [@media(min-height:820px)]:xl:pl-11"
     >
       <span
         aria-hidden="true"
         className="stack-bar absolute inset-y-0 left-0 w-1 origin-top bg-gradient-to-b from-primary to-accent opacity-70 transition-opacity group-hover:opacity-100"
       />
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 font-mono text-xs text-muted-foreground">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 font-mono text-xs text-muted-foreground [@media(min-height:820px)]:xl:mb-6 [@media(min-height:820px)]:xl:text-sm">
         <div className="flex items-center gap-2">
           <time dateTime={post.date}>
             {new Date(post.date).toLocaleDateString("en-US", {
@@ -52,14 +56,14 @@ export function BlogCard({ post, revealItem = false }: BlogCardProps) {
         </span>
       </div>
       <Link href={`/blog/${post.slug}`}>
-        <h3 className="mb-3 text-xl font-semibold text-card-foreground transition-colors group-hover:text-primary md:text-2xl">
+        <h3 className="mb-3 text-xl font-semibold text-card-foreground transition-colors group-hover:text-primary md:text-2xl lg:text-xl xl:text-2xl [@media(min-height:820px)]:xl:mb-4 [@media(min-height:820px)]:xl:text-3xl [@media(min-height:820px)]:xl:leading-tight">
           {post.title}
         </h3>
       </Link>
-      <p className="mb-5 flex-1 text-sm leading-relaxed text-muted-foreground md:text-base">
+      <p className="mb-5 flex-1 text-sm leading-relaxed text-muted-foreground md:text-base [@media(min-height:820px)]:xl:mb-6 [@media(min-height:820px)]:xl:text-lg">
         {post.description}
       </p>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 lg:border-t lg:border-dashed lg:border-border lg:pt-5">
         {post.tags.map((tag) => (
           <TagBadge key={tag} tag={tag} />
         ))}
