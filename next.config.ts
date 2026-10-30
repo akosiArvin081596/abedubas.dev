@@ -8,6 +8,16 @@ const nextConfig: NextConfig = {
     // modest-resolution photo, shown large, so heavier compression shows.
     qualities: [75, 90],
   },
+  // The site is one page now. The old pages' URLs land on their sections,
+  // permanently (308). Redirects run before the filesystem; /blog/:slug
+  // isn't matched, so posts stay pages.
+  async redirects() {
+    return ["about", "skills", "projects", "blog", "contact"].map((section) => ({
+      source: `/${section}`,
+      destination: `/#${section}`,
+      permanent: true,
+    }));
+  },
 };
 
 const withMDX = createMDX({

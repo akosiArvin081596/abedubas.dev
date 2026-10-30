@@ -9,3 +9,5 @@ export { mdxComponents } from "./MDXComponents";
 export { CodeWindow } from "./CodeWindow";
 export { SectionLabel } from "./SectionLabel";
 export { SplitText } from "./motion";
+export { LocalClock } from "./LocalClock";
+export { BackToTop } from "./BackToTop";

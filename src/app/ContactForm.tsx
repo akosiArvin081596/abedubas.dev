@@ -138,7 +138,7 @@ export function ContactForm() {
               setFormData({ ...formData, message: e.target.value })
             }
             required
-            rows={6}
+            rows={4}
             className={`${inputClass} resize-none`}
             placeholder="Your message..."
           />

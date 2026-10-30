@@ -1,23 +1,29 @@
 import { Fragment, type CSSProperties, type ReactNode } from "react";
 import Link from "next/link";
-import { SectionLabel, SplitText } from "@/components";
+import { LocalClock, SectionLabel, SplitText } from "@/components";
 import githubStats from "@/data/github-stats.json";
-import { otherLiveSites } from "@/data/live-sites";
-import { projects } from "@/data/projects";
 import { WEB_DEV_SINCE, yearsOfExperience } from "@/lib/career";
+import { publicLiveSites } from "@/lib/live-sites";
 import { WindowDots } from "@/components/WindowDots";
+import { AboutSection } from "./AboutSection";
+import { BlogSection } from "./BlogSection";
+import { ContactSection } from "./ContactSection";
+import { ExperienceSection } from "./ExperienceSection";
 import { HeroBackdrop } from "./HeroBackdrop";
-import { HeroClock } from "./HeroClock";
 import { HeroPortrait } from "./HeroPortrait";
 import { HeroShell } from "./HeroShell";
 import { HomeSnap } from "./HomeSnap";
 import { Odometer } from "./Odometer";
 import { ParallaxHero } from "./ParallaxHero";
+import { PhilosophySection } from "./PhilosophySection";
+import { ProjectsSection } from "./ProjectsSection";
+import { SkillsSection } from "./SkillsSection";
 import { Spotlight } from "./Spotlight";
+import { StackSection } from "./StackSection";
 
 // The hero's stack, DevOps and security lists (its fastfetch readout and
 // engineer.ts): the stack runs frontend, backend, then databases; DevOps
-// and security match their categories on the Skills page.
+// and security match their categories in the Technical Skills section.
 const techStack = [
   "Vue",
   "Nuxt",
@@ -214,16 +220,10 @@ function StatChart({ chart }: { chart: (typeof stats)[number]["chart"] }) {
   );
 }
 
-// Everything running live on its own domain, for the band's wide card: the
-// Projects page's live projects, then the other live sites.
-const liveProjects = [
-  ...projects.flatMap((project) =>
-    project.liveUrl
-      ? [{ name: project.title.split(" ")[0], url: project.liveUrl }]
-      : [],
-  ),
-  ...otherLiveSites,
-].map((site) => ({ ...site, host: new URL(site.url).host }));
+// Everything public and live on its own domain, for the band's wide card:
+// the public production projects, then the other live sites. Staging hosts
+// and login-only systems stay off it.
+const liveProjects = publicLiveSites();
 
 // When the GitHub snapshot was taken, for the band's footnote
 const githubUpdated = new Date(
@@ -484,24 +484,6 @@ function TermLine({ command, start }: { command: string; start: number }) {
 // A segment of the tmux status bar; they slide in left to right (--c).
 const segment = (c: number) => ({ "--c": c }) as CSSProperties;
 
-const arrow = (className: string) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={2}
-    stroke="currentColor"
-    aria-hidden="true"
-    className={className}
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-    />
-  </svg>
-);
-
 // The hero buttons' icons: a 2x2 grid of tiles (top left, top right,
 // bottom left, bottom right) and a paper plane.
 const GRID_TILES = [
@@ -528,20 +510,6 @@ const plane = (
   </svg>
 );
 
-const check = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth={2}
-    stroke="currentColor"
-    aria-hidden="true"
-    className="h-4 w-4 text-primary"
-  >
-    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-  </svg>
-);
-
 export default function HomePage() {
   return (
     <ParallaxHero>
@@ -552,7 +520,7 @@ export default function HomePage() {
           by side from lg, stacked below. The window is dark in both themes,
           like a real terminal, and its panes are translucent, so the
           backdrop's circuit loop glows faintly through. */}
-      <section className="relative">
+      <section data-nav="home" className="relative">
         <div
           data-reveal="boot"
           data-reveal-on="load"
@@ -689,7 +657,7 @@ export default function HomePage() {
                       Styles in styles/motion/home.css (.cta-*). */}
                   <div className="hero-ctas mt-1.5 flex flex-wrap items-center gap-3 font-sans">
                     <Link
-                      href="/projects"
+                      href="/#projects"
                       className="cta-primary group relative inline-flex items-center gap-2.5 overflow-hidden rounded-lg px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-950/60 ring-1 ring-inset ring-white/20 transition-[box-shadow,filter] duration-300 hover:shadow-indigo-500/40 hover:brightness-110 sm:text-[0.9375rem] 2xl:px-6 2xl:py-3 2xl:text-base"
                       style={startAt(HERO_START.work)}
                     >
@@ -722,7 +690,7 @@ export default function HomePage() {
                       View My Work
                     </Link>
                     <Link
-                      href="/contact"
+                      href="/#contact"
                       className="cta-secondary boot-drop group relative inline-flex items-center gap-2.5 overflow-hidden rounded-lg border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-semibold text-slate-100 transition-colors duration-300 hover:border-sky-400/60 hover:bg-sky-400/10 hover:text-white sm:text-[0.9375rem] 2xl:px-6 2xl:py-3 2xl:text-base"
                       style={startAt(HERO_START.contact)}
                     >
@@ -779,12 +747,12 @@ export default function HomePage() {
                   <span className="tmux-seg hidden sm:inline" style={segment(4)}>
                     Philippines
                   </span>
-                  <HeroClock
+                  <LocalClock
                     part="time"
                     className="tmux-seg rounded-[3px] bg-white/5 px-1.5 text-slate-200 empty:invisible"
                     style={segment(5)}
                   />
-                  <HeroClock
+                  <LocalClock
                     part="date"
                     className="tmux-seg hidden empty:invisible sm:inline"
                     style={segment(6)}
@@ -800,8 +768,9 @@ export default function HomePage() {
 
       {/* Stats Section: a row of live metric cards */}
       <section
+        data-nav="home"
         data-reveal="count"
-        className="stat-band relative overflow-hidden border-y border-border bg-muted/30 py-12 lg:py-6"
+        className="stat-band relative overflow-hidden border-y border-border bg-muted/30 py-12 lg:py-6 tight:py-5"
       >
         <span
           aria-hidden="true"
@@ -819,15 +788,15 @@ export default function HomePage() {
         </span>
 
         <div className="container-site relative">
-          <div data-reveal-item className="stat-eyebrow mb-6 lg:mb-4">
+          <div data-reveal-item className="stat-eyebrow mb-6 lg:mb-4 short:mb-3">
             <SectionLabel>by the numbers</SectionLabel>
           </div>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 xl:gap-6">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 xl:gap-6 short:gap-4">
             {stats.map((stat) => (
               <article
                 key={stat.label}
                 data-reveal-item
-                className="stat-card group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card/70 p-6 shadow-sm backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/50 hover:shadow-[0_0_32px_-8px_var(--primary)] xl:p-6"
+                className="stat-card group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card/70 p-6 shadow-sm backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/50 hover:shadow-[0_0_32px_-8px_var(--primary)] xl:p-6 short:p-5"
               >
                 <Spotlight />
                 <span aria-hidden="true" className="stat-scan" />
@@ -887,7 +856,7 @@ export default function HomePage() {
                 className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent"
               />
 
-              <div className="relative flex shrink-0 flex-col lg:w-64">
+              <div className="relative flex shrink-0 flex-col lg:w-72">
                 <div className="flex items-center justify-between gap-3">
                   <span
                     aria-hidden="true"
@@ -954,7 +923,7 @@ export default function HomePage() {
           </div>
           <p
             data-reveal-item
-            className="stat-source mt-4 text-right font-mono text-xs text-muted-foreground lg:pr-16"
+            className="stat-source mt-4 text-right font-mono text-xs text-muted-foreground lg:pr-16 short:mt-3"
           >
             <span aria-hidden="true">{"// "}</span>
             GitHub data from {githubStats.accounts} accounts, updated{" "}
@@ -968,8 +937,9 @@ export default function HomePage() {
           on a terminal line that lists its tools, where a stat card's chart
           sits. */}
       <section
+        data-nav="home"
         data-reveal="count"
-        className="stat-band relative overflow-hidden border-y border-border bg-muted/30 py-12 lg:py-6"
+        className="stat-band relative overflow-hidden border-y border-border bg-muted/30 py-12 lg:py-6 tight:py-4"
       >
         <span
           aria-hidden="true"
@@ -1011,7 +981,7 @@ export default function HomePage() {
               <article
                 key={service.number}
                 data-reveal-item
-                className="stat-card group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card/70 p-6 shadow-sm backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/50 hover:shadow-[0_0_32px_-8px_var(--primary)] xl:p-6"
+                className="stat-card group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card/70 p-6 shadow-sm backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-primary/50 hover:shadow-[0_0_32px_-8px_var(--primary)] xl:p-6 tight:p-5"
               >
                 <Spotlight />
                 <span aria-hidden="true" className="stat-scan" />
@@ -1048,7 +1018,7 @@ export default function HomePage() {
 
                 <div
                   aria-hidden="true"
-                  className="stat-value count-num relative mt-4 text-5xl font-bold leading-none tabular-nums text-foreground xl:text-6xl"
+                  className="stat-value count-num relative mt-4 text-5xl font-bold leading-none tabular-nums text-foreground xl:text-6xl tight:mt-3"
                 >
                   {service.number}
                 </div>
@@ -1059,7 +1029,7 @@ export default function HomePage() {
                   {service.description}
                 </p>
 
-                <div className="relative mt-4 flex min-h-14 flex-1 flex-col justify-end">
+                <div className="relative mt-4 flex min-h-14 flex-1 flex-col justify-end tight:mt-3">
                   <p aria-hidden="true" className="font-mono text-[10px] leading-4 text-muted-foreground">
                     <span className="text-green-600 dark:text-green-400">$</span>{" "}
                     {service.command}
@@ -1085,101 +1055,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="relative overflow-hidden border-t border-border py-24 lg:py-12">
-        {/* Background effects */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-          <div className="home-orb absolute -top-20 left-1/4 h-64 w-64 rounded-full bg-primary/10 blur-3xl xl:h-96 xl:w-96" />
-          <div
-            className="home-orb absolute -bottom-20 right-1/4 h-72 w-72 rounded-full bg-accent/10 blur-3xl xl:h-[28rem] xl:w-[28rem]"
-            style={{ "--orb-time": "10s" } as CSSProperties}
-          />
-
-          {/* Sparkle dots */}
-          <div className="absolute left-[10%] top-16 h-2 w-2 rounded-full bg-primary/40 motion-safe:animate-[sparkle_3s_ease-in-out_infinite]" />
-          <div className="absolute right-[15%] top-32 h-1.5 w-1.5 rounded-full bg-accent/50 motion-safe:animate-[sparkle_4s_ease-in-out_infinite_0.5s]" />
-          <div className="absolute bottom-24 left-[20%] h-2 w-2 rounded-full bg-primary/30 motion-safe:animate-[sparkle_3.5s_ease-in-out_infinite_1s]" />
-          <div className="absolute bottom-16 right-[25%] h-1.5 w-1.5 rounded-full bg-accent/40 motion-safe:animate-[sparkle_2.5s_ease-in-out_infinite_0.3s]" />
-        </div>
-
-        <div
-          data-reveal="words"
-          className="container-site relative text-center"
-        >
-          {/* Icon */}
-          <div
-            data-reveal-item
-            className="words-follow mb-8 inline-flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent p-4 text-white shadow-lg shadow-primary/25 xl:p-5"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              aria-hidden="true"
-              className="h-8 w-8 xl:h-10 xl:w-10"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"
-              />
-            </svg>
-          </div>
-
-          <h2
-            data-reveal-item
-            className="words-head mx-auto mb-6 max-w-5xl text-4xl font-bold leading-[1.1] text-foreground sm:text-5xl md:text-6xl xl:text-7xl"
-          >
-            <SplitText text="Ready to Start a" />{" "}
-            <span className="whitespace-nowrap">
-              <SplitText
-                text="Project"
-                start={4}
-                className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
-              />
-              <SplitText text="?" start={5} />
-            </span>
-          </h2>
-
-          <p
-            data-reveal-item
-            className="words-follow words-after mx-auto mb-10 max-w-2xl text-lg text-muted-foreground xl:text-xl"
-          >
-            I&apos;m always excited to work on new challenges. Let&apos;s
-            discuss how I can help bring your ideas to life.
-          </p>
-
-          <Link
-            href="/contact"
-            data-reveal-item
-            className="words-follow words-after group relative inline-flex items-center text-lg font-medium text-foreground transition-colors hover:text-primary xl:text-xl"
-          >
-            <span className="relative">
-              Let&apos;s Talk
-              <span className="absolute -bottom-1 left-0 h-0.5 w-full bg-primary/30 transition-all duration-300 group-hover:bg-primary" />
-            </span>
-            {arrow("ml-2 h-5 w-5 transition-transform group-hover:translate-x-1")}
-          </Link>
-
-          {/* Trust indicators */}
-          <div className="words-after mt-10 flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground xl:text-base">
-            {["Quick Response", "Free Consultation", "No Commitment"].map(
-              (label) => (
-                <span
-                  key={label}
-                  data-reveal-item
-                  className="words-follow flex items-center gap-2"
-                >
-                  {check}
-                  {label}
-                </span>
-              ),
-            )}
-          </div>
-        </div>
-      </section>
+      {/* The five former pages, in nav order. Each is a direct <section>
+          child of .home-snap, so HomeSnap stops at its top. The closing
+          call to action lives in the footer, the last stop. */}
+      <AboutSection />
+      <PhilosophySection />
+      <ExperienceSection />
+      <SkillsSection />
+      <StackSection />
+      <ProjectsSection />
+      <BlogSection />
+      <ContactSection />
     </ParallaxHero>
   );
 }

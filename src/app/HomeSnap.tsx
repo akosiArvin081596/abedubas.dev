@@ -1,55 +1,54 @@
 "use client";
 
 import { useEffect } from "react";
+import { cancelGlide, glideTo, isGliding, stopFor } from "@/lib/glide";
+import { holdSpy, releaseSpy } from "@/lib/scroll-spy";
 
-// The sticky header's height (4.5rem), which each section starts under.
-const HEADER = 72;
-// How long a glide of one screen takes, in ms. Longer moves take a little
-// longer, shorter ones a little less.
-const DURATION = 900;
 // A wheel stream quiet for this long has ended, a trackpad's momentum
 // included.
 const QUIET_MS = 180;
 // Wheel deltas smaller than this are noise.
 const MIN_DELTA = 4;
 
-const easeInOutCubic = (t: number) =>
-  t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
-
 // The home page's sections are a screen tall each, and this pages through
-// them: each wheel or trackpad gesture glides the page one section up or
-// down, eased in and out. The rest of that gesture's stream, a trackpad's
-// momentum included, is swallowed, so one flick never skips two sections.
-// PageUp/PageDown, the arrow keys and Space page too, and Home/End go to the
-// top and the bottom (the footer).
+// them: each wheel or trackpad gesture glides the page one stop up or down
+// (lib/glide.ts), eased in and out. The rest of that gesture's stream, a
+// trackpad's momentum included, is swallowed, so one flick never skips two
+// sections. PageUp/PageDown, the arrow keys and Space page too, and
+// Home/End go to the top and the bottom. The stops are each section's top,
+// the footer's (data-snap-stop) and the page's end.
 //
 // It leaves alone: a wheel over something that scrolls itself (the
-// terminal's output), keys typed into a field, Space on a button or link,
-// touch scrolling, pinch zoom, and scrollbar drags (a click cancels a
-// glide). It only runs where the sections fit a screen (the same media
-// query as `.home-snap` in home.css) with motion on. Its glide counts as
-// scrolling, so each section's entrance waits for the page to come to rest.
+// terminal's output, the timeline, the project list), keys while focus is
+// in something that can still scroll that way, keys someone else already
+// handled (the project list's arrows), keys typed into a field, Space on a
+// button or link, touch scrolling, pinch zoom, and scrollbar drags (a click
+// cancels a glide). Paging only runs where the sections fit a screen (the
+// same media query as `.home-snap` in home.css) with motion on.
+//
+// It also glides same-page links, at any width with motion on: a click on
+// a link to "/" or to "/#<id>" of an element on this page glides there,
+// then pushes the URL. Scroll-spy holds the nav on the target meanwhile.
+// Without motion, the browser (and next/link) jump there instead.
 export function HomeSnap() {
   useEffect(() => {
     const html = document.documentElement;
     const fits = window.matchMedia(
       "(min-width: 1024px) and (min-height: 700px)",
     );
-    const active = () => fits.matches && html.classList.contains("motion");
+    const motion = () => html.classList.contains("motion");
+    const active = () => fits.matches && motion();
 
-    let frame = 0;
-    let moving = false;
     let locked = false;
     let quiet = 0;
 
-    // Where the page can rest: each section's top, and the page's end (the
-    // footer).
+    // Where the page can rest: each section's top, the footer's, and the
+    // page's end.
     const stops = () => {
       const end = html.scrollHeight - window.innerHeight;
       const tops = Array.from(
-        document.querySelectorAll<HTMLElement>(".home-snap > section"),
-        (section) =>
-          Math.round(section.getBoundingClientRect().top + window.scrollY - HEADER),
+        document.querySelectorAll(".home-snap > section, [data-snap-stop]"),
+        stopFor,
       );
       return [...new Set([...tops, end])]
         .filter((top) => top >= 0 && top <= end)
@@ -64,41 +63,21 @@ export function HomeSnap() {
         : points.findLast((point) => point < y - 2);
     };
 
-    const stop = () => {
-      cancelAnimationFrame(frame);
-      moving = false;
-    };
+    const glide = (to: number | undefined) =>
+      to === undefined ? false : glideTo(to);
 
-    const glide = (to: number | undefined) => {
-      if (to === undefined) return false;
-      const from = window.scrollY;
-      const distance = to - from;
-      if (Math.abs(distance) < 2) return false;
-      const screens = Math.abs(distance) / window.innerHeight;
-      const duration = DURATION * Math.min(1.3, Math.max(0.6, screens));
-      const start = performance.now();
-      moving = true;
-      const step = (now: number) => {
-        const t = Math.min(1, (now - start) / duration);
-        window.scrollTo({ top: from + distance * easeInOutCubic(t), behavior: "instant" });
-        if (t < 1) frame = requestAnimationFrame(step);
-        else moving = false;
-      };
-      frame = requestAnimationFrame(step);
-      return true;
-    };
-
-    // Is the wheel over something that can still scroll that way itself?
-    const scrollsItself = (target: EventTarget | null, deltaY: number) => {
+    // Is `target`, or something around it, able to scroll further that way
+    // itself? `direction` is 1 for down, -1 for up.
+    const scrollsItself = (target: EventTarget | null, direction: number) => {
       for (
         let node = target instanceof Element ? target : null;
-        node && node !== document.body;
+        node && node !== document.body && node !== html;
         node = node.parentElement
       ) {
         if (node.scrollHeight <= node.clientHeight + 1) continue;
         if (!/(auto|scroll)/.test(getComputedStyle(node).overflowY)) continue;
         const room =
-          deltaY > 0
+          direction > 0
             ? node.scrollTop + node.clientHeight < node.scrollHeight - 1
             : node.scrollTop > 0;
         if (room) return true;
@@ -113,14 +92,14 @@ export function HomeSnap() {
     const onWheel = (event: WheelEvent) => {
       if (!active() || event.ctrlKey || ignored(event.target)) return;
       if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
-      if (scrollsItself(event.target, event.deltaY)) return;
+      if (scrollsItself(event.target, Math.sign(event.deltaY))) return;
       event.preventDefault();
       // The gesture's stream keeps the lock until it goes quiet.
       window.clearTimeout(quiet);
       quiet = window.setTimeout(() => {
         locked = false;
       }, QUIET_MS);
-      if (moving || locked || Math.abs(event.deltaY) < MIN_DELTA) return;
+      if (isGliding() || locked || Math.abs(event.deltaY) < MIN_DELTA) return;
       if (glide(next(event.deltaY > 0 ? 1 : -1))) locked = true;
     };
 
@@ -132,34 +111,72 @@ export function HomeSnap() {
       if (event.key === " " && target?.closest("a, button, summary, [role='button']")) {
         return;
       }
-      let to: number | undefined;
-      if (["PageDown", "ArrowDown"].includes(event.key) || (event.key === " " && !event.shiftKey)) {
-        to = next(1);
-      } else if (["PageUp", "ArrowUp"].includes(event.key) || (event.key === " " && event.shiftKey)) {
-        to = next(-1);
-      } else if (event.key === "Home") {
-        to = 0;
-      } else if (event.key === "End") {
-        to = html.scrollHeight - window.innerHeight;
+      let direction: 1 | -1;
+      if (["PageDown", "ArrowDown", "End"].includes(event.key) || (event.key === " " && !event.shiftKey)) {
+        direction = 1;
+      } else if (["PageUp", "ArrowUp", "Home"].includes(event.key) || (event.key === " " && event.shiftKey)) {
+        direction = -1;
       } else {
         return;
       }
+      // Focus is in a pane that can still scroll that way: let it.
+      if (scrollsItself(target, direction)) return;
       event.preventDefault();
-      if (!moving) glide(to);
+      if (isGliding()) return;
+      if (event.key === "Home") glide(0);
+      else if (event.key === "End") glide(html.scrollHeight - window.innerHeight);
+      else glide(next(direction));
+    };
+
+    // A same-page link: "/" or "/#<id>" of something on this page.
+    const onClick = (event: MouseEvent) => {
+      if (
+        !motion() ||
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      ) {
+        return;
+      }
+      const anchor = (event.target as Element | null)?.closest?.("a");
+      if (!anchor || (anchor.target && anchor.target !== "_self")) return;
+      const url = new URL(anchor.href, location.href);
+      if (url.origin !== location.origin || url.pathname !== "/" || location.pathname !== "/") {
+        return;
+      }
+      const id = decodeURIComponent(url.hash.slice(1));
+      const target = id ? document.getElementById(id) : null;
+      if (id && !target) return;
+
+      event.preventDefault();
+      const key = target
+        ? (target.closest("[data-nav]")?.getAttribute("data-nav") ?? null)
+        : "home";
+      holdSpy(key);
+      if (!glideTo(target ? stopFor(target) : 0, releaseSpy)) releaseSpy();
+      const href = url.pathname + url.search + url.hash;
+      if (href !== location.pathname + location.search + location.hash) {
+        history.pushState(null, "", href);
+      }
     };
 
     // A click (a scrollbar drag, say) takes over from any glide.
-    const onPointer = () => stop();
+    const onPointer = () => cancelGlide();
 
     window.addEventListener("wheel", onWheel, { passive: false });
     window.addEventListener("keydown", onKey);
     window.addEventListener("pointerdown", onPointer, { passive: true });
+    document.addEventListener("click", onClick, true);
     return () => {
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("pointerdown", onPointer);
+      document.removeEventListener("click", onClick, true);
       window.clearTimeout(quiet);
-      stop();
+      cancelGlide();
     };
   }, []);
 

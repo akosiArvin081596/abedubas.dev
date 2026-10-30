@@ -12,16 +12,13 @@ import {
   type ReactNode,
 } from "react";
 import { useTheme } from "@/components/ThemeProvider";
+import { PAGE_KEYS, hrefFor, type PageKey } from "@/data/sections";
 
-// Pages a command can open, by name.
-const PAGES = {
-  about: "/about",
-  projects: "/projects",
-  skills: "/skills",
-  blog: "/blog",
-  contact: "/contact",
-} as const;
-type Page = keyof typeof PAGES;
+// The sections a command can go to, by name: "/#about" and so on.
+const PAGES = Object.fromEntries(
+  PAGE_KEYS.map((key) => [key, hrefFor(key)]),
+) as Record<PageKey, string>;
+type Page = PageKey;
 
 const isPage = (name: string): name is Page => Object.hasOwn(PAGES, name);
 
@@ -117,9 +114,10 @@ interface HeroShellProps {
 const outClass = "shell-out text-sm leading-relaxed sm:text-[0.9375rem]";
 
 // The last prompt of the hero's terminal session, live. Visitors can type
-// commands: `help` lists them, page names open that page (through the route
-// curtain, which catches the link click), `cat engineer.ts` prints the
-// source, and so on. While there's output, the pane carries data-shell: from
+// commands: `help` lists them, a section's name (or `cd` to it) glides the
+// page down to that section (HomeSnap catches the link click), `cat
+// engineer.ts` prints the source, and so on. While there's output, the
+// pane carries data-shell: from
 // lg it then scrolls inside a screen-tall hero (styles/motion/home.css), and
 // on smaller screens it simply grows with the page. The caret is a block
 // drawn over the input at the cursor, in `ch`, since the type is monospace.
@@ -186,11 +184,13 @@ export function HeroShell({ start, files, peers }: HeroShellProps) {
     return () => window.clearTimeout(timer.current);
   }, []);
 
+  // Going to a section prints its link, then follows it (see `submit`):
+  // HomeSnap glides the page there.
   const open = (page: Page) => {
     navPending.current = true;
     return (
       <p className={`${outClass} text-slate-400`}>
-        opening{" "}
+        heading down to{" "}
         <Link
           ref={navRef}
           href={PAGES[page]}
@@ -198,7 +198,6 @@ export function HeroShell({ start, files, peers }: HeroShellProps) {
         >
           ~/{page}
         </Link>
-        <span className="shell-dots" aria-hidden="true" />
       </p>
     );
   };
@@ -362,17 +361,18 @@ export function HeroShell({ start, files, peers }: HeroShellProps) {
 
     append(line, run(line));
 
-    // A page command: follow its link once the line has shown for a moment.
-    // Scheduled here, not in an effect, so more output can't cancel it. A
-    // link gone by then (`clear`) is skipped: clicking a detached link would
-    // load the page in full, without the curtain.
+    // A section command: follow its link once the line has shown for a
+    // moment. The click goes through HomeSnap, which glides the page to the
+    // section (or, without motion, next/link jumps there). Scheduled here,
+    // not in an effect, so more output can't cancel it. A link gone by then
+    // (`clear`) is skipped: clicking a detached link would reload the page.
     if (navPending.current) {
       navPending.current = false;
       window.clearTimeout(navTimer.current);
       navTimer.current = window.setTimeout(() => {
         const link = navRef.current;
         if (link?.isConnected) link.click();
-      }, 650);
+      }, 450);
     }
   };
 

@@ -9,9 +9,12 @@ A modern, professional Information Technologist / Software Engineer portfolio we
 - **Tailwind CSS** - Utility-first styling with custom theme
 - **MDX Blog** - Write blog posts in Markdown with React components
 - **Dark/Light Theme** - System-aware theme with toggle
-- **Motion System** - A unique, cinematic scroll reveal for every section, a short loading screen when the site loads, and a "terminal curtain" between pages that types the destination (`cd ~/projects`). Motion only travels top to bottom and left to right, and it switches off under reduced motion
-- **Terminal Hero** - The intro runs as a full-screen tmux session beside a slideshow of photos that render in like terminal images. Its last prompt is live: try `help`, `cat engineer.ts` or `projects`
-- **Generated Media** - Hero loop, project covers and social-card art made with Higgsfield AI
+- **One Page That Snaps** - Home, About, Skills, Projects, Blog and Contact are full-screen sections of one page. On desktop each wheel gesture or key press glides the page one section, and nav links glide to their section while the underline follows the one in view. The old page URLs (`/about`, `/projects`, ...) redirect to their sections
+- **Project Explorer** - Every project on one screen: an `ls ~/projects` list beside a browser-window card with the project's live link. Staging hosts are labeled, and no project links to GitHub
+- **Full-Screen Footer** - The closing call to action, section links, contact with a live local clock, socials and a few live sites
+- **Motion System** - A unique, cinematic scroll reveal for every section, a short loading screen when the site loads, and a "terminal curtain" between the home page and a blog post that types the destination (`cd ~/about`). Motion only travels top to bottom and left to right, and it switches off under reduced motion
+- **Terminal Hero** - The intro runs as a full-screen tmux session beside a slideshow of photos that render in like terminal images. Its last prompt is live: try `help`, `cat engineer.ts` or `cd projects`
+- **Generated Media** - Hero loop, social-card art and the first four project covers made with Higgsfield AI; the newer covers are screenshots of the live sites
 - **SEO Optimized** - Meta tags, semantic HTML, and generated Open Graph cards for the site and each post
 - **Responsive Design** - Mobile-first, works on all devices
 - **Contact Form** - API route for form submissions
@@ -20,33 +23,35 @@ A modern, professional Information Technologist / Software Engineer portfolio we
 
 ```
 src/
-├── app/                    # Next.js App Router pages
-│   ├── about/             # About page
+├── app/                    # Next.js App Router
 │   ├── api/contact/       # Contact form API
-│   ├── blog/              # Blog index and dynamic posts
-│   ├── contact/           # Contact page
-│   ├── projects/          # Projects page
-│   ├── skills/            # Skills page
+│   ├── blog/[slug]/       # Blog posts, the only pages besides home
+│   ├── *Section.tsx       # The home page's sections (About, Skills, Projects, ...)
+│   ├── HomeSnap.tsx       # Section-by-section paging and same-page link glides
+│   ├── ProjectExplorer.tsx # The Projects section's list and card
 │   ├── globals.css        # Global styles with theme variables
 │   ├── layout.tsx         # Root layout with providers
 │   ├── not-found.tsx      # 404 page
-│   └── page.tsx           # Home page
+│   └── page.tsx           # The one page: hero, stats, What I Do, then the sections
 ├── assets/                # Build-time assets (OG card artwork)
 ├── components/            # Reusable components
 │   ├── motion/            # Reveal observer, page transitions, split text
 │   ├── BlogCard.tsx       # Blog post card
 │   ├── CodeWindow.tsx     # Editor-window frame
-│   ├── Footer.tsx         # Site footer
+│   ├── Footer.tsx         # Full-screen site footer
 │   ├── MDXComponents.tsx  # MDX rendering components
 │   ├── Navbar.tsx         # Navigation bar
 │   ├── ProjectCard.tsx    # Project card, framed as a browser window
 │   ├── SkillBadge.tsx     # Skill badge
 │   └── ThemeProvider.tsx  # Theme context provider
 ├── content/blog/          # MDX blog posts
+├── data/                  # Projects, live sites, nav sections, contact details
 ├── lib/                   # Utility functions
 │   ├── blog.ts            # Blog helper functions
+│   ├── glide.ts           # The eased scroll glide
+│   ├── scroll-spy.ts      # Which section is in view, for the nav
 │   └── og.tsx             # Shared pieces of the OG cards
-├── styles/motion/         # Motion contract (core.css) and per-page effects
+├── styles/motion/         # Motion contract (core.css) and per-section effects
 └── types/                 # TypeScript types
     └── index.ts
 public/
@@ -87,12 +92,11 @@ public/
 
 Update your personal information in these files:
 - `src/app/layout.tsx` - Site metadata and SEO
-- `src/app/page.tsx` - Home page content
-- `src/app/about/page.tsx` - Bio and experience
-- `src/app/projects/page.tsx` - Your projects
-- `src/app/skills/page.tsx` - Your skills
-- `src/app/contact/page.tsx` - Contact information
-- `src/components/Footer.tsx` - Social links
+- `src/app/page.tsx` - Hero, stats and services
+- `src/app/AboutSection.tsx`, `ExperienceSection.tsx` - Bio and experience
+- `src/data/projects.ts` - Your projects
+- `src/app/SkillsSection.tsx`, `StackSection.tsx` - Your skills
+- `src/data/contact.ts` - Email, GitHub and LinkedIn, used by the Contact section, the footer and the chat
 
 ### Adding Blog Posts
 

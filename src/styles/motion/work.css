@@ -1,22 +1,25 @@
 /*
- * Work pages: decode (skills header, on load), scan (skills strengths),
- * wipe (skills categories), type (projects header, on load), window
- * (projects grid), trace (projects CTA), focus (blog header, on load),
- * stack (blog list), rule (blog post header, on load).
+ * The home page's work sections, and the post header: decode (#skills
+ * header), scan (#skills strengths), wipe (#stack categories), type
+ * (#projects header), window (#projects explorer), focus (#blog header),
+ * stack (#blog posts), rule (a post's header, on load).
  * The contract, with its pace and scale tokens, is in core.css.
  */
 
 /* ---------------------------------------------------------------------------
  * decode: the Skills title churns through code glyphs for about 1.4 s, then
  * settles left to right, each letter flashing as it locks
- * (components/Decode.tsx drives it, after the route curtain lifts). The
- * subtitle comes out of a blur under it. The title stays hidden until
- * Decode takes over, so the final text never flashes first.
+ * (components/Decode.tsx drives it, once the section has revealed and the
+ * page is still). The eyebrow and subtitle come out of a blur around it.
+ * A scroll reveal: the header (item-less) stays hidden until it's
+ * revealed, and the title stays hidden until Decode takes over, so the
+ * final text never flashes first.
  */
-/* Hold the title back for at most 500 ms: past that (a slow device), it
-   simply shows, and Decode leaves it plain. The hold pauses under the route
-   curtain, so after a navigation it still covers the gap until Decode runs. */
-.motion [data-reveal="decode"] [data-decode=""] {
+/* Hold the title back for at most 500 ms from the reveal: past that (a slow
+   device), it simply shows, and Decode leaves it plain. The hold pauses
+   while the page moves or a cover is up, so it still covers the gap until
+   Decode runs. */
+.motion [data-reveal="decode"][data-revealed] [data-decode=""] {
   animation: decode-hold 0s 500ms backwards;
 }
 
@@ -35,7 +38,7 @@
   animation: decode-lock var(--dur-1) var(--ease-out) backwards;
 }
 
-.motion [data-reveal="decode"] .decode-sub {
+.motion [data-reveal="decode"][data-revealed] .decode-sub {
   animation: decode-sub var(--dur-2) var(--ease-out) backwards;
   animation-delay: calc(600ms + var(--i) * var(--stagger));
 }
@@ -259,24 +262,25 @@
  * character each (--chars on the line sets the count), with the caret
  * riding along. Then the title's words drop out of their masks, and the
  * subtitle's words follow. The caret blinks a few times and then rests;
- * without .motion it simply sits at the end.
+ * without .motion it simply sits at the end. A scroll reveal: the header
+ * (item-less) stays hidden until it's revealed.
  */
-.motion [data-reveal="type"] .type-line {
+.motion [data-reveal="type"][data-revealed] .type-line {
   animation: type-keys var(--dur-2) steps(var(--chars), end) 200ms backwards;
 }
 
-.motion [data-reveal="type"] .type-caret {
+.motion [data-reveal="type"][data-revealed] .type-caret {
   animation:
     type-caret var(--dur-2) steps(var(--chars), end) 200ms backwards,
     type-blink var(--dur-2) step-end 1500ms 4;
 }
 
-.motion [data-reveal="type"] .type-title .split-word > span {
+.motion [data-reveal="type"][data-revealed] .type-title .split-word > span {
   animation: type-drop var(--dur-2) var(--ease-out) backwards;
   animation-delay: calc(1150ms + var(--si) * var(--stagger));
 }
 
-.motion [data-reveal="type"] .type-sub .split-word > span {
+.motion [data-reveal="type"][data-revealed] .type-sub .split-word > span {
   animation: type-drop var(--dur-2) var(--ease-out) backwards;
   animation-delay: calc(1300ms + var(--si) * 25ms);
 }
@@ -313,16 +317,26 @@
 }
 
 /* ---------------------------------------------------------------------------
- * window: each project card opens like a browser window. Two colored
- * panels sweep across it, left to right: accent, then primary over it, and
- * they leave in the reverse order, uncovering the card. Then the cover
- * opens top to bottom while the image settles from 1.2x out of a 12px blur,
- * the title bar drops in, and the details follow. Cards stagger along the
- * diagonals (--d).
+ * window: the project explorer's list and card each open like a browser
+ * window. Two colored panels sweep across it, left to right: accent, then
+ * primary over it, and they leave in the reverse order, uncovering it.
+ * Then the card's cover opens top to bottom while the image settles from
+ * 1.2x out of a 12px blur, the title bar drops in, and the details follow.
+ * The two stagger along the diagonal (--d). Once the visitor picks another
+ * project, the card carries data-swapped and drops out of the entrance, so
+ * the new project's content swaps in without replaying it.
  */
 .motion [data-reveal="window"][data-revealed] [data-reveal-item] {
   --window-at: calc(var(--d) * var(--stagger) * 1.5);
   animation: window-frame var(--dur-2) linear backwards;
+  animation-delay: var(--window-at);
+}
+
+/* What's inside stays hidden until the first panel covers it. Opacity,
+   not visibility, so a tab focused mid-entrance keeps its focus. The
+   card's own parts (below) override this with their entrances. */
+.motion [data-reveal="window"][data-revealed] [data-reveal-item] > * {
+  animation: window-content var(--dur-2) linear backwards;
   animation-delay: var(--window-at);
 }
 
@@ -333,7 +347,6 @@
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  visibility: visible;
   scale: 0 1;
 }
 
@@ -375,15 +388,26 @@
   animation-delay: calc(var(--window-at) + 950ms);
 }
 
-/* The card stays hidden until the first panel covers it. */
+/* The frame (its border, fill and shadow) stays clear until the first
+   panel covers it. */
 @keyframes window-frame {
   0%,
   42% {
-    visibility: hidden;
+    border-color: transparent;
+    background-color: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+}
+
+@keyframes window-content {
+  0%,
+  42% {
+    opacity: 0;
   }
   42.01%,
   100% {
-    visibility: visible;
+    opacity: 1;
   }
 }
 
@@ -433,6 +457,18 @@
   }
 }
 
+/* After the first switch: no entrance, no panels. */
+.motion [data-reveal="window"] [data-reveal-item][data-swapped],
+.motion [data-reveal="window"] [data-reveal-item][data-swapped] > *,
+.motion [data-reveal="window"] [data-swapped] :is(.window-cover, .window-cover img, .window-bar, .window-body) {
+  animation: none;
+}
+
+.motion [data-reveal="window"] [data-reveal-item][data-swapped]::before,
+.motion [data-reveal="window"] [data-reveal-item][data-swapped]::after {
+  display: none;
+}
+
 @keyframes window-cover {
   from {
     clip-path: inset(0 0 100% 0);
@@ -465,102 +501,11 @@
 }
 
 /* ---------------------------------------------------------------------------
- * trace: a primary line traces the card's border, slowly: left to right
- * along the top, then down the sides, glowing as it goes. Both
- * pseudo-elements carry the full rounded border and are clipped to what's
- * drawn so far, so the corners stay true. The real border waits
- * underneath; the line fades to its color, so the hand-off at the end is
- * invisible. The content comes out of a blur as the line goes.
+ * focus: a rack focus. The Blog header's eyebrow, title and line come out
+ * of a deep blur one after another as they drift down into place. A scroll
+ * reveal: its items stay hidden until it's revealed.
  */
-.motion [data-reveal="trace"]::before,
-.motion [data-reveal="trace"]::after {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border: 1px solid var(--primary);
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: 0;
-}
-
-.motion [data-reveal="trace"][data-revealed] {
-  animation: trace-frame var(--dur-2) linear backwards;
-  animation-delay: calc(var(--i) * var(--stagger) + 450ms);
-}
-
-.motion [data-reveal="trace"][data-revealed]::before {
-  animation: trace-top var(--dur-2) var(--ease-in-out) backwards;
-  animation-delay: calc(var(--i) * var(--stagger));
-}
-
-.motion [data-reveal="trace"][data-revealed]::after {
-  animation: trace-sides var(--dur-2) var(--ease-in-out) backwards;
-  animation-delay: calc(var(--i) * var(--stagger) + 450ms);
-}
-
-.motion [data-reveal="trace"][data-revealed] .trace-content {
-  animation: trace-content var(--dur-2) var(--ease-out) backwards;
-  animation-delay: calc(var(--i) * var(--stagger) + 550ms);
-}
-
-/* The real border stays clear until the traced line hands over. */
-@keyframes trace-frame {
-  from,
-  to {
-    border-color: transparent;
-  }
-}
-
-/* Only a band along the top, drawn left to right. */
-@keyframes trace-top {
-  from {
-    opacity: 1;
-    clip-path: inset(0 100% calc(100% - 12px) 0);
-    box-shadow: inset 0 0 16px -6px var(--primary);
-  }
-  45%,
-  to {
-    opacity: 1;
-    clip-path: inset(0 0 calc(100% - 12px) 0);
-    box-shadow: inset 0 0 16px -6px var(--primary);
-  }
-}
-
-/* The whole outline, drawn top to bottom, then settling to the border
-   color as its glow fades. */
-@keyframes trace-sides {
-  from {
-    opacity: 1;
-    clip-path: inset(0 0 100% 0);
-    box-shadow: inset 0 0 16px -6px var(--primary);
-  }
-  55% {
-    opacity: 1;
-    clip-path: inset(0);
-    border-color: var(--primary);
-    box-shadow: inset 0 0 16px -6px var(--primary);
-  }
-  to {
-    opacity: 1;
-    clip-path: inset(0);
-    border-color: var(--border);
-    box-shadow: inset 0 0 16px -6px transparent;
-  }
-}
-
-@keyframes trace-content {
-  from {
-    opacity: 0;
-    translate: 0 -40px;
-    filter: blur(10px);
-  }
-}
-
-/* ---------------------------------------------------------------------------
- * focus: a rack focus. The header comes out of a deep blur as it drifts
- * down into place.
- */
-.motion [data-reveal="focus"] > * {
+.motion [data-reveal="focus"][data-revealed] [data-reveal-item] {
   animation: focus-rack var(--dur-2) var(--ease-out) backwards;
   animation-delay: calc(150ms + var(--i, 0) * var(--stagger));
 }
@@ -658,4 +603,46 @@
   from {
     translate: 0 -110%;
   }
+}
+
+/* ---------------------------------------------------------------------------
+ * The project explorer's layout (app/ProjectExplorer.tsx). Not an effect.
+ * In the snap layout (home.css) the explorer takes the height the header
+ * leaves, the list scrolls itself, and the card's cover fills what the
+ * card's details leave it. Elsewhere the list holds to a short pane and
+ * the cover is 16:9.
+ */
+.explorer-list {
+  max-height: 22rem;
+}
+
+@media (min-width: 1024px) and (min-height: 700px) {
+  .explorer-wrap {
+    flex: 1 1 auto;
+    max-height: 56rem;
+  }
+
+  .explorer {
+    flex: 1 1 auto;
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .explorer-list {
+    max-height: none;
+  }
+
+  .explorer-card .window-cover {
+    flex: 1 1 auto;
+    min-height: 7rem;
+    aspect-ratio: auto;
+  }
+}
+
+.explorer-scroll {
+  scrollbar-width: thin;
+}
+
+.explorer-card:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }

@@ -12,17 +12,18 @@ const format = new Intl.DateTimeFormat("en-US", {
   hourCycle: "h23",
 });
 
-interface HeroClockProps {
+interface LocalClockProps {
   /** "time" prints 14:05 PHT; "date" prints Thu 8 Oct. */
   part: "time" | "date";
   className?: string;
   style?: CSSProperties;
 }
 
-// Arvin's local time (Philippine time) for the hero's tmux status bar, like
-// tmux's own clock. It renders empty on the server, then writes the time
-// straight to the DOM and keeps it current, so it never re-renders.
-export function HeroClock({ part, className, style }: HeroClockProps) {
+// Arvin's local time (Philippine time), for the hero's tmux status bar (like
+// tmux's own clock) and the footer. It renders empty on the server, then
+// writes the time straight to the DOM and keeps it current, so it never
+// re-renders.
+export function LocalClock({ part, className, style }: LocalClockProps) {
   const ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {

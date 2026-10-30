@@ -61,7 +61,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <div className="mx-auto max-w-5xl">
         {/* Back Link */}
         <Link
-          href="/blog"
+          href="/#blog"
           className="mb-10 inline-flex items-center text-sm text-muted-foreground hover:text-primary"
         >
           <svg

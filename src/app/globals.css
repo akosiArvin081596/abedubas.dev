@@ -7,6 +7,22 @@
 /* Bind `dark:` to the `.dark` class the theme toggle sets, not the OS setting */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* `short:` tightens the home sections on laptop-height screens (lg and up,
+   at most 820px tall), so each still fits one screen in the snap layout. */
+@custom-variant short (@media (min-width: 1024px) and (max-height: 820px));
+
+/* `tight:` goes one step further on the shortest screens HomeSnap pages
+   (under 720px tall, down to 700), and on narrow laptops (lg to xl) up to
+   760px tall, where the four- and three-column cards wrap to more lines.
+   It never applies at 1280x720 and up. Put it after `short:`, which it
+   overrides. */
+@custom-variant tight {
+  @media (min-width: 1024px) and (max-height: 719px),
+    (min-width: 1024px) and (max-width: 1279px) and (max-height: 760px) {
+    @slot;
+  }
+}
+
 :root {
   --background: #ffffff;
   --foreground: #0f172a;
