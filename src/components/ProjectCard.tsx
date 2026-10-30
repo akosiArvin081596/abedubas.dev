@@ -1,7 +1,6 @@
-import Image from "next/image";
 import type { Project } from "@/types";
 import { ExternalIcon } from "./icons";
-import { WindowDots } from "./WindowDots";
+import { ProjectGallery } from "./ProjectGallery";
 
 interface ProjectCardProps {
   project: Project;
@@ -28,12 +27,14 @@ const tag =
   "rounded-md border px-1.5 py-0.5 font-mono text-[11px] leading-4 whitespace-nowrap";
 
 // A project framed as a browser window: a title bar with an address pill,
-// the cover (a placeholder frame when there's none), then the details and
-// the one live link. Staging hosts get a "staging" badge, and login-only
-// systems say so. The `window` effect in styles/motion/work.css targets
-// .window-bar, .window-cover and .window-body. The cover fills whatever
-// height the card leaves it (`.explorer-card` in work.css, where the card
-// has a fixed height), and is 16:9 otherwise.
+// the screenshots as a small gallery (ProjectGallery; a placeholder frame
+// when there are none), then the details and the one live link. Staging
+// hosts get a "staging" badge, and login-only systems say so. The `window`
+// effect in styles/motion/work.css targets .window-bar, .window-cover,
+// .window-strip and .window-body. The gallery fills whatever height the card
+// leaves it (`.explorer-card` in work.css, where the card has a fixed
+// height), and its image is 16:9 otherwise. The gallery is keyed by slug,
+// so each project starts at its first shot.
 export function ProjectCard({
   project,
   revealItem = false,
@@ -49,52 +50,7 @@ export function ProjectCard({
       data-reveal-item={revealItem ? "" : undefined}
       className={`group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-[border-color,box-shadow] duration-200 hover:border-primary/50 hover:shadow-xl ${className}`}
     >
-      {/* Browser chrome. Decorative: the link below carries the URL. */}
-      <div
-        aria-hidden="true"
-        className="window-bar flex shrink-0 items-center gap-3 border-b border-border bg-muted/70 px-4 py-2.5"
-      >
-        <WindowDots />
-        <span className="flex min-w-0 flex-1 items-center gap-1.5 rounded-md border border-border bg-background/80 px-2.5 py-1 font-mono text-xs text-muted-foreground">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            className="h-3 w-3 shrink-0"
-          >
-            <path
-              fillRule="evenodd"
-              d="M10 1a4.5 4.5 0 0 0-4.5 4.5V9H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-.5V5.5A4.5 4.5 0 0 0 10 1Zm3 8V5.5a3 3 0 1 0-6 0V9h6Z"
-              clipRule="evenodd"
-            />
-          </svg>
-          <span className="truncate">{host}</span>
-        </span>
-      </div>
-      <div className="window-cover relative aspect-video shrink-0 overflow-hidden border-b border-border bg-muted">
-        {project.image ? (
-          // A screenshot of the live site; the title follows right after
-          // it, so it's decorative.
-          <Image
-            src={project.image}
-            alt=""
-            fill
-            sizes="(min-width: 1600px) 900px, (min-width: 1024px) 55vw, 95vw"
-            className="object-cover object-top transition-transform duration-300 group-hover:scale-[1.03]"
-          />
-        ) : (
-          // No cover passed review: an empty page in the window, with the
-          // host on it.
-          <div
-            aria-hidden="true"
-            className="bg-grid absolute inset-0 grid place-items-center bg-gradient-to-br from-primary/10 via-muted to-accent/10"
-          >
-            <span className="rounded-lg border border-border bg-background/70 px-3 py-1.5 font-mono text-sm text-muted-foreground backdrop-blur-sm">
-              {host}
-            </span>
-          </div>
-        )}
-      </div>
+      <ProjectGallery key={project.slug} project={project} host={host} />
       <div className="window-body flex shrink-0 flex-col p-5 xl:p-6">
         <div className="mb-2 flex flex-wrap items-center gap-2">
           <h3 className="mr-1 text-xl font-semibold text-card-foreground xl:text-2xl">
