@@ -321,7 +321,8 @@
  * window. Two colored panels sweep across it, left to right: accent, then
  * primary over it, and they leave in the reverse order, uncovering it.
  * Then the card's cover opens top to bottom while the image settles from
- * 1.2x out of a 12px blur, the title bar drops in, and the details follow.
+ * 1.2x out of a 12px blur, the title bar drops in, and the details follow,
+ * the gallery's status strip with them.
  * The two stagger along the diagonal (--d). Once the visitor picks another
  * project, the card carries data-swapped and drops out of the entrance, so
  * the new project's content swaps in without replaying it.
@@ -383,7 +384,7 @@
   animation-delay: calc(var(--window-at) + 650ms);
 }
 
-.motion [data-reveal="window"][data-revealed] .window-body {
+.motion [data-reveal="window"][data-revealed] :is(.window-strip, .window-body) {
   animation: window-body var(--dur-2) var(--ease-out) backwards;
   animation-delay: calc(var(--window-at) + 950ms);
 }
@@ -460,13 +461,31 @@
 /* After the first switch: no entrance, no panels. */
 .motion [data-reveal="window"] [data-reveal-item][data-swapped],
 .motion [data-reveal="window"] [data-reveal-item][data-swapped] > *,
-.motion [data-reveal="window"] [data-swapped] :is(.window-cover, .window-cover img, .window-bar, .window-body) {
+.motion [data-reveal="window"] [data-swapped] :is(.window-cover, .window-cover img, .window-bar, .window-strip, .window-body) {
   animation: none;
 }
 
 .motion [data-reveal="window"] [data-reveal-item][data-swapped]::before,
 .motion [data-reveal="window"] [data-reveal-item][data-swapped]::after {
   display: none;
+}
+
+/* The gallery (components/ProjectGallery.tsx), once the visitor changes
+   shots: its images are done with the entrance, and each new shot fades in
+   over the one before it. An interaction, not a reveal, so it's short.
+   Without .motion the shot swaps instantly. */
+.motion [data-reveal="window"] .window-cover[data-moved] img {
+  animation: none;
+}
+
+.motion [data-reveal="window"] .window-cover[data-moved] img.shot-in {
+  animation: shot-in 450ms var(--ease-out) backwards;
+}
+
+@keyframes shot-in {
+  from {
+    opacity: 0;
+  }
 }
 
 @keyframes window-cover {
@@ -608,9 +627,10 @@
 /* ---------------------------------------------------------------------------
  * The project explorer's layout (app/ProjectExplorer.tsx). Not an effect.
  * In the snap layout (home.css) the explorer takes the height the header
- * leaves, the list scrolls itself, and the card's cover fills what the
- * card's details leave it. Elsewhere the list holds to a short pane and
- * the cover is 16:9.
+ * leaves, the list scrolls itself, and the card's gallery fills what the
+ * card's details leave it: its status strip keeps its height and the image
+ * takes the rest. Elsewhere the list holds to a short pane and the image
+ * is 16:9.
  */
 .explorer-list {
   max-height: 22rem;
@@ -629,6 +649,10 @@
 
   .explorer-list {
     max-height: none;
+  }
+
+  .explorer-card .window-gallery {
+    flex: 1 1 auto;
   }
 
   .explorer-card .window-cover {

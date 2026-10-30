@@ -12,9 +12,13 @@ import type { Project } from "@/types";
 //   login-only systems (`access: "login"`).
 // - A project with no working live URL stays out: no APIs, raw IPs, admin
 //   paths, local-only tools or systems that hold client data.
-// - `image` is a screenshot of `liveUrl` (public/images/projects/<slug>.webp),
-//   kept only when it shows no error, blank page or personal or client data.
-//   The covers for logisx, vendora, dromic and ect are AI-generated artwork.
+// - `shots` are 1600x900 viewport screenshots of pages on `liveUrl`
+//   (public/images/projects/<slug>/<nn>-<view>.webp), each with a caption and
+//   the page's path. The first is the cover, and the card shows them as a
+//   gallery. Keep only shots with no error, blank page, or personal or client
+//   data, and never AI images. `shots: []` shows a placeholder frame.
+//   Login-only systems show their sign-in page; a screen inside one must
+//   show sample data, never production records.
 //
 // Every liveUrl was verified on 2026-10-30: 2xx after redirects, serving the
 // app named here.
@@ -28,7 +32,7 @@ export const projects: Project[] = [
     liveUrl: "https://app.logisx.com/",
     stage: "production",
     access: "login",
-    image: "/images/projects/logisx.webp",
+    shots: [{ src: "/images/projects/logisx/01-sign-in.webp", caption: "Sign-in page", path: "/login" }],
     featured: true,
   },
   {
@@ -40,7 +44,7 @@ export const projects: Project[] = [
     liveUrl: "https://app.lendyph.com/",
     stage: "production",
     access: "login",
-    image: "/images/projects/lendyph.webp",
+    shots: [{ src: "/images/projects/lendyph/01-sign-in.webp", caption: "Sign-in page", path: "/login" }],
     featured: true,
   },
   {
@@ -52,7 +56,7 @@ export const projects: Project[] = [
     liveUrl: "https://app.vendoraph.com/",
     stage: "production",
     access: "login",
-    image: "/images/projects/vendora.webp",
+    shots: [{ src: "/images/projects/vendora/01-sign-in.webp", caption: "POS sign-in page", path: "/pos/auth/login" }],
     featured: true,
   },
   {
@@ -64,7 +68,7 @@ export const projects: Project[] = [
     liveUrl: "https://dromic.dswd-caraga-drmd.online/",
     stage: "production",
     access: "login",
-    image: "/images/projects/dromic.webp",
+    shots: [{ src: "/images/projects/dromic/01-sign-in.webp", caption: "Sign-in page", path: "/login" }],
     featured: true,
   },
   {
@@ -76,7 +80,13 @@ export const projects: Project[] = [
     liveUrl: "https://dox.alchemydev.io/",
     stage: "production",
     access: "public",
-    image: "/images/projects/dox.webp",
+    shots: [
+      { src: "/images/projects/dox/01-home.webp", caption: "Home page with live filing feed" },
+      { src: "/images/projects/dox/02-live-feed.webp", caption: "Live regulatory filing feed" },
+      { src: "/images/projects/dox/03-features.webp", caption: "Platform capabilities", path: "/#features" },
+      { src: "/images/projects/dox/04-how-it-works.webp", caption: "How it works" },
+      { src: "/images/projects/dox/05-sign-in.webp", caption: "Workspace sign-in page", path: "/login" },
+    ],
     featured: true,
   },
   {
@@ -88,7 +98,7 @@ export const projects: Project[] = [
     liveUrl: "https://ect-post-monitoring.abedubas.dev/",
     stage: "production",
     access: "login",
-    image: "/images/projects/ect.webp",
+    shots: [{ src: "/images/projects/ect/01-sign-in.webp", caption: "Sign-in page", path: "/login" }],
     featured: true,
   },
   {
@@ -100,7 +110,13 @@ export const projects: Project[] = [
     liveUrl: "https://obsidianquantgroup.com/",
     stage: "production",
     access: "public",
-    image: "/images/projects/obsidian-quant.webp",
+    shots: [
+      { src: "/images/projects/obsidian-quant/01-home.webp", caption: "Home page" },
+      { src: "/images/projects/obsidian-quant/02-philosophy.webp", caption: "Core philosophy section" },
+      { src: "/images/projects/obsidian-quant/03-quant-engine.webp", caption: "Quant engine pipeline" },
+      { src: "/images/projects/obsidian-quant/04-mandates.webp", caption: "Mandate coverage", path: "/strategy/#mandate-coverage" },
+      { src: "/images/projects/obsidian-quant/05-system-layers.webp", caption: "Architecture system layers", path: "/architecture/" },
+    ],
   },
   {
     slug: "oqg-onboarding",
@@ -111,7 +127,11 @@ export const projects: Project[] = [
     liveUrl: "https://onboarding.obsidianquantgroup.com/",
     stage: "production",
     access: "public",
-    image: "/images/projects/oqg-onboarding.webp",
+    shots: [
+      { src: "/images/projects/oqg-onboarding/01-home.webp", caption: "Investor onboarding landing page" },
+      { src: "/images/projects/oqg-onboarding/02-invite-only.webp", caption: "Invite-only onboarding notice", path: "/register" },
+      { src: "/images/projects/oqg-onboarding/03-sign-in.webp", caption: "Investor sign-in page", path: "/login" },
+    ],
   },
   {
     slug: "acg-assessment",
@@ -122,7 +142,10 @@ export const projects: Project[] = [
     liveUrl: "https://assessment.ableacg.com/",
     stage: "production",
     access: "public",
-    image: "/images/projects/acg-assessment.webp",
+    shots: [
+      { src: "/images/projects/acg-assessment/01-assessment.webp", caption: "Readiness assessment, step 1" },
+      { src: "/images/projects/acg-assessment/02-rep-sign-in.webp", caption: "Rep sign-in page", path: "/rep/login" },
+    ],
   },
   {
     slug: "alchemydev-crm",
@@ -133,7 +156,7 @@ export const projects: Project[] = [
     liveUrl: "https://ups.alchemydev.io/",
     stage: "production",
     access: "login",
-    image: "/images/projects/alchemydev-crm.webp",
+    shots: [{ src: "/images/projects/alchemydev-crm/01-sign-in.webp", caption: "Client portal sign-in page", path: "/login" }],
   },
   {
     slug: "oqg-recorder",
@@ -144,7 +167,7 @@ export const projects: Project[] = [
     liveUrl: "https://screen-recorder.obsidianquantgroup.com/",
     stage: "production",
     access: "login",
-    image: "/images/projects/oqg-recorder.webp",
+    shots: [{ src: "/images/projects/oqg-recorder/01-sign-in.webp", caption: "Sign-in page", path: "/signin" }],
   },
   {
     slug: "sec-compliance-matrix",
@@ -155,7 +178,7 @@ export const projects: Project[] = [
     liveUrl: "https://sec-compliance-matrix.alchemydev.io/",
     stage: "production",
     access: "login",
-    image: "/images/projects/sec-compliance-matrix.webp",
+    shots: [{ src: "/images/projects/sec-compliance-matrix/01-sign-in.webp", caption: "Sign-in page", path: "/login" }],
   },
   {
     slug: "serum72",
@@ -166,6 +189,13 @@ export const projects: Project[] = [
     liveUrl: "https://serum72.com/",
     stage: "production",
     access: "public",
+    shots: [
+      { src: "/images/projects/serum72/01-shop.webp", caption: "Shop page", path: "/shop/" },
+      { src: "/images/projects/serum72/02-product-lineup.webp", caption: "Product lineup on the home page" },
+      { src: "/images/projects/serum72/03-shop-by-ritual.webp", caption: "Shop by ritual filters", path: "/shop/" },
+      { src: "/images/projects/serum72/04-product-cards.webp", caption: "Product cards with prices", path: "/shop/" },
+      { src: "/images/projects/serum72/05-about.webp", caption: "About page", path: "/about/" },
+    ],
   },
   {
     slug: "calm-canine",
@@ -176,7 +206,13 @@ export const projects: Project[] = [
     liveUrl: "https://calmcanine.shop/",
     stage: "production",
     access: "public",
-    image: "/images/projects/calm-canine.webp",
+    shots: [
+      { src: "/images/projects/calm-canine/01-home.webp", caption: "Home page" },
+      { src: "/images/projects/calm-canine/02-product.webp", caption: "Product and ingredients", path: "/#about" },
+      { src: "/images/projects/calm-canine/03-serving-guide.webp", caption: "Serving guide by dog weight", path: "/#guide" },
+      { src: "/images/projects/calm-canine/04-gallery.webp", caption: "Gallery of calm moments", path: "/#gallery" },
+      { src: "/images/projects/calm-canine/05-shop.webp", caption: "Shop page", path: "/product" },
+    ],
   },
   {
     slug: "lyall-property-care",
@@ -187,6 +223,11 @@ export const projects: Project[] = [
     liveUrl: "https://lyallpropertycare.com/",
     stage: "production",
     access: "public",
+    shots: [
+      { src: "/images/projects/lyall-property-care/01-quote-form.webp", caption: "Quote request form", path: "/#quote" },
+      { src: "/images/projects/lyall-property-care/02-about.webp", caption: "About section", path: "/#about" },
+      { src: "/images/projects/lyall-property-care/03-process.webp", caption: "Three-step process", path: "/#process" },
+    ],
   },
   {
     slug: "zoey-binxx",
@@ -197,7 +238,7 @@ export const projects: Project[] = [
     liveUrl: "https://zoeybrinxx.alchemydev.io/",
     stage: "production",
     access: "login",
-    image: "/images/projects/zoey-binxx.webp",
+    shots: [{ src: "/images/projects/zoey-binxx/01-sign-in.webp", caption: "Sign-in page", path: "/login" }],
   },
   {
     slug: "ect-validation",
@@ -208,6 +249,7 @@ export const projects: Project[] = [
     liveUrl: "https://ect-beneficiary-validation.abedubas.dev/",
     stage: "production",
     access: "login",
+    shots: [{ src: "/images/projects/ect-validation/01-sign-in.webp", caption: "Sign-in page", path: "/login" }],
   },
   {
     slug: "masterlist-deduplication",
@@ -218,7 +260,7 @@ export const projects: Project[] = [
     liveUrl: "https://masterlist-deduplication.abedubas.dev/",
     stage: "production",
     access: "login",
-    image: "/images/projects/masterlist-deduplication.webp",
+    shots: [{ src: "/images/projects/masterlist-deduplication/01-sign-in.webp", caption: "Sign-in page", path: "/login" }],
   },
   {
     slug: "akiip",
@@ -229,7 +271,13 @@ export const projects: Project[] = [
     liveUrl: "https://akiip.abedubas.dev/",
     stage: "staging",
     access: "public",
-    image: "/images/projects/akiip.webp",
+    shots: [
+      { src: "/images/projects/akiip/01-home.webp", caption: "Home page" },
+      { src: "/images/projects/akiip/02-who-uses.webp", caption: "Who uses AKIIP", path: "/#people" },
+      { src: "/images/projects/akiip/03-data-protection.webp", caption: "How the data is protected", path: "/#privacy" },
+      { src: "/images/projects/akiip/04-help.webp", caption: "Help and access requests", path: "/#contact" },
+      { src: "/images/projects/akiip/05-sign-in.webp", caption: "Staff sign-in page", path: "/sign-in" },
+    ],
   },
   {
     slug: "leenas-list",
@@ -240,7 +288,13 @@ export const projects: Project[] = [
     liveUrl: "https://leenaslist.abedubas.dev/",
     stage: "staging",
     access: "public",
-    image: "/images/projects/leenas-list.webp",
+    shots: [
+      { src: "/images/projects/leenas-list/01-home.webp", caption: "Home page" },
+      { src: "/images/projects/leenas-list/02-whats-on-the-list.webp", caption: "What's on a child's list", path: "/#features" },
+      { src: "/images/projects/leenas-list/03-circle-of-care.webp", caption: "Scoped links for each caregiver", path: "/#circle" },
+      { src: "/images/projects/leenas-list/04-how-it-works.webp", caption: "How it works", path: "/#how" },
+      { src: "/images/projects/leenas-list/05-privacy.webp", caption: "Privacy and safety", path: "/#security" },
+    ],
   },
   {
     slug: "javalava",
@@ -251,7 +305,13 @@ export const projects: Project[] = [
     liveUrl: "https://javalava.abedubas.dev/",
     stage: "staging",
     access: "public",
-    image: "/images/projects/javalava.webp",
+    shots: [
+      { src: "/images/projects/javalava/01-home.webp", caption: "Home page" },
+      { src: "/images/projects/javalava/02-origin.webp", caption: "Origin story", path: "/#story" },
+      { src: "/images/projects/javalava/03-lineup.webp", caption: "Product lineup", path: "/#lineup" },
+      { src: "/images/projects/javalava/04-film.webp", caption: "Brand film", path: "/#film" },
+      { src: "/images/projects/javalava/05-cocktails.webp", caption: "Cocktail recipes", path: "/#cocktails" },
+    ],
   },
   {
     slug: "alchemydev-site",
@@ -262,6 +322,11 @@ export const projects: Project[] = [
     liveUrl: "https://alchemydev-landing.abedubas.dev/",
     stage: "staging",
     access: "public",
-    image: "/images/projects/alchemydev-site.webp",
+    shots: [
+      { src: "/images/projects/alchemydev-site/01-home.webp", caption: "Home page, classic variant" },
+      { src: "/images/projects/alchemydev-site/02-services.webp", caption: "Services", path: "/#services" },
+      { src: "/images/projects/alchemydev-site/03-pricing.webp", caption: "Pricing plans", path: "/#pricing" },
+      { src: "/images/projects/alchemydev-site/04-light-variant.webp", caption: "Light variant", path: "/index-light.html" },
+    ],
   },
 ];

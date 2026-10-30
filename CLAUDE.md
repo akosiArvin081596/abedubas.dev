@@ -43,6 +43,8 @@ Then the full-screen footer (`src/components/Footer.tsx`, after `<main>` in the 
 - Every section must fit `calc(100svh - 4.5rem)`: 648px at 1280x720, 828px at 1440x900. HomeSnap glides from one section's top to the next, so anything taller gets skipped. Long content goes in a pane that scrolls itself (a `.snap-fit` section with `.snap-body` and `.snap-pane`, in `home.css`), as the timeline and the posts do. The `short:` variant in `globals.css` (lg and up, at most 820px tall) tightens a section on laptop-height screens, and `tight:` goes one step further at 1024x700, the smallest size HomeSnap pages at (628px under the header). Check new content at 1024x700, 1280x720 and 1440x900.
 - Every section and the footer have `scroll-margin-top: 4.5rem` at every width, so `/#projects` lands right under the header. Don't add `scroll-padding-top` to `html` as well: the two add up.
 - **Projects explorer.** It's a vertical tablist with a roving tabindex beside the selected project's `ProjectCard`, its tabpanel. ArrowUp, ArrowDown, Home and End call `preventDefault`, so HomeSnap doesn't page. The server renders the first project selected, and the selection changes only in event handlers. Below lg the card stacks under the list, so a click on a project also brings the card into view, gliding with motion and jumping without.
+  - The card's screenshots are a small gallery (`src/components/ProjectGallery.tsx`), keyed by slug so each project starts at its first shot. Previous/next buttons sit over the image, and a status strip under it holds the caption (a polite live region), "n / total" and a dot per shot. ArrowLeft and ArrowRight move between shots while focus is in the gallery (HomeSnap ignores them), a sideways swipe on the image does too (`touch-action: pan-y pinch-zoom` keeps vertical scrolling), and both ends wrap. The address bar shows the host plus the shot's `path`.
+  - The image keeps its size whatever the shot, so changing shots never moves the layout. Only the current shot and the next are mounted (plus the previous one while the new one fades in, `shot-in` in `work.css`, under `.motion` only). One shot shows just the caption, and none shows the placeholder frame.
 - **Glide.** `src/lib/glide.ts` is the one scripted scroll: easeInOutCubic, with its duration set by the distance (0.54 to 1.6 s). A pointer press, a touch, or a wheel or key that nothing else handled cancels it. While it runs, `html[data-gliding]` is set and RevealObserver holds its reveals. When the glide ends, only the containers on screen reveal, so a glide from the hero to `#contact` doesn't play every entrance it passes.
 - **HomeSnap's stops** are each `.home-snap > section`'s top, the footer's (`data-snap-stop`) and the page's end. It leaves Arrow, Page, Space, Home and End alone while focus is in something that can still scroll that way, or when a key was already handled.
 - **Same-page links.** HomeSnap also mounts a capture-phase click listener on the home page, active at any width with `.motion`. A link to `/` or to `/#<id>` of an element on the page calls `preventDefault` (which stops next/link), glides there, then calls `history.pushState`. Without motion, next/link and the browser jump there instead. The mobile menu (`#mobile-menu` in `Navbar.tsx`) floats over the page under the header, so opening it never moves the content: the handler measures a target while the menu is still open, and a menu that pushed the page down would make the glide overshoot.
@@ -57,7 +59,8 @@ There is no CMS or database. Section copy and data (skills, work history, servic
 - The projects live in `src/data/projects.ts` (type `Project` in `src/types/index.ts`), strongest production work first. The Projects explorer renders all of them.
   - Each project has exactly one live link (`liveUrl`) and never a GitHub URL. The link is the production site, a staging host or a subdomain of abedubas.dev. A project with no working live URL stays out.
   - Staging is allowed: `stage: "staging"` gets a "staging" badge in the list and on the card. `access: "login"` marks a login-only system, and the card says "sign-in only".
-  - Covers are screenshots of `liveUrl` at 1600x900 (`public/images/projects/<slug>.webp`), kept only when they show no error, blank page or personal or client data. No AI-generated covers for new projects; the first four (logisx, vendora, dromic, ect) are the older AI artwork. A project without a cover shows a placeholder frame.
+  - `shots` (type `ProjectShot`) are 1600x900 viewport screenshots of pages on `liveUrl`, stored in `public/images/projects/<slug>/` as `<nn>-<view>.webp`. Each has a `caption` (what the screen shows) and, optionally, the page's `path`. The first shot is the cover.
+  - Keep a shot only when it shows no error, blank page or personal or client data, and never use AI images. Login-only systems show their sign-in page; a screen inside one must show sample data, never production records. `shots: []` shows a placeholder frame.
   - `featured` marks the subset that resume.html mirrors, and that Bintoy names.
 - The home stats band's "Live Projects" card and the footer's live sites come from `publicLiveSites()` in `src/lib/live-sites.ts`: projects with `stage: "production"` and `access: "public"`, plus `src/data/live-sites.ts`. Keep both to public production sites: no staging hosts, login-only systems, client data or APIs.
 - The home stats band's GitHub numbers come from `src/data/github-stats.json`, a snapshot of totals across the personal (`akosiArvin081596`) and Alchemy (`abedubas-alchemydev`) accounts. It holds aggregates only, with no repo names.
@@ -135,13 +138,13 @@ Every section has its own reveal effect, and every destination of the route curt
 
 ### Images
 
-Use `next/image` everywhere, and give `fill` images a `sizes` prop. No `images.remotePatterns` is configured, on purpose (see the comment in `MDXComponents.tsx`), so only local images under `public/` load.
+Use `next/image` everywhere, and give `fill` images a `sizes` prop. The project gallery is `fill` with no `preload`. No `images.remotePatterns` is configured, on purpose (see the comment in `MDXComponents.tsx`), so only local images under `public/` load.
 
 The OG cards are generated by `src/app/opengraph-image.tsx` and `src/app/blog/[slug]/opengraph-image.tsx`. They share `src/lib/og.tsx` and draw real text over `src/assets/og-background.jpg`. `metadataBase` in the layout makes their URLs absolute.
 
 ### Media
 
-The hero loop, the four oldest project covers and the OG artwork were generated with Higgsfield AI (the `higgsfield` CLI) and then optimized with ffmpeg and cwebp. Check a regenerated asset's frames before shipping it, and keep it within the current sizes.
+The hero loop and the OG artwork were generated with Higgsfield AI (the `higgsfield` CLI) and then optimized with ffmpeg and cwebp. Check a regenerated asset's frames before shipping it, and keep it within the current sizes.
 
 - `public/media/hero-loop.{webm,mp4}`, plus `hero-loop-720.mp4` for phones and `hero-poster.webp`: Seedance 2.5, animated from a GPT Image 2.5 keyframe used as both its first and last frame. It was then crossfaded into itself at its calmest frame step, so the loop has no visible seam. `HeroBackdrop` plays it.
 - `public/images/hero/*.jpg` are the hero's photos, 4:5 crops served at quality 90 (allowed by `images.qualities` in `next.config.ts`).
@@ -150,7 +153,7 @@ The hero loop, the four oldest project covers and the OG artwork were generated 
   - List the new photo in `SLIDES` in `HeroPortrait.tsx`.
   - The slideshow frame also blocks right-click and dragging, which only stops casual saving.
 - `public/images/hero/mosaic-{12,24,48}.png`: the first photo shrunk with ffmpeg to 12×15, 24×30 and 48×60 (`-vf "scale=W:H:flags=area"`), for its pixelated render-in. Regenerate them whenever the first photo changes.
-- `public/images/projects/*.webp` (set through each project's `image` field): the four oldest (logisx, vendora, dromic, ect) are GPT Image 2.5 artwork in one isometric style. The rest are headless-Chrome screenshots of each live site, converted with `cwebp -q 80`. New covers are screenshots, never AI images.
+- `public/images/projects/<slug>/<nn>-<view>.webp` (set through each project's `shots`): headless-Chrome screenshots of pages on the live site at a 1600x900 viewport, converted with `cwebp -q 80`. Never AI images.
 - `src/assets/og-background.jpg` (1200×630): GPT Image 2.5.
 - With reduced motion, visitors get the poster and the still photo, never video.
 
