@@ -1,7 +1,8 @@
 import { SectionLabel } from "@/components";
 import { Timeline, type TimelineEntry } from "./Timeline";
 
-const timeline: TimelineEntry[] = [
+// Newest first. About reads the "Present" entries for its "Currently" fact.
+export const timeline: TimelineEntry[] = [
   {
     year: "2024 - Present",
     title: "Computer Programmer (DRMD-DRIM Section Head)",

@@ -737,21 +737,24 @@ html:not(.js) .shell-prompt {
   color: var(--primary);
 }
 
-/* A glow that follows the pointer (Spotlight.tsx sets --mx/--my). */
+/* A glow that follows the pointer (Spotlight.tsx sets --mx/--my), in the
+   card's tone where it has one (styles/tone.css). */
 .stat-spotlight {
   position: absolute;
   inset: 0;
+  border-radius: inherit;
   pointer-events: none;
   opacity: 0;
   background: radial-gradient(
     260px circle at var(--mx, 50%) var(--my, 0%),
-    color-mix(in srgb, var(--primary) 16%, transparent),
+    color-mix(in srgb, var(--tone, var(--primary)) 16%, transparent),
     transparent 70%
   );
   transition: opacity 300ms ease;
 }
 
-.stat-card:hover .stat-spotlight {
+.stat-card:hover .stat-spotlight,
+.tone-card:hover .stat-spotlight {
   opacity: 1;
 }
 

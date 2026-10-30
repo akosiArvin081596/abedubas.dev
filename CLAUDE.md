@@ -56,6 +56,8 @@ There is no CMS or database. Section copy and data (skills, work history, servic
 
 - The email address, location and GitHub/LinkedIn links live in `src/data/contact.ts`, with their icons in `src/components/icons.tsx`. The Contact section, the footer and Bintoy all read them. The GitHub *profile* link stays; only project GitHub links are gone.
 - Years of experience are counted from `WEB_DEV_SINCE` (2013) in `src/lib/career.ts`, which both the home stats and the About section read. Don't hardcode the number anywhere.
+- About says only what nothing else on the page does. The hero's readout and the stats band already give the location, years and stack, so the bio doesn't list frameworks or AI tools. Its "At a glance" card has two facts. "Currently" is the Experience timeline's `"Present"` entries (`timeline`, exported from `ExperienceSection.tsx`). "Industries" are the fields of the projects in `projects.ts`, and a new industry needs a project behind it. Who he builds for stays in the bio's last paragraph only.
+- Each Core Strength names the shipped projects that show it (`proof`, slugs in `src/data/projects.ts`). Only `stage: "production"` projects are listed, because the card says "shipped in". A slug that leaves `projects.ts` drops out silently, so check `proof` when renaming one.
 - The projects live in `src/data/projects.ts` (type `Project` in `src/types/index.ts`), strongest production work first. The Projects explorer renders all of them.
   - Each project has exactly one live link (`liveUrl`) and never a GitHub URL. The link is the production site, a staging host or a subdomain of abedubas.dev. A project with no working live URL stays out.
   - Staging is allowed: `stage: "staging"` gets a "staging" badge in the list and on the card. `access: "login"` marks a login-only system, and the card says "sign-in only".
@@ -101,7 +103,16 @@ tags: ["tag1", "tag2"]
 - `react-hooks/set-state-in-effect` is a lint error. That's why the theme is resolved before paint, and why every animation is CSS or a direct DOM write through a ref (see Motion) rather than state set in an effect. Handle new mount-time effects the same way.
 - Colors are CSS variables on `:root` and `.dark` in `src/app/globals.css`. They're exposed to Tailwind through `@theme inline` as `background`, `foreground`, `primary`, `primary-hover`, `secondary`, `accent`, `muted`, `muted-foreground`, `border`, `card` and `card-foreground`. There's no `tailwind.config`, because Tailwind 4 is configured in CSS.
 - `@custom-variant dark` in `globals.css` ties Tailwind's `dark:` variant to the `.dark` class, so `dark:` follows the site toggle. Without that line, Tailwind 4's `dark:` would follow the OS setting instead.
-- The `--grid-line` token and the `bg-grid` utility (an `@utility` in `globals.css`) draw the blueprint grid behind the home page's stats band.
+- The `--grid-line` token and the `bg-grid` utility (an `@utility` in `globals.css`) draw the blueprint grid behind the home page's stats band and the Philosophy scenes.
+- **Tone cards.** The About facts, Philosophy, Core Strengths and Technical Skills cards each carry one accent, `--tone`, set inline with `toneStyle()` from `src/lib/tone.ts`. A tone is the brand pair or a `--code-*` syntax color, so it's legible in both themes. `src/styles/tone.css` styles the rest at rest, with or without motion:
+  - `.tone-tile` is the icon tile, and `.tone-hairline`, `.tone-numeral`, `.tone-dot` and `.tone-text` are the smaller pieces.
+  - On hover, a gradient ring lights the card's edge. The ring is `::before`, drawn inside the border so the scan cards' clipped overflow keeps it, which leaves `::after` free for the scan bar and the wipe panel.
+  - `Spotlight`'s pointer glow (`.stat-spotlight` in `home.css`) takes the card's `--tone`, falling back to `--primary`.
+  - Icons are `Glyph` (`src/components/Glyph.tsx`), line glyphs on a 16px grid in `currentColor`.
+  - Philosophy and Core Strengths lay their cards out on four shared grid rows (`grid-rows-subgrid`), so titles, text and footers align across a row.
+- **Skill chips.** `SkillBadge` shows a brand logo from `src/data/brand-marks.ts`, or a `Glyph` for skills without one (the `glyphs` map in `StackSection.tsx`).
+  - `brand-marks.ts` holds paths and colors copied from simple-icons (CC0), so the 16 MB package isn't a dependency. To add a logo, copy its path and hex from simpleicons.org. simple-icons has no AWS, Playwright or ChatGPT.
+  - Logos are monochrome at rest. On hover they take the brand color. `legibleOn()` mixes that color per theme until it reaches 3:1 on the card, and black or grey brands use the card's text color instead. The hover styles are in `tone.css`, switched by `.dark`.
 - `short:` (a `@custom-variant` in `globals.css`) applies on screens lg and up that are at most 820px tall. Use it to tighten a home section so it still fits one screen there.
 - `tight:`, defined after it, overrides it on the shortest screens: lg and up under 720px tall, and lg to xl (up to 1279px wide) up to 760px tall, where the narrower cards wrap to more lines. It never applies at 1280x720 and up. The hero's matching step is a plain `max-height: 719px` media query in `home.css`.
 - Lay pages out in `container-site`, another `@utility` in `globals.css`. It spans the screen up to 100rem, with side padding that grows with the viewport. Keep long-form text, such as blog posts and the bio, at a readable measure inside it.
@@ -130,7 +141,7 @@ Every section has its own reveal effect, and every destination of the route curt
   - While it's up, the header's and main's effects are paused, as under the curtain. It lifts once its bar has filled and the page and fonts have loaded, or after 3.5 s. It then wipes down as the page's entrance plays.
   - The head script removes the attribute after 5 s regardless.
 - `<html data-scroll-behavior="smooth">` makes Next 16 pause smooth scrolling during navigation. Without it, each new page would smooth-scroll to the top while the curtain lifts.
-- `SplitText`, `CodeWindow`, `SectionLabel` and `WindowDots` are the shared building blocks. `ScrollProgress` is a pure-CSS reading bar along the top of the page.
+- `SplitText`, `CodeWindow`, `SectionLabel`, `WindowDots` and `Glyph` are the shared building blocks. `ScrollProgress` is a pure-CSS reading bar along the top of the page.
 
 ### Footer
 
@@ -155,6 +166,7 @@ The hero loop and the OG artwork were generated with Higgsfield AI (the `higgsfi
 - `public/images/hero/mosaic-{12,24,48}.png`: the first photo shrunk with ffmpeg to 12×15, 24×30 and 48×60 (`-vf "scale=W:H:flags=area"`), for its pixelated render-in. Regenerate them whenever the first photo changes.
 - `public/images/projects/<slug>/<nn>-<view>.webp` (set through each project's `shots`): headless-Chrome screenshots of pages on the live site at a 1600x900 viewport, converted with `cwebp -q 80`. Never AI images.
 - `src/assets/og-background.jpg` (1200×630): GPT Image 2.5.
+- The card icons (`Glyph`) and the Philosophy cards' small scenes (`src/app/PhilosophyArt.tsx`) are hand-drawn inline SVG in the card's tone, not generated art, so they follow the theme. Under `hinge` they draw on: `.art-draw` strokes use `pathLength={1}` on `<path>` elements (basic shapes don't support it everywhere), and `.art-grow` bars grow left to right.
 - With reduced motion, visitors get the poster and the still photo, never video.
 
 ### Dependencies
