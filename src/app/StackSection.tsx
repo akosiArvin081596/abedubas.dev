@@ -155,23 +155,47 @@ const skillCategories: {
 // (styles/tone.css): an icon tile, the category's mono path, and skill
 // chips that carry each brand's logo in monochrome, colored on hover
 // (SkillBadge). Each card, and the heading, gets its own `wipe` panel.
+//
+// In the snap layout (lg, at least 700px tall) the grid takes the height the
+// heading leaves, the two rows sharing what their content doesn't use, and
+// each card runs from its header down to a footer (the skill count) pinned
+// to its bottom edge. The rows stay auto, not 1fr: equal rows would all
+// match the tall AI card and push the section past one screen. `tight:`
+// screens have no height to spare for the footer, so there the count stays
+// a pill in the card's header, as it is below lg.
+//
+// `mid` covers narrow laptops (lg to xl, under 1280px wide) between
+// `short:` (820px) and 960px tall: too tall for `short:` and too narrow for
+// the full spacing, because the cards wrap their badges onto more rows
+// there. It takes `short:`'s spacing and `tight:`'s header pill.
+const mid = {
+  head: "[@media(max-width:1279px)_and_(min-height:821px)_and_(max-height:959px)]:lg:mb-3",
+  title: "[@media(max-width:1279px)_and_(min-height:821px)_and_(max-height:959px)]:lg:mt-1 [@media(max-width:1279px)_and_(min-height:821px)_and_(max-height:959px)]:lg:text-3xl",
+  grid: "[@media(max-width:1279px)_and_(min-height:821px)_and_(max-height:959px)]:lg:gap-4",
+  card: "[@media(max-width:1279px)_and_(min-height:821px)_and_(max-height:959px)]:lg:p-4",
+  cardHead: "[@media(max-width:1279px)_and_(min-height:821px)_and_(max-height:959px)]:lg:mb-3",
+  badges: "[@media(max-width:1279px)_and_(min-height:821px)_and_(max-height:959px)]:lg:gap-1.5",
+  pill: "[@media(max-width:1279px)_and_(min-height:821px)_and_(max-height:959px)]:lg:inline",
+  footer: "[@media(max-width:1279px)_and_(min-height:821px)_and_(max-height:959px)]:lg:hidden",
+};
+
 export function StackSection() {
   return (
-    <section id="stack" data-nav="skills" className="relative py-16 lg:py-8 tight:py-5">
-      <div className="container-site">
-        <div data-reveal="wipe" className="relative mb-6 w-fit xl:mb-8 short:mb-4 tight:mb-3">
+    <section id="stack" data-nav="skills" className="relative py-16 lg:py-6 tight:py-5">
+      <div className="container-site lg:flex lg:flex-1 lg:flex-col">
+        <div data-reveal="wipe" className={`relative mb-6 w-fit xl:mb-8 short:mb-4 tight:mb-3 ${mid.head}`}>
           <SectionLabel>technical skills</SectionLabel>
-          <h2 className="mt-2 text-3xl font-bold text-foreground sm:text-4xl short:mt-1 short:text-3xl tight:text-2xl">
+          <h2 className={`mt-2 text-3xl font-bold text-foreground sm:text-4xl short:mt-1 short:text-3xl tight:text-2xl ${mid.title}`}>
             Technical Skills
           </h2>
         </div>
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3 xl:gap-6 short:gap-4 tight:gap-3">
+        <div className={`grid gap-5 md:grid-cols-2 lg:flex-1 lg:grid-cols-3 xl:gap-6 short:gap-4 tight:gap-3 ${mid.grid}`}>
           {skillCategories.map((category) => (
             <div
               key={category.category}
               data-reveal="wipe"
               style={toneStyle(category.tone)}
-              className={`tone-card relative rounded-2xl border p-5 xl:p-6 short:p-4 tight:p-3 ${
+              className={`tone-card relative flex flex-col rounded-2xl border p-5 xl:p-6 short:p-4 tight:p-3 ${mid.card} ${
                 category.featured
                   ? "border-primary/40 bg-gradient-to-br from-primary/10 via-card to-card"
                   : "border-border bg-card"
@@ -179,7 +203,7 @@ export function StackSection() {
             >
               <Spotlight />
               <span aria-hidden="true" className="tone-hairline" />
-              <div className="relative mb-4 flex items-start justify-between gap-3 short:mb-3 tight:mb-2.5">
+              <div className={`relative mb-4 flex items-start justify-between gap-3 short:mb-3 tight:mb-2.5 ${mid.cardHead}`}>
                 <div className="flex min-w-0 items-center gap-3">
                   <span className="tone-tile h-10 w-10 short:h-9 short:w-9 tight:h-8 tight:w-8">
                     <Glyph name={category.icon} className="h-5 w-5 tight:h-4 tight:w-4" />
@@ -194,16 +218,22 @@ export function StackSection() {
                     </p>
                   </div>
                 </div>
-                <span className="shrink-0 rounded-md border border-border bg-background/50 px-2 py-0.5 font-mono text-xs text-muted-foreground">
+                {/* The count heads the card below lg, on the shortest
+                    screens and in the `mid` band, where the grid has no
+                    height to spare; from lg it's otherwise the card's
+                    footer. Only one of the two is ever displayed. */}
+                <span className={`shrink-0 rounded-md border border-border bg-background/50 px-2 py-0.5 font-mono text-xs text-muted-foreground lg:hidden tight:inline ${mid.pill}`}>
                   {category.skills.length} skills
                 </span>
               </div>
               {/* On short screens only the badges show; screen readers
-                  still get the line. */}
-              <p className="relative mb-4 text-sm text-muted-foreground short:sr-only">
+                  still get the line. The line needs more height than
+                  `short:` allows for: the narrower the grid, the more the
+                  line and the badges wrap. */}
+              <p className="relative mb-4 text-sm text-muted-foreground short:sr-only [@media(max-height:869px),(max-width:1399px)_and_(max-height:959px),(max-width:1279px)_and_(max-height:1079px)]:lg:sr-only">
                 {category.description}
               </p>
-              <div className="relative flex flex-wrap gap-2 short:gap-1.5">
+              <div className={`relative flex flex-wrap gap-2 short:gap-1.5 ${mid.badges}`}>
                 {category.skills.map((skill) => (
                   <SkillBadge
                     key={skill}
@@ -214,6 +244,14 @@ export function StackSection() {
                   />
                 ))}
               </div>
+              {/* The footer: a ruled line ending in the skill count, pinned
+                  to the card's bottom when the grid stretches it. */}
+              <p className={`relative mt-auto hidden items-center gap-2 pt-4 font-mono text-[11px] leading-4 text-muted-foreground lg:flex short:pt-3 tight:hidden ${mid.footer}`}>
+                <span aria-hidden="true" className="h-px flex-1 border-t border-dashed border-border" />
+                <span>
+                  <span className="tone-text">{category.skills.length}</span> skills
+                </span>
+              </p>
             </div>
           ))}
         </div>

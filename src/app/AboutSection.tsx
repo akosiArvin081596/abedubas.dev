@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { Glyph, SectionLabel, SplitText, type GlyphName } from "@/components";
 import { yearsOfExperience } from "@/lib/career";
 import { toneStyle } from "@/lib/tone";
@@ -13,7 +14,14 @@ import { Spotlight } from "./Spotlight";
 // and Calm Canine).
 const current = timeline.filter((entry) => entry.year.endsWith("Present"));
 
-const facts: { label: string; icon: GlyphName; value: React.ReactNode }[] = [
+// From lg the card takes the side column's free height, and Industries
+// (`grow`) takes the card's: its list spreads down the card as a ledger.
+const facts: {
+  label: string;
+  icon: GlyphName;
+  value: React.ReactNode;
+  grow?: boolean;
+}[] = [
   {
     label: "Currently",
     icon: "briefcase",
@@ -21,8 +29,12 @@ const facts: { label: string; icon: GlyphName; value: React.ReactNode }[] = [
       <ul className="space-y-1.5">
         {current.map((role) => (
           <li key={role.title}>
-            <span className="block font-medium text-foreground">{role.title}</span>
-            <span className="block text-xs text-muted-foreground">{role.company}</span>
+            <span className="block font-medium text-foreground [@media(min-height:900px)]:xl:text-base">
+              {role.title}
+            </span>
+            <span className="block text-xs text-muted-foreground [@media(min-height:900px)]:xl:text-sm">
+              {role.company}
+            </span>
           </li>
         ))}
       </ul>
@@ -31,8 +43,9 @@ const facts: { label: string; icon: GlyphName; value: React.ReactNode }[] = [
   {
     label: "Industries",
     icon: "grid",
+    grow: true,
     value: (
-      <ul className="mt-0.5 flex flex-wrap gap-1.5">
+      <ul className="mt-0.5 flex flex-wrap gap-1.5 lg:flex-1 lg:flex-col lg:flex-nowrap lg:justify-between lg:gap-0">
         {[
           "Logistics",
           "Lending",
@@ -43,7 +56,7 @@ const facts: { label: string; icon: GlyphName; value: React.ReactNode }[] = [
         ].map((industry) => (
           <li
             key={industry}
-            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background/60 px-2 py-0.5 text-xs font-medium text-foreground"
+            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background/60 px-2 py-0.5 text-xs font-medium text-foreground lg:gap-2.5 lg:rounded-none lg:border-0 lg:border-b lg:border-border/70 lg:bg-transparent lg:px-0 lg:py-1.5 lg:text-sm lg:last:border-b-0 [@media(min-height:900px)]:xl:py-2 [@media(min-height:900px)]:xl:text-base"
           >
             <span aria-hidden="true" className="tone-dot" />
             {industry}
@@ -56,19 +69,35 @@ const facts: { label: string; icon: GlyphName; value: React.ReactNode }[] = [
 
 const em = "font-medium text-primary";
 
+// From lg the bio's paragraphs spread down the column's height, with a
+// hairline midway between each two (the column spaces them evenly). Under
+// `highlight` the nth rule draws on after the nth paragraph's pass.
+function BioRule({ n }: { n: number }) {
+  return (
+    <span
+      aria-hidden="true"
+      style={{ "--k": n } as CSSProperties}
+      className="highlight-rule hidden h-px bg-border/70 lg:block"
+    />
+  );
+}
+
 // #about: the About Me header (`letters`) heads the side column, over a
 // card of facts found nowhere else on the page; the bio reads beside it
 // (`highlight`). The header is its own reveal inside the bio's, so its
-// letters drop as the band starts its pass. Kept to one screen from lg
-// (home.css), so the bio sets a little smaller on short screens.
+// letters drop as the band starts its pass. From lg the section is one
+// screen (home.css) and its content takes that height: the header tops a
+// side column that the facts card fills to the foot, and the bio's
+// paragraphs spread down beside it, a step larger on wide and on tall
+// screens.
 export function AboutSection() {
   return (
-    <section id="about" data-nav="about" className="relative py-16 lg:py-8">
+    <section id="about" data-nav="about" className="relative py-16 lg:py-8 short:py-6">
       <div
         data-reveal="highlight"
-        className="container-site grid gap-10 lg:grid-cols-12 lg:gap-12 xl:gap-16"
+        className="container-site grid gap-10 lg:flex-1 lg:grid-cols-12 lg:gap-12 xl:gap-16"
       >
-        <div className="lg:col-span-4">
+        <div className="lg:col-span-4 lg:flex lg:flex-col">
           <div data-reveal="letters" className="mb-8 xl:mb-10 short:mb-6">
             <SectionLabel className="letters-label mb-3">Get to know me</SectionLabel>
             <h2 className="text-5xl font-bold text-foreground md:text-6xl xl:text-7xl short:text-6xl tight:text-5xl">
@@ -82,28 +111,35 @@ export function AboutSection() {
 
           <div
             style={toneStyle("primary")}
-            className="highlight-side tone-card relative rounded-2xl border border-border bg-card/60 p-5 short:p-4"
+            className="highlight-side tone-card relative rounded-2xl border border-border bg-card/60 p-5 lg:flex lg:flex-1 lg:flex-col short:p-4 [@media(min-height:900px)]:xl:p-7"
             data-reveal-item
           >
             <Spotlight />
             <span aria-hidden="true" className="tone-hairline" />
-            <h3 className="relative mb-4 flex items-center justify-between gap-3 short:mb-3">
-              <span className="text-base font-semibold text-foreground">At a glance</span>
+            <h3 className="relative mb-4 flex items-center justify-between gap-3 short:mb-3 [@media(min-height:900px)]:xl:mb-6">
+              <span className="text-base font-semibold text-foreground [@media(min-height:900px)]:xl:text-lg">
+                At a glance
+              </span>
               <span aria-hidden="true" className="font-mono text-[11px] text-muted-foreground">
                 <span className="text-green-600 dark:text-green-400">$</span> whoami --now
               </span>
             </h3>
-            <dl className="relative space-y-4 text-sm short:space-y-3">
+            <dl className="relative space-y-4 text-sm lg:flex lg:flex-1 lg:flex-col short:space-y-3 [@media(min-height:900px)]:xl:space-y-6">
               {facts.map((fact) => (
-                <div key={fact.label} className="flex gap-3">
-                  <span aria-hidden="true" className="tone-tile mt-0.5 h-8 w-8 rounded-lg">
+                <div key={fact.label} className={`flex gap-3 ${fact.grow ? "lg:flex-1" : ""}`}>
+                  <span
+                    aria-hidden="true"
+                    className="tone-tile mt-0.5 h-8 w-8 rounded-lg [@media(min-height:900px)]:xl:h-10 [@media(min-height:900px)]:xl:w-10"
+                  >
                     <Glyph name={fact.icon} className="h-4 w-4" />
                   </span>
-                  <div className="min-w-0 flex-1">
-                    <dt className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+                  <div className={`min-w-0 flex-1 ${fact.grow ? "lg:flex lg:flex-col" : ""}`}>
+                    <dt className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground [@media(min-height:900px)]:xl:text-xs">
                       {fact.label}
                     </dt>
-                    <dd className="mt-1">{fact.value}</dd>
+                    <dd className={`mt-1 ${fact.grow ? "lg:flex lg:flex-1 lg:flex-col" : ""}`}>
+                      {fact.value}
+                    </dd>
                   </div>
                 </div>
               ))}
@@ -111,14 +147,14 @@ export function AboutSection() {
           </div>
         </div>
 
-        <div className="relative lg:col-span-8 lg:self-center">
+        <div className="relative lg:col-span-8 lg:flex lg:flex-col">
           <span
             aria-hidden="true"
             className="highlight-quote absolute -left-6 -top-10 hidden select-none text-8xl font-bold text-primary/10 md:block"
           >
             &ldquo;
           </span>
-          <div className="max-w-[78ch] space-y-4 text-base leading-relaxed text-muted-foreground lg:text-[0.9375rem] [@media(min-height:820px)]:lg:text-lg [@media(min-height:820px)]:lg:leading-relaxed">
+          <div className="max-w-[78ch] space-y-4 text-base leading-relaxed text-muted-foreground lg:flex lg:flex-1 lg:flex-col lg:justify-between lg:space-y-0 lg:text-lg xl:text-xl [@media(min-height:820px)]:lg:text-xl [@media(min-height:900px)]:xl:text-[1.375rem]">
             <div className="highlight-line" data-reveal-item>
               <p>
                 <span className="font-medium text-foreground">
@@ -130,6 +166,7 @@ export function AboutSection() {
                 user-friendly products that solve real business problems.
               </p>
             </div>
+            <BioRule n={1} />
             <div className="highlight-line" data-reveal-item>
               <p>
                 I work across the stack and like to own a feature{" "}
@@ -139,6 +176,7 @@ export function AboutSection() {
                 practices, and shipping work that&apos;s easy to maintain.
               </p>
             </div>
+            <BioRule n={2} />
             <div className="highlight-line" data-reveal-item>
               <p>
                 To move faster without sacrificing quality, I also use AI as a{" "}
@@ -148,6 +186,7 @@ export function AboutSection() {
                 code quality.
               </p>
             </div>
+            <BioRule n={3} />
             <div className="highlight-line" data-reveal-item>
               <p>
                 I&apos;ve collaborated with enterprise teams, government

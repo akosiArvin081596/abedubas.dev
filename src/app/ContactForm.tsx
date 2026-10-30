@@ -12,7 +12,7 @@ const SUCCESS_MESSAGE =
   "Thank you for your message! I'll get back to you soon.";
 
 const inputClass =
-  "fields-input block w-full rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary";
+  "fields-input block w-full rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary [@media(min-height:820px)]:xl:py-4";
 
 // A TypeScript-style annotation after each label. Screen readers skip it,
 // so the fields are still just "Name", "Email" and "Message".
@@ -25,7 +25,8 @@ function TypeHint() {
 }
 
 // Each field is a `fields` reveal item (see styles/motion/site.css): its
-// underline draws, then its label drops in.
+// underline draws, then its label drops in. From lg the form takes the free
+// height of its window (ContactSection), and the message box grows into it.
 export function ContactForm() {
   const [formData, setFormData] = useState<FormState>({
     name: "",
@@ -68,7 +69,10 @@ export function ContactForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-6 md:grid-cols-2">
+    <form
+      onSubmit={handleSubmit}
+      className="grid gap-6 md:grid-cols-2 lg:flex-1 lg:grid-rows-[auto_1fr] [@media(min-height:820px)]:xl:gap-8"
+    >
       <div data-reveal-item>
         <label
           htmlFor="name"
@@ -119,7 +123,7 @@ export function ContactForm() {
         </div>
       </div>
 
-      <div className="md:col-span-2" data-reveal-item>
+      <div className="md:col-span-2 lg:flex lg:flex-col" data-reveal-item>
         <label
           htmlFor="message"
           className="fields-label mb-2 block overflow-hidden font-mono text-sm font-medium text-card-foreground"
@@ -129,7 +133,7 @@ export function ContactForm() {
             <TypeHint />
           </span>
         </label>
-        <div className="fields-control">
+        <div className="fields-control lg:flex lg:flex-1 lg:flex-col">
           <textarea
             id="message"
             name="message"
@@ -139,7 +143,7 @@ export function ContactForm() {
             }
             required
             rows={4}
-            className={`${inputClass} resize-none`}
+            className={`${inputClass} resize-none lg:flex-1`}
             placeholder="Your message..."
           />
         </div>
@@ -173,7 +177,7 @@ export function ContactForm() {
         type="submit"
         disabled={status === "loading"}
         data-reveal-item
-        className="fields-submit w-full rounded-lg md:col-span-2 bg-primary px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+        className="fields-submit w-full rounded-lg md:col-span-2 bg-primary px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50 [@media(min-height:820px)]:xl:py-4 [@media(min-height:820px)]:xl:text-base"
       >
         {status === "loading" ? "Sending..." : "Send Message"}
       </button>
