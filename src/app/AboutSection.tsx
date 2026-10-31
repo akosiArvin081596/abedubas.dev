@@ -1,17 +1,18 @@
 import type { CSSProperties } from "react";
 import { Glyph, SectionLabel, SplitText, type GlyphName } from "@/components";
-import { yearsOfExperience } from "@/lib/career";
 import { toneStyle } from "@/lib/tone";
 import { timeline } from "./ExperienceSection";
 import { Spotlight } from "./Spotlight";
 
-// The facts beside the bio say only what nothing else on the page does:
-// the hero's readout and the stats band already give the location, the
-// years and the stack, and the bio's last paragraph names who he builds for.
-// "Currently" is the Experience timeline's "Present" entries; "Industries"
-// are the fields of the projects in data/projects.ts (LogisX; Lendy.PH; Vendora;
-// DROMIC, ECT and AKIIP; DOX, OQG and the SEC Compliance Matrix; Serum 72
-// and Calm Canine).
+// About says only what nothing else on the page does. The hero already
+// introduces him (his name, role, years, stack and summary) and the stats
+// band repeats the years, so the bio doesn't introduce him again: it says
+// who he builds for, that he leads teams, and how he works with AI.
+// Beside it, "Currently" is the Experience timeline's "Present" entries, a
+// one-line status the timeline expands on; "Industries" are the fields of
+// the projects in data/projects.ts (LogisX; Lendy.PH; Vendora; DROMIC, ECT
+// and AKIIP; DOX, OQG and the SEC Compliance Matrix; Serum 72 and Calm
+// Canine).
 const current = timeline.filter((entry) => entry.year.endsWith("Present"));
 
 // From lg the card takes the side column's free height, and Industries
@@ -69,9 +70,35 @@ const facts: {
 
 const em = "font-medium text-primary";
 
-// From lg the bio's paragraphs spread down the column's height, with a
-// hairline midway between each two (the column spaces them evenly). Under
-// `highlight` the nth rule draws on after the nth paragraph's pass.
+// The bio leads with who he builds for, set large; these two notes sit
+// side by side under it. The longer one goes first, so the shorter ends
+// higher on the right and leaves the corner clear for Bintoy's launcher.
+const notes: { label: string; text: React.ReactNode }[] = [
+  {
+    label: "Working with AI",
+    text: (
+      <>
+        To move faster without sacrificing quality, I use AI as a{" "}
+        <span className={em}>coding partner</span>, like a peer reviewer for
+        ideas, refactors, edge cases, and documentation. I stay accountable
+        for the final decisions, architecture, and code quality.
+      </>
+    ),
+  },
+  {
+    label: "Leadership",
+    text: (
+      <>
+        I <span className={em}>lead technical teams</span> and translate
+        complex business requirements into reliable software products.
+      </>
+    ),
+  },
+];
+
+// From lg the lead and the notes spread down the column's height, with a
+// hairline midway between them. Under `highlight` the rule draws on after
+// the lead's pass (--k counts the passes before it).
 function BioRule({ n }: { n: number }) {
   return (
     <span
@@ -83,13 +110,12 @@ function BioRule({ n }: { n: number }) {
 }
 
 // #about: the About Me header (`letters`) heads the side column, over a
-// card of facts found nowhere else on the page; the bio reads beside it
-// (`highlight`). The header is its own reveal inside the bio's, so its
-// letters drop as the band starts its pass. From lg the section is one
-// screen (home.css) and its content takes that height: the header tops a
-// side column that the facts card fills to the foot, and the bio's
-// paragraphs spread down beside it, a step larger on wide and on tall
-// screens.
+// card of facts; the bio reads beside it (`highlight`). The header is its
+// own reveal inside the bio's, so its letters drop as the band starts its
+// pass. From lg the section is one screen (home.css) and its content takes
+// that height: the header tops a side column that the facts card fills to
+// the foot, and beside it the bio's lead tops the column and its notes end
+// it, a step larger on wide and on tall screens.
 export function AboutSection() {
   return (
     <section id="about" data-nav="about" className="relative py-16 lg:py-8 short:py-6">
@@ -121,7 +147,7 @@ export function AboutSection() {
                 At a glance
               </span>
               <span aria-hidden="true" className="font-mono text-[11px] text-muted-foreground">
-                <span className="text-green-600 dark:text-green-400">$</span> whoami --now
+                <span className="text-green-600 dark:text-green-400">$</span> ls ~/about
               </span>
             </h3>
             <dl className="relative space-y-4 text-sm lg:flex lg:flex-1 lg:flex-col short:space-y-3 [@media(min-height:900px)]:xl:space-y-6">
@@ -150,50 +176,29 @@ export function AboutSection() {
         <div className="relative lg:col-span-8 lg:flex lg:flex-col">
           <span
             aria-hidden="true"
-            className="highlight-quote absolute -left-6 -top-10 hidden select-none text-8xl font-bold text-primary/10 md:block"
+            className="highlight-quote absolute -left-6 -top-10 hidden select-none text-8xl font-bold text-primary/10 md:block lg:-left-10 lg:-top-6 xl:-left-12"
           >
             &ldquo;
           </span>
-          <div className="max-w-[78ch] space-y-4 text-base leading-relaxed text-muted-foreground lg:flex lg:flex-1 lg:flex-col lg:justify-between lg:space-y-0 lg:text-lg xl:text-xl [@media(min-height:820px)]:lg:text-xl [@media(min-height:900px)]:xl:text-[1.375rem]">
+          <div className="space-y-8 text-base leading-relaxed text-muted-foreground lg:flex lg:flex-1 lg:flex-col lg:justify-between lg:space-y-0 lg:text-lg xl:text-xl [@media(min-height:820px)]:lg:text-xl [@media(min-height:900px)]:xl:text-2xl">
             <div className="highlight-line" data-reveal-item>
-              <p>
-                <span className="font-medium text-foreground">
-                  I&apos;m Arvin Baghari Edubas
-                </span>
-                , an information technologist and software engineer with{" "}
-                {yearsOfExperience()}+ years of experience building modern web
-                applications. I focus on creating scalable, maintainable, and
-                user-friendly products that solve real business problems.
+              <p className="text-2xl leading-snug font-medium text-foreground lg:text-[1.75rem] xl:text-[2.125rem] short:text-[2rem] tight:text-[1.75rem] [@media(min-height:820px)]:lg:text-[2.125rem] [@media(min-height:820px)]:xl:text-[2.5rem] [@media(min-height:900px)]:xl:text-[2.875rem]">
+                I&apos;ve collaborated with enterprise teams, government
+                agencies, and startups to deliver solutions built for{" "}
+                <span className="text-primary">real-world constraints</span>:
+                security, performance, and reliability at scale.
               </p>
             </div>
             <BioRule n={1} />
-            <div className="highlight-line" data-reveal-item>
-              <p>
-                I work across the stack and like to own a feature{" "}
-                <span className={em}>end to end</span>, from the database and
-                the APIs to the interface people use every day. I care a lot
-                about <span className={em}>clean code</span>, practical best
-                practices, and shipping work that&apos;s easy to maintain.
-              </p>
-            </div>
-            <BioRule n={2} />
-            <div className="highlight-line" data-reveal-item>
-              <p>
-                To move faster without sacrificing quality, I also use AI as a{" "}
-                <span className={em}>coding partner</span>, like a peer
-                reviewer for ideas, refactors, edge cases, and documentation. I
-                stay accountable for the final decisions, architecture, and
-                code quality.
-              </p>
-            </div>
-            <BioRule n={3} />
-            <div className="highlight-line" data-reveal-item>
-              <p>
-                I&apos;ve collaborated with enterprise teams, government
-                agencies, and startups to deliver solutions built for
-                real-world constraints: security, performance, and reliability
-                at scale.
-              </p>
+            <div className="grid gap-8 sm:grid-cols-2 sm:gap-10 xl:gap-14">
+              {notes.map((note) => (
+                <div key={note.label} className="highlight-line" data-reveal-item>
+                  <p className="mb-2 font-mono text-[11px] uppercase tracking-wider [@media(min-height:900px)]:xl:mb-3 [@media(min-height:900px)]:xl:text-xs">
+                    {note.label}
+                  </p>
+                  <p>{note.text}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
