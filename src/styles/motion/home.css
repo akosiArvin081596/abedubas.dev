@@ -87,6 +87,22 @@
   }
 }
 
+/* The session's heading and role scale with the pane: --hero-unit is 1cqi,
+   a hundredth of its width. From lg, where the hero is one screen, the unit
+   is also capped at a 92nd of the hero's height. On a wide, short window
+   (1760x720, say) the width alone would set them too large to fit; the cap
+   leaves a few pixels to spare there, and binds only on windows wide for
+   their height, so 1440x900 is unchanged. */
+.hero-session {
+  --hero-unit: 1cqi;
+}
+
+@media (min-width: 1024px) {
+  .hero-session {
+    --hero-unit: min(1cqi, (100svh - 4.5rem) / 92);
+  }
+}
+
 /* 1. The window unrolls down from the navbar. */
 .motion [data-reveal="boot"] .boot-term {
   animation: boot-unroll var(--dur-2) var(--ease-out) var(--t, 0ms) backwards;

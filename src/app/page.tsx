@@ -588,15 +588,17 @@ export default function HomePage() {
                 <div className="hero-pane hero-session @container flex min-w-0 flex-col p-5 font-mono text-slate-200 sm:p-7 lg:p-8 xl:px-12">
                   <TermLine command="whoami" start={HERO_START.whoami} />
                   <div className="flex flex-col gap-1.5">
-                    {/* Main Heading: the name always gets a line of its own */}
+                    {/* Main Heading: the name always gets a line of its own.
+                        It and the role are sized in --hero-unit (home.css):
+                        the pane's width, capped by the window's height. */}
                     <h1
                       className="boot-heading font-bold tracking-tight text-white"
                       style={startAt(HERO_START.heading)}
                     >
-                      <span className="block text-[clamp(1.125rem,3.4cqi,1.875rem)] leading-tight text-slate-300">
+                      <span className="block text-[length:clamp(1.125rem,3.4*var(--hero-unit),1.875rem)] leading-tight text-slate-300">
                         <SplitText text="Hi, I'm" />
                       </span>{" "}
-                      <span className="block whitespace-nowrap text-[clamp(1.375rem,7.4cqi,4.25rem)] leading-[1.12]">
+                      <span className="block whitespace-nowrap text-[length:clamp(1.375rem,7.4*var(--hero-unit),4.25rem)] leading-[1.12]">
                         <SplitText
                           text="Arvin Baghari Edubas"
                           start={2}
@@ -606,7 +608,7 @@ export default function HomePage() {
                     </h1>
                     {/* Role, typed on */}
                     <p
-                      className="text-[clamp(0.9375rem,2.8cqi,1.375rem)] font-medium text-slate-100"
+                      className="text-[length:clamp(0.9375rem,2.8*var(--hero-unit),1.375rem)] font-medium text-slate-100"
                       style={startAt(HERO_START.role)}
                     >
                       <span
