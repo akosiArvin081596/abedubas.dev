@@ -1,6 +1,8 @@
 import { Fragment, type CSSProperties, type ReactNode } from "react";
 import Link from "next/link";
 import { LocalClock, SectionLabel, SplitText } from "@/components";
+import { DownloadIcon } from "@/components/icons";
+import { LOCATION, RESUME_URL } from "@/data/contact";
 import githubStats from "@/data/github-stats.json";
 import { WEB_DEV_SINCE, yearsOfExperience } from "@/lib/career";
 import { publicLiveSites } from "@/lib/live-sites";
@@ -324,7 +326,7 @@ const engineerTs: Token[][] = [
   [["export", "keyword"], [" "], ["const", "keyword"], [" "], ["engineer", "title"], [" = {"]],
   [["  "], ["name", "property"], [": "], ['"Arvin Baghari Edubas"', "string"], [","]],
   [["  "], ["role", "property"], [": "], ['"Information Technologist & Software Engineer"', "string"], [","]],
-  [["  "], ["location", "property"], [": "], ['"Philippines"', "string"], [","]],
+  [["  "], ["location", "property"], [": "], [`"${LOCATION}"`, "string"], [","]],
   [["  "], ["since", "property"], [": "], [String(WEB_DEV_SINCE), "literal"], [","]],
   [["  "], ["stack", "property"], [": ["]],
   ...arrayRows(techStack),
@@ -425,7 +427,7 @@ const dotted = (list: readonly string[]) =>
 // `fastfetch`'s readout: engineer.ts's facts as system info, keys in the
 // accent color, then the terminal's color palette, as fastfetch prints it.
 const fetchRows: { key: string; value: ReactNode }[] = [
-  { key: "location", value: "Philippines (UTC+8)" },
+  { key: "location", value: `${LOCATION} (UTC+8)` },
   {
     key: "uptime",
     value: `${yearsOfExperience()} years, since ${WEB_DEV_SINCE}`,
@@ -465,6 +467,7 @@ const HERO_START = {
   summary: 4500,
   work: 5250,
   contact: 5400,
+  resume: 5550,
   prompt: 5750,
   status: 5900,
 };
@@ -713,6 +716,15 @@ export default function HomePage() {
                       </span>
                       Get in Touch
                     </Link>
+                    <a
+                      href={RESUME_URL}
+                      download
+                      className="cta-secondary boot-drop group relative inline-flex items-center gap-2.5 overflow-hidden rounded-lg border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-semibold text-slate-100 transition-colors duration-300 hover:border-sky-400/60 hover:bg-sky-400/10 hover:text-white sm:text-[0.9375rem] 2xl:px-6 2xl:py-3 2xl:text-base"
+                      style={startAt(HERO_START.resume)}
+                    >
+                      <DownloadIcon className="h-[1.125rem] w-[1.125rem] shrink-0 text-sky-300 transition-[translate,color] duration-300 group-hover:translate-y-0.5 group-hover:text-white" />
+                      Download Resume
+                    </a>
                   </div>
 
                   <HeroShell
@@ -755,7 +767,7 @@ export default function HomePage() {
                 </span>
                 <span className="flex shrink-0 items-center gap-2">
                   <span className="tmux-seg hidden sm:inline" style={segment(4)}>
-                    Philippines
+                    {LOCATION}
                   </span>
                   <LocalClock
                     part="time"

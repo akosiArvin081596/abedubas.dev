@@ -43,7 +43,7 @@
   .header {
     background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1e40af 100%);
     color: #fff;
-    padding: 32px 48px 26px;
+    padding: 20px 48px 16px;
     position: relative;
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(15, 23, 42, 0.3);
@@ -100,7 +100,7 @@
     font-weight: 500;
     color: #93c5fd;
     letter-spacing: 1px;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
     position: relative;
     z-index: 1;
     text-transform: uppercase;
@@ -139,7 +139,7 @@
 
   /* ── Body ── */
   .body {
-    padding: 24px 48px 30px;
+    padding: 18px 48px 24px;
     position: relative;
     background: #ffffff;
     margin: 0;
@@ -162,8 +162,8 @@
     text-transform: uppercase;
     letter-spacing: 2px;
     color: #0f172a;
-    margin-top: 24px;
-    margin-bottom: 10px;
+    margin-top: 16px;
+    margin-bottom: 8px;
     padding-bottom: 6px;
     border-bottom: none;
     display: flex;
@@ -190,25 +190,28 @@
   /* ── Summary ── */
   .summary {
     color: #475569;
-    line-height: 1.65;
+    line-height: 1.55;
     font-size: 9.2pt;
-    margin-bottom: 8px;
-    padding: 10px 14px;
+    margin-bottom: 4px;
+    padding: 8px 14px;
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     border-left: 3px solid #3b82f6;
     border-radius: 0 6px 6px 0;
   }
 
+  /* ── Second printed page ── */
+  .page-two { margin-top: 16px; }
+
   /* ── Two-column layout ── */
   .two-col {
     display: grid;
-    grid-template-columns: 1fr 280px;
-    gap: 0 32px;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 0 24px;
   }
 
   /* ── Jobs ── */
   .job {
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     padding-left: 16px;
     border-left: 2px solid;
     border-image: linear-gradient(180deg, #3b82f6 0%, #e2e8f0 100%) 1;
@@ -229,6 +232,7 @@
     justify-content: space-between;
     align-items: baseline;
     gap: 8px;
+    margin-bottom: 3px;
   }
   .job-title { font-weight: 700; font-size: 9.5pt; color: #0f172a; }
   .job-date {
@@ -245,16 +249,19 @@
     font-weight: 600;
     color: #64748b;
     font-size: 8.5pt;
-    margin-bottom: 3px;
+    margin-left: 4px;
     font-style: italic;
   }
   .job ul { margin-left: 14px; color: #475569; }
-  .job li { margin-bottom: 2px; font-size: 8.8pt; }
+  .job li { margin-bottom: 1px; font-size: 8.8pt; line-height: 1.45; }
 
   /* ── Skills ── */
-  .skills-section { margin-top: 0; }
+  .skills-section {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
   .skill-category {
-    margin-bottom: 12px;
     padding: 8px 10px;
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     border-radius: 8px;
@@ -308,7 +315,7 @@
     color: #fff;
     font-weight: 600;
     display: inline-block;
-    margin-top: 4px;
+    margin-left: 4px;
     background: linear-gradient(135deg, #3b82f6, #60a5fa);
     padding: 2px 8px;
     border-radius: 10px;
@@ -392,9 +399,9 @@
     gap: 6px;
   }
   .strengths-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
   }
   .strength-item {
     display: flex;
@@ -496,7 +503,7 @@
 
     .header {
       background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1e40af 100%) !important;
-      padding: 32px 48px 26px !important;
+      padding: 20px 48px 16px !important;
       margin: 0 !important;
     }
 
@@ -511,7 +518,7 @@
     }
 
     .body {
-      padding: 24px 48px 30px !important;
+      padding: 18px 48px 24px !important;
       background: #ffffff !important;
     }
 
@@ -519,6 +526,7 @@
       background: linear-gradient(180deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%) !important;
     }
 
+    .page-two { break-before: page; margin-top: 0; padding-top: 30px; }
     h2 { break-after: avoid; }
     .job, .project-card, .skill-category, .edu-block { break-inside: avoid; }
 
@@ -598,7 +606,7 @@
     </div>
     <div class="contact-item">
       <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>
-      Butuan City, Philippines
+      Butuan City, Agusan del Norte, Philippines
     </div>
   </div>
   <div class="contact-row" style="margin-top: 6px;">
@@ -621,34 +629,38 @@
 <div class="body">
 
 <h2><span class="accent"></span> Professional Summary</h2>
-<p class="summary">Results-driven full-stack developer with 10+ years of professional experience designing and building modern web applications for government agencies, enterprises, and startups. Proficient across the entire development lifecycle — from database architecture and API design to responsive frontend interfaces. Proven track record of delivering scalable, secure, and high-performance solutions under real-world constraints. Adept at leading technical teams and translating complex business requirements into reliable software products. Early adopter of AI-assisted development, leveraging AI tools as a pair programming partner to accelerate workflows, improve code quality, and drive innovation.</p>
-
-<div class="two-col">
-
-<!-- ── Left Column ── -->
-<div>
+<p class="summary">Software engineer with <span id="years">13</span> years of experience on the web, building modern applications end to end with intuitive user experiences, clean code, and scalable architecture. Has collaborated with enterprise teams, government agencies, and startups to deliver solutions built for real-world constraints: security, performance, and reliability at scale. Leads technical teams and translates complex business requirements into reliable software products. Uses AI as a coding partner for ideas, refactors, edge cases, and documentation, while staying accountable for the final decisions.</p>
 
 <h2><span class="accent"></span> Work Experience</h2>
 
 <div class="job">
   <div class="job-header">
-    <span class="job-title">Computer Programmer / DRMD-DRIM Section Head</span>
-    <span class="job-date">2024 &ndash; 2025</span>
+    <span class="job-role"><span class="job-title">Software Developer (Contract)</span> <span class="job-company">Alchemy Dev</span></span>
+    <span class="job-date">2026 &ndash; October 2026</span>
   </div>
-  <div class="job-company">Department of Social Welfare and Development</div>
   <ul>
-    <li>Lead the information management section supporting national disaster response operations</li>
-    <li>Architect and develop web-based tools for relief coordination, beneficiary tracking, and automated reporting</li>
-    <li>Collaborate with cross-functional teams to streamline emergency data workflows</li>
+    <li>Built and shipped web applications for Alchemy Dev and its clients across finance, logistics, and e-commerce</li>
+    <li>Took each project from first scope through production</li>
   </ul>
 </div>
 
 <div class="job">
   <div class="job-header">
-    <span class="job-title">Information Technology Officer</span>
+    <span class="job-role"><span class="job-title">Computer Programmer (DRMD-DRIM Section Head)</span> <span class="job-company">Department of Social Welfare and Development</span></span>
+    <span class="job-date">2024 &ndash; 2026</span>
+  </div>
+  <ul>
+    <li>Led the information management section supporting disaster response operations</li>
+    <li>Architected and developed web-based tools for relief coordination, beneficiary tracking, and automated reporting</li>
+    <li>Collaborated with cross-functional teams to streamline emergency data workflows</li>
+  </ul>
+</div>
+
+<div class="job">
+  <div class="job-header">
+    <span class="job-role"><span class="job-title">Information Technology Officer</span> <span class="job-company">Gingoog City Water District</span></span>
     <span class="job-date">2018 &ndash; 2024</span>
   </div>
-  <div class="job-company">Gingoog City Water District</div>
   <ul>
     <li>Managed end-to-end IT operations and infrastructure for the district utility</li>
     <li>Developed custom systems for billing, customer records management, and inventory tracking</li>
@@ -658,10 +670,9 @@
 
 <div class="job">
   <div class="job-header">
-    <span class="job-title">Multimedia Officer</span>
+    <span class="job-role"><span class="job-title">Multimedia Officer</span> <span class="job-company">Axelum Resources Corporation (Coconut Milk Powder)</span></span>
     <span class="job-date">2017 &ndash; 2018</span>
   </div>
-  <div class="job-company">Axelum Resources Corporation</div>
   <ul>
     <li>Produced audio-visual training modules for employee onboarding, safety, and professional development</li>
   </ul>
@@ -669,10 +680,9 @@
 
 <div class="job">
   <div class="job-header">
-    <span class="job-title">IT Staff / IT Officer</span>
+    <span class="job-role"><span class="job-title">IT Staff / IT Officer</span> <span class="job-company">Mindanao Forge Company Inc.</span></span>
     <span class="job-date">2016 &ndash; 2017</span>
   </div>
-  <div class="job-company">Mindanao Forge Company Inc.</div>
   <ul>
     <li>Provided IT support and infrastructure maintenance across the organization</li>
     <li>Designed and developed the company's first mobile e-commerce application</li>
@@ -681,10 +691,9 @@
 
 <div class="job">
   <div class="job-header">
-    <span class="job-title">Software Developer Intern</span>
+    <span class="job-role"><span class="job-title">Software Developer Intern</span> <span class="job-company">Philippine Long Distance Telephone Company (PLDT)</span></span>
     <span class="job-date">2015 &ndash; 2016</span>
   </div>
-  <div class="job-company">Philippine Long Distance Telephone Company (PLDT)</div>
   <ul>
     <li>Contributed to internal tooling projects under senior developer mentorship</li>
     <li>Gained exposure to enterprise-grade software development practices and workflows</li>
@@ -693,20 +702,36 @@
 
 <div class="job">
   <div class="job-header">
-    <span class="job-title">Freelance Web Developer</span>
+    <span class="job-role"><span class="job-title">Freelance Web Developer</span> <span class="job-company">OnlineJobs.ph</span></span>
     <span class="job-date">2013 &ndash; 2019</span>
   </div>
-  <div class="job-company">OnlineJobs.ph &mdash; Remote</div>
   <ul>
     <li>Delivered websites and web applications for international clients across diverse industries</li>
     <li>Managed full project lifecycles from requirements gathering through deployment</li>
   </ul>
 </div>
 
-</div>
-
-<!-- ── Right Column ── -->
+<div class="two-col">
 <div>
+<h2><span class="accent"></span> Education</h2>
+<div class="edu-block">
+  <div class="edu-degree">BS Information Technology</div>
+  <div class="edu-school">Christ the King College <span class="edu-year">Graduated 2016</span></div>
+</div>
+</div>
+<div>
+<h2><span class="accent"></span> Core Strengths</h2>
+<div class="strengths-wrapper">
+  <div class="strength-item"><span class="strength-dot"></span> Full-Stack Development</div>
+  <div class="strength-item"><span class="strength-dot"></span> System Architecture</div>
+  <div class="strength-item"><span class="strength-dot"></span> API Design</div>
+  <div class="strength-item"><span class="strength-dot"></span> Performance Optimization</div>
+</div>
+</div>
+</div><!-- end two-col -->
+
+<!-- ══════════ SECOND PAGE ══════════ -->
+<div class="page-two">
 
 <h2><span class="accent"></span> Technical Skills</h2>
 <div class="skills-section">
@@ -718,36 +743,48 @@
       <span class="skill-tag">Vue</span>
       <span class="skill-tag">Nuxt.js</span>
       <span class="skill-tag">TypeScript</span>
+      <span class="skill-tag">JavaScript</span>
+      <span class="skill-tag">HTML5</span>
+      <span class="skill-tag">CSS3</span>
       <span class="skill-tag">Tailwind CSS</span>
       <span class="skill-tag">Redux</span>
+      <span class="skill-tag">React Query</span>
+      <span class="skill-tag">Framer Motion</span>
     </div>
   </div>
   <div class="skill-category">
     <div class="skill-label">Backend</div>
     <div class="skill-tags">
       <span class="skill-tag">Node.js</span>
-      <span class="skill-tag">Express</span>
-      <span class="skill-tag">Laravel</span>
+      <span class="skill-tag">Express.js</span>
+      <span class="skill-tag">NestJS</span>
       <span class="skill-tag">Python</span>
       <span class="skill-tag">Django</span>
       <span class="skill-tag">FastAPI</span>
+      <span class="skill-tag">PHP</span>
+      <span class="skill-tag">Laravel</span>
+      <span class="skill-tag">REST APIs</span>
       <span class="skill-tag">GraphQL</span>
     </div>
   </div>
   <div class="skill-category">
-    <div class="skill-label">Databases</div>
+    <div class="skill-label">Database</div>
     <div class="skill-tags">
       <span class="skill-tag">PostgreSQL</span>
       <span class="skill-tag">MySQL</span>
       <span class="skill-tag">MongoDB</span>
       <span class="skill-tag">Redis</span>
       <span class="skill-tag">Prisma</span>
+      <span class="skill-tag">Drizzle ORM</span>
+      <span class="skill-tag">SQL</span>
+      <span class="skill-tag">Database Design</span>
     </div>
   </div>
   <div class="skill-category">
-    <div class="skill-label">DevOps & Tools</div>
+    <div class="skill-label">Tools &amp; DevOps</div>
     <div class="skill-tags">
       <span class="skill-tag">Git</span>
+      <span class="skill-tag">GitHub</span>
       <span class="skill-tag">Docker</span>
       <span class="skill-tag">AWS</span>
       <span class="skill-tag">Vercel</span>
@@ -755,29 +792,35 @@
       <span class="skill-tag">Linux</span>
       <span class="skill-tag">Nginx</span>
       <span class="skill-tag">Jest</span>
+      <span class="skill-tag">Playwright</span>
+    </div>
+  </div>
+  <div class="skill-category">
+    <div class="skill-label">Cybersecurity</div>
+    <div class="skill-tags">
+      <span class="skill-tag">Secure Coding</span>
+      <span class="skill-tag">OWASP Top 10</span>
+      <span class="skill-tag">Authentication &amp; Authorization</span>
+      <span class="skill-tag">Access Control</span>
+      <span class="skill-tag">SSL/TLS</span>
+      <span class="skill-tag">Network Security</span>
+    </div>
+  </div>
+  <div class="skill-category">
+    <div class="skill-label">AI-Assisted Development</div>
+    <div class="skill-tags">
+      <span class="skill-tag">Claude Code (CLI)</span>
+      <span class="skill-tag">Cursor AI</span>
+      <span class="skill-tag">Gemini</span>
+      <span class="skill-tag">ChatGPT</span>
+      <span class="skill-tag">AI Pair Programming</span>
+      <span class="skill-tag">AI Code Review</span>
+      <span class="skill-tag">AI-Assisted Refactoring</span>
+      <span class="skill-tag">Edge-Case Discovery</span>
+      <span class="skill-tag">AI-Assisted Documentation</span>
     </div>
   </div>
 </div>
-
-<h2><span class="accent"></span> Education</h2>
-<div class="edu-block">
-  <div class="edu-degree">BS Information Technology</div>
-  <div class="edu-school">Christ the King College</div>
-  <div class="edu-year">Graduated 2016</div>
-</div>
-
-<h2><span class="accent"></span> Core Strengths</h2>
-<div class="strengths-wrapper">
-  <div class="strength-item"><span class="strength-dot"></span> Full-Stack Architecture</div>
-  <div class="strength-item"><span class="strength-dot"></span> Scalable API Design</div>
-  <div class="strength-item"><span class="strength-dot"></span> Performance Optimization</div>
-  <div class="strength-item"><span class="strength-dot"></span> Technical Leadership</div>
-  <div class="strength-item"><span class="strength-dot"></span> Clean, Maintainable Code</div>
-  <div class="strength-item"><span class="strength-dot"></span> User-Centric Development</div>
-</div>
-
-</div>
-</div><!-- end two-col -->
 
 <h2><span class="accent"></span> Selected Projects</h2>
 <div class="projects-grid">
@@ -851,6 +894,8 @@
   </a>
 </div>
 
+</div><!-- end page-two -->
+
 </div><!-- end body -->
 
 </div><!-- end resume-content -->
@@ -867,11 +912,13 @@
   </button>
 </div>
 
-<!-- html2canvas and jsPDF libraries -->
+<!-- html2canvas, for the PNG -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
+  // Counted from WEB_DEV_SINCE in src/lib/career.ts
+  document.getElementById('years').textContent = new Date().getFullYear() - 2013;
+
   // Capture page as canvas
   async function captureResume() {
     const exportBtns = document.querySelector('.export-buttons');
@@ -914,48 +961,9 @@
     btn.innerHTML = originalContent;
   });
 
-  // Export as PDF (using html2canvas + jsPDF for exact visual match)
-  document.getElementById('exportPdf').addEventListener('click', async function() {
-    const btn = this;
-    const originalContent = btn.innerHTML;
-
-    btn.classList.add('loading');
-    btn.innerHTML = '<div class="spinner"></div><span>Exporting...</span>';
-
-    try {
-      const canvas = await captureResume();
-      const imgData = canvas.toDataURL('image/jpeg', 1.0);
-
-      const { jsPDF } = window.jspdf;
-
-      // Calculate the aspect ratio of the captured content
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      const ratio = imgWidth / imgHeight;
-
-      // Create PDF with custom size matching the content aspect ratio
-      // Use the image dimensions to create a properly sized PDF
-      const pdfWidth = 8.5; // inches
-      const pdfHeight = pdfWidth / ratio;
-
-      const pdf = new jsPDF({
-        orientation: pdfHeight > pdfWidth ? 'portrait' : 'landscape',
-        unit: 'in',
-        format: [pdfWidth, pdfHeight]
-      });
-
-      // Add image to fill the entire page
-      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-
-      pdf.save('Arvin_Baghari_Edubas_Resume.pdf');
-    } catch (error) {
-      console.error('PDF export failed:', error);
-      alert('PDF export failed. Please try again.');
-    }
-
-    btn.classList.remove('loading');
-    btn.innerHTML = originalContent;
-  });
+  // PDF is the browser's own print (Save as PDF), so the text stays selectable
+  // and the links keep working, on two US Letter pages.
+  document.getElementById('exportPdf').addEventListener('click', () => window.print());
 </script>
 
 </body>
