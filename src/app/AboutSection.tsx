@@ -9,7 +9,7 @@ import { Spotlight } from "./Spotlight";
 // band repeats the years, so the bio doesn't introduce him again: it says
 // who he builds for, that he leads teams, and how he works with AI.
 // Beside it, "Currently" is the Experience timeline's "Present" entries, a
-// one-line status the timeline expands on; "Industries" are the fields of
+// one-line status the timeline expands on, and shows only when there is one; "Industries" are the fields of
 // the projects in data/projects.ts (LogisX; Lendy.PH; Vendora; DROMIC, ECT
 // and AKIIP; DOX, OQG and the SEC Compliance Matrix; Serum 72 and Calm
 // Canine).
@@ -151,7 +151,7 @@ export function AboutSection() {
               </span>
             </h3>
             <dl className="relative space-y-4 text-sm lg:flex lg:flex-1 lg:flex-col short:space-y-3 [@media(min-height:900px)]:xl:space-y-6">
-              {facts.map((fact) => (
+              {facts.filter((fact) => fact.label !== "Currently" || current.length > 0).map((fact) => (
                 <div key={fact.label} className={`flex gap-3 ${fact.grow ? "lg:flex-1" : ""}`}>
                   <span
                     aria-hidden="true"

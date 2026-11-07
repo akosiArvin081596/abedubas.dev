@@ -11,7 +11,7 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from "react";
-import { EMAIL } from "@/data/contact";
+import { EMAIL, LOCATION } from "@/data/contact";
 import { projects } from "@/data/projects";
 import { hrefFor } from "@/data/sections";
 import { WEB_DEV_SINCE, yearsOfExperience } from "@/lib/career";
@@ -109,8 +109,8 @@ function answer(question: string, close: () => void): ReactNode {
   if (/(\bwho\b|\babout\b|arvin|background|experience|\brole\b|what (does|do) (he|you))/.test(q)) {
     return (
       <>
-        Arvin is an Information Technologist &amp; Software Engineer from the
-        Philippines, building for the web since {WEB_DEV_SINCE} (
+        Arvin is an Information Technologist &amp; Software Engineer from{" "}
+        {LOCATION}, building for the web since {WEB_DEV_SINCE} (
         {yearsOfExperience()}+ years). {to(hrefFor("about"), "More about him →")}
       </>
     );

@@ -1,5 +1,5 @@
-// How to reach Arvin. The Contact section, the footer and Bintoy all read
-// these, so a change here reaches every place they show.
+// How to reach Arvin. The hero, the Contact section, the footer and Bintoy all
+// read these, so a change here reaches every place they show.
 export const EMAIL = "arvin.edubas15@gmail.com";
 export const LOCATION = "Butuan City, Agusan del Norte, Philippines";
 

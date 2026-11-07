@@ -2,7 +2,7 @@ import { Fragment, type CSSProperties, type ReactNode } from "react";
 import Link from "next/link";
 import { LocalClock, SectionLabel, SplitText } from "@/components";
 import { DownloadIcon } from "@/components/icons";
-import { RESUME_URL } from "@/data/contact";
+import { LOCATION, RESUME_URL } from "@/data/contact";
 import githubStats from "@/data/github-stats.json";
 import { WEB_DEV_SINCE, yearsOfExperience } from "@/lib/career";
 import { publicLiveSites } from "@/lib/live-sites";
@@ -326,7 +326,7 @@ const engineerTs: Token[][] = [
   [["export", "keyword"], [" "], ["const", "keyword"], [" "], ["engineer", "title"], [" = {"]],
   [["  "], ["name", "property"], [": "], ['"Arvin Baghari Edubas"', "string"], [","]],
   [["  "], ["role", "property"], [": "], ['"Information Technologist & Software Engineer"', "string"], [","]],
-  [["  "], ["location", "property"], [": "], ['"Philippines"', "string"], [","]],
+  [["  "], ["location", "property"], [": "], [`"${LOCATION}"`, "string"], [","]],
   [["  "], ["since", "property"], [": "], [String(WEB_DEV_SINCE), "literal"], [","]],
   [["  "], ["stack", "property"], [": ["]],
   ...arrayRows(techStack),
@@ -427,7 +427,7 @@ const dotted = (list: readonly string[]) =>
 // `fastfetch`'s readout: engineer.ts's facts as system info, keys in the
 // accent color, then the terminal's color palette, as fastfetch prints it.
 const fetchRows: { key: string; value: ReactNode }[] = [
-  { key: "location", value: "Philippines (UTC+8)" },
+  { key: "location", value: `${LOCATION} (UTC+8)` },
   {
     key: "uptime",
     value: `${yearsOfExperience()} years, since ${WEB_DEV_SINCE}`,
@@ -767,7 +767,7 @@ export default function HomePage() {
                 </span>
                 <span className="flex shrink-0 items-center gap-2">
                   <span className="tmux-seg hidden sm:inline" style={segment(4)}>
-                    Philippines
+                    {LOCATION}
                   </span>
                   <LocalClock
                     part="time"

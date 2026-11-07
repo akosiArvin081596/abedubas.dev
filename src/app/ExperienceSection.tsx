@@ -4,11 +4,11 @@ import { Timeline, type TimelineEntry } from "./Timeline";
 // Newest first. About reads the "Present" entries for its "Currently" fact.
 export const timeline: TimelineEntry[] = [
   {
-    year: "2026 - Present",
+    year: "2026 - October 2026",
     title: "Software Developer (Contract)",
     company: "Alchemy Dev",
     description:
-      "Building and shipping web applications for Alchemy Dev and its clients across finance, logistics, and e-commerce, taking each project from first scope through production.",
+      "Built and shipped web applications for Alchemy Dev and its clients across finance, logistics, and e-commerce, taking each project from first scope through production.",
   },
   {
     year: "2024 - 2026",
