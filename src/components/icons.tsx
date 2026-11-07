@@ -34,6 +34,26 @@ export function LinkedInIcon({ className = "h-6 w-6" }: IconProps) {
 }
 
 // Heroicons "envelope"
+export function DownloadIcon({ className = "h-6 w-6" }: IconProps) {
+  return (
+    <svg
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      className={className}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 3.75v11.5m0 0 4.5-4.5M12 15.25l-4.5-4.5M4.5 16.5v2.25a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5V16.5"
+      />
+    </svg>
+  );
+}
+
 export function MailIcon({ className = "h-6 w-6" }: IconProps) {
   return (
     <svg

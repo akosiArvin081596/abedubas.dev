@@ -4,11 +4,18 @@ import { Timeline, type TimelineEntry } from "./Timeline";
 // Newest first. About reads the "Present" entries for its "Currently" fact.
 export const timeline: TimelineEntry[] = [
   {
-    year: "2024 - Present",
+    year: "2026 - Present",
+    title: "Software Developer (Contract)",
+    company: "Alchemy Dev",
+    description:
+      "Building and shipping web applications for Alchemy Dev and its clients across finance, logistics, and e-commerce, taking each project from first scope through production.",
+  },
+  {
+    year: "2024 - 2026",
     title: "Computer Programmer (DRMD-DRIM Section Head)",
     company: "Department of Social Welfare and Development",
     description:
-      "Contributing to disaster response efforts by leading the information management section. Focused on building web-based tools that help teams coordinate relief operations, track beneficiaries, and generate reports—all in service of communities when they need it most.",
+      "Contributed to disaster response efforts by leading the information management section. Focused on building web-based tools that help teams coordinate relief operations, track beneficiaries, and generate reports—all in service of communities when they need it most.",
   },
   {
     year: "2018 - 2024",
@@ -46,11 +53,11 @@ export const timeline: TimelineEntry[] = [
       "Gained hands-on experience in software development during my internship at one of the Philippines' largest telecommunications companies. Worked alongside experienced developers, contributing to internal tools and learning industry-standard practices in a corporate environment.",
   },
   {
-    year: "2013 - 2016",
+    year: "2013 - 2019",
     title: "Freelance Web Developer",
     company: "OnlineJobs.ph",
     description:
-      "Worked as a freelance web developer while pursuing my degree, building websites and web applications for international clients. This experience taught me self-discipline, client communication, and time management—balancing real-world projects with academic responsibilities to support my studies.",
+      "Started freelancing while pursuing my degree and continued through 2019, building websites and web applications for international clients. This experience taught me self-discipline, client communication, and time management—balancing real-world projects with my studies and, later, full-time roles.",
   },
 ];
 

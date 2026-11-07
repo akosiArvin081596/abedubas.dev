@@ -1,10 +1,10 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
-import { EMAIL, GITHUB_URL, LINKEDIN_URL, LOCATION } from "@/data/contact";
+import { EMAIL, GITHUB_URL, LINKEDIN_URL, LOCATION, RESUME_URL } from "@/data/contact";
 import { SECTIONS } from "@/data/sections";
 import { publicLiveSites } from "@/lib/live-sites";
 import { BackToTop } from "./BackToTop";
-import { ArrowIcon, GitHubIcon, LinkedInIcon, MailIcon } from "./icons";
+import { ArrowIcon, DownloadIcon, GitHubIcon, LinkedInIcon, MailIcon } from "./icons";
 import { LocalClock } from "./LocalClock";
 import { SplitText } from "./motion";
 
@@ -172,6 +172,12 @@ export function Footer() {
                   <a href={`mailto:${EMAIL}`} className={`${link} inline-flex items-center gap-2`}>
                     <MailIcon className="h-4 w-4" />
                     Email
+                  </a>
+                </li>
+                <li>
+                  <a href={RESUME_URL} download className={`${link} inline-flex items-center gap-2`}>
+                    <DownloadIcon className="h-4 w-4" />
+                    Resume<span className="sr-only"> (PDF)</span>
                   </a>
                 </li>
               </ul>
