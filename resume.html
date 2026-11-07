@@ -565,6 +565,15 @@
       background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
     }
 
+    /* Blurred shadows and blur filters print as solid tinted boxes in macOS
+       Preview, so the PDF goes without them. The dots keep their white ring. */
+    *, *::before, *::after {
+      box-shadow: none !important;
+      text-shadow: none !important;
+      filter: none !important;
+    }
+    .job::before { box-shadow: 0 0 0 3px #fff !important; }
+
     .export-buttons { display: none !important; }
   }
 
