@@ -11,7 +11,7 @@ export const timeline: TimelineEntry[] = [
       "Built and shipped web applications for Alchemy Dev and its clients across finance, logistics, and e-commerce, taking each project from first scope through production.",
   },
   {
-    year: "2024 - 2026",
+    year: "March 2024 - July 2026",
     title: "Computer Programmer (DRMD-DRIM Section Head)",
     company: "Department of Social Welfare and Development",
     description:
