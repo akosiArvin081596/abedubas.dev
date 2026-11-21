@@ -6,6 +6,9 @@ import { ProjectExplorer } from "./ProjectExplorer";
 // The command the header types out (the `type` effect in work.css)
 const PROMPT = "ls ~/projects";
 
+// The projects with a live link; the rest live only in a repository.
+const liveCount = projects.filter((project) => project.access !== "repo").length;
+
 // #projects: every project on one screen. The header types `ls ~/projects`
 // (`type`), then the explorer opens like two browser windows (`window`):
 // the list, then the selected project's card. From lg the section is
@@ -41,7 +44,7 @@ export function ProjectsSection() {
           </div>
           <p className="type-sub max-w-xl text-base text-muted-foreground lg:text-right xl:text-lg">
             <SplitText
-              text={`${projects.length} projects, each with a live link, strongest production work first. Staging hosts are marked.`}
+              text={`${liveCount} live projects, strongest production work first, then ${projects.length - liveCount} tools and apps from the repos. Staging hosts are marked.`}
             />
           </p>
         </div>

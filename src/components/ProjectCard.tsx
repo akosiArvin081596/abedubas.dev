@@ -13,8 +13,10 @@ interface ProjectCardProps {
   className?: string;
 }
 
-// The address-bar text: the live site's hostname.
+// The address-bar text: the live site's hostname, or, for a build that
+// lives only in a repository, a note that there's no public link.
 function hostOf(project: Project) {
+  if (project.access === "repo") return "private repository";
   try {
     return new URL(project.liveUrl).hostname;
   } catch {
@@ -29,7 +31,9 @@ const tag =
 // A project framed as a browser window: a title bar with an address pill,
 // the screenshots as a small gallery (ProjectGallery; a placeholder frame
 // when there are none), then the details and the one live link. Staging
-// hosts get a "staging" badge, and login-only systems say so. The `window`
+// hosts get a "staging" badge, and login-only systems say so. A build that
+// lives only in a repository gets an "in the repo" badge and, in place of
+// the link, a note that it has no public link. The `window`
 // effect in styles/motion/work.css targets .window-bar, .window-cover,
 // .window-strip and .window-body. The gallery fills whatever height the card
 // leaves it (`.explorer-card` in work.css, where the card has a fixed
@@ -66,6 +70,11 @@ export function ProjectCard({
               sign-in only
             </span>
           )}
+          {project.access === "repo" && (
+            <span className={`${tag} border-sky-500/40 bg-sky-500/10 text-sky-700 dark:text-sky-300`}>
+              in the repo
+            </span>
+          )}
         </div>
         <p className="mb-4 text-sm leading-relaxed text-muted-foreground xl:text-[0.9375rem]">
           {project.description}
@@ -81,16 +90,22 @@ export function ProjectCard({
               </li>
             ))}
           </ul>
-          <a
-            href={project.liveUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover"
-          >
-            {staging ? "Visit staging site" : "Visit site"}
-            <ExternalIcon />
-            <span className="sr-only">(opens in a new tab)</span>
-          </a>
+          {project.access === "repo" ? (
+            <p className="font-mono text-xs text-muted-foreground">
+              No public link: a tool in the repo
+            </p>
+          ) : (
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-hover"
+            >
+              {staging ? "Visit staging site" : "Visit site"}
+              <ExternalIcon />
+              <span className="sr-only">(opens in a new tab)</span>
+            </a>
+          )}
         </div>
       </div>
     </article>
