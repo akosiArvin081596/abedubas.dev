@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Prints resume.html with headless Chrome to the PDF the hero and footer link
 // to (RESUME_URL in src/data/contact.ts). Run it after any change to the
-// resume, check the result is still two pages, and commit the PDF.
+// resume, check the result is still three pages, and commit the PDF.
 //
 // Usage: npm run resume:pdf
 // Set CHROME_PATH if Chrome isn't in the usual macOS place.
