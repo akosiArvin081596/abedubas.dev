@@ -78,8 +78,8 @@ function answer(question: string, close: () => void): ReactNode {
   if (/(stack|skill|tech|language|framework|tools?)\b/.test(q)) {
     return (
       <>
-        Vue and Nuxt or React and Next.js on the front end, Laravel, Node.js
-        and Python on the back end, with MySQL, PostgreSQL and MongoDB.{" "}
+        Vue and Nuxt or React and Next.js on the front end, Laravel, Django,
+        Node.js and Python on the back end, with MySQL, PostgreSQL and MongoDB.{" "}
         {to(hrefFor("skills"), "All his skills →")}
       </>
     );
