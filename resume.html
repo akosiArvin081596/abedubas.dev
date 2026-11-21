@@ -331,6 +331,25 @@
     grid-template-columns: 1fr 1fr;
     gap: 10px 16px;
   }
+  /* Every other project, after the featured cards: compact entries in three
+     columns, in the site's order. */
+  .more-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px 16px;
+  }
+  .more-item {
+    display: block;
+    padding: 1px 0 1px 9px;
+    border-left: 2px solid #bfdbfe;
+    color: inherit;
+    text-decoration: none;
+    break-inside: avoid;
+  }
+  .more-name { font-weight: 700; font-size: 8.5pt; color: #0f172a; line-height: 1.3; }
+  .more-url { font-size: 7pt; color: #3b82f6; line-height: 1.35; word-break: break-all; }
+  .more-desc { font-size: 7.6pt; color: #64748b; line-height: 1.38; margin-top: 2px; }
+  .more-tech { font-size: 7pt; font-weight: 600; color: #475569; line-height: 1.35; margin-top: 3px; }
   .project-card {
     background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
     border: 1px solid #e2e8f0;
@@ -483,9 +502,15 @@
 
   /* ── Print ── */
   @media print {
+    /* Page 1 runs edge to edge under the header. The later pages get a top
+       and bottom margin, so More Projects, which carries over to page 3,
+       doesn't touch the edge. */
     @page {
-      margin: 0;
+      margin: 30px 0 24px;
       size: letter;
+    }
+    @page :first {
+      margin: 0;
     }
 
     * {
@@ -530,7 +555,7 @@
       background: linear-gradient(180deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%) !important;
     }
 
-    .page-two { break-before: page; margin-top: 0; padding-top: 30px; }
+    .page-two { break-before: page; margin-top: 0; padding-top: 0; }
     h2 { break-after: avoid; }
     .job, .project-card, .skill-category, .edu-block { break-inside: avoid; }
 
@@ -941,6 +966,112 @@
       <span class="tech-pill" style="background:linear-gradient(135deg,#f8fafc,#f1f5f9);color:#334155;border:1px solid #e2e8f0;">Dexie</span>
       <span class="tech-pill laravel">Laravel</span>
     </div>
+  </a>
+</div>
+
+<h2><span class="accent"></span> More Projects</h2>
+<div class="more-grid">
+  <a href="https://logisx.com/" target="_blank" rel="noopener noreferrer" class="more-item">
+    <div class="more-name">LogisX Website</div>
+    <div class="more-url">logisx.com</div>
+    <div class="more-desc">Company site for the LogisX trucking carrier, rebuilt from Wix as a multi-page React site for shippers, carriers, drivers and Truck Fund investors.</div>
+    <div class="more-tech">React &middot; TypeScript &middot; Vite &middot; Tailwind CSS &middot; Framer Motion</div>
+  </a>
+  <a href="https://obsidianquantgroup.com/" target="_blank" rel="noopener noreferrer" class="more-item">
+    <div class="more-name">Obsidian Quant Group</div>
+    <div class="more-url">obsidianquantgroup.com</div>
+    <div class="more-desc">Marketing site for an institutional quantitative asset manager, with a server-rendered blog run from its own CMS.</div>
+    <div class="more-tech">Next.js &middot; React &middot; PostgreSQL &middot; Prisma &middot; Tailwind CSS</div>
+  </a>
+  <a href="https://onboarding.obsidianquantgroup.com/" target="_blank" rel="noopener noreferrer" class="more-item">
+    <div class="more-name">OQG Investor Onboarding</div>
+    <div class="more-url">onboarding.obsidianquantgroup.com</div>
+    <div class="more-desc">Regulated investor onboarding that takes a qualified investor from first inquiry through accreditation, AML screening, compliance review and e-signature to funding.</div>
+    <div class="more-tech">Next.js &middot; Better Auth &middot; Prisma &middot; PostgreSQL</div>
+  </a>
+  <a href="https://assessment.ableacg.com/" target="_blank" rel="noopener noreferrer" class="more-item">
+    <div class="more-name">ACG Readiness Assessment</div>
+    <div class="more-url">assessment.ableacg.com</div>
+    <div class="more-desc">Voice-enabled, AI-analyzed diagnostic that maps a firm's readiness for the U.S. Treasury mandatory-clearing deadline. Prospects speak or type their answers.</div>
+    <div class="more-tech">Next.js &middot; TypeScript &middot; Gemini &middot; MySQL</div>
+  </a>
+  <a href="https://ups.alchemydev.io/" target="_blank" rel="noopener noreferrer" class="more-item">
+    <div class="more-name">Alchemydev CRM</div>
+    <div class="more-url">ups.alchemydev.io</div>
+    <div class="more-desc">Client delivery portal for a software studio. Clients follow their projects, comment, and send feature requests through an approval workflow.</div>
+    <div class="more-tech">Next.js &middot; Better Auth &middot; Prisma &middot; PostgreSQL &middot; LiveKit</div>
+  </a>
+  <a href="https://screen-recorder.obsidianquantgroup.com/" target="_blank" rel="noopener noreferrer" class="more-item">
+    <div class="more-name">The OQG Recorder</div>
+    <div class="more-url">screen-recorder.obsidianquantgroup.com</div>
+    <div class="more-desc">Loom-style screen recorder that runs in the browser: screen, camera bubble and mixed audio, with optional transcription and share links.</div>
+    <div class="more-tech">Next.js &middot; React &middot; TypeScript &middot; Gemini</div>
+  </a>
+  <a href="https://sec-compliance-matrix.alchemydev.io/" target="_blank" rel="noopener noreferrer" class="more-item">
+    <div class="more-name">SEC Compliance Matrix</div>
+    <div class="more-url">sec-compliance-matrix.alchemydev.io</div>
+    <div class="more-desc">Pipeline that turns SEC enforcement actions into a searchable compliance matrix. Gemini extracts the penalties, violated rules and remediation steps behind a dashboard.</div>
+    <div class="more-tech">React &middot; FastAPI &middot; Gemini &middot; ECharts</div>
+  </a>
+  <a href="https://serum72.com/" target="_blank" rel="noopener noreferrer" class="more-item">
+    <div class="more-name">Serum 72</div>
+    <div class="more-url">serum72.com</div>
+    <div class="more-desc">Direct-to-consumer skincare storefront with one-time and subscription orders, Stripe checkout, an admin console and automated fulfillment.</div>
+    <div class="more-tech">Astro &middot; PHP &middot; MySQL &middot; Stripe</div>
+  </a>
+  <a href="https://calmcanine.shop/" target="_blank" rel="noopener noreferrer" class="more-item">
+    <div class="more-name">Calm Canine</div>
+    <div class="more-url">calmcanine.shop</div>
+    <div class="more-desc">Marketing site and on-site shop for a calming dog-treat brand, with a cart, Stripe checkout and subscribe-and-save renewals.</div>
+    <div class="more-tech">HTML &middot; JavaScript &middot; PHP &middot; Stripe</div>
+  </a>
+  <a href="https://lyallpropertycare.com/" target="_blank" rel="noopener noreferrer" class="more-item">
+    <div class="more-name">Lyall Property Care</div>
+    <div class="more-url">lyallpropertycare.com</div>
+    <div class="more-desc">Website for a Hudson Valley tree-care company, with a quote request form that takes photos of the job.</div>
+    <div class="more-tech">vinext &middot; React &middot; TypeScript &middot; Tailwind CSS</div>
+  </a>
+  <a href="https://zoeybrinxx.alchemydev.io/" target="_blank" rel="noopener noreferrer" class="more-item">
+    <div class="more-name">Zoey Binxx Expense Scanner</div>
+    <div class="more-url">zoeybrinxx.alchemydev.io</div>
+    <div class="more-desc">Expense tracker where a business's staff upload receipts and statements, then review the transactions and reports drawn from them.</div>
+    <div class="more-tech">Next.js &middot; Prisma &middot; PostgreSQL &middot; NextAuth</div>
+  </a>
+  <a href="https://ect-beneficiary-validation.abedubas.dev/" target="_blank" rel="noopener noreferrer" class="more-item">
+    <div class="more-name">ECT Beneficiaries Validation</div>
+    <div class="more-url">ect-beneficiary-validation.abedubas.dev</div>
+    <div class="more-desc">DSWD Caraga system for collecting and validating Emergency Cash Transfer beneficiary data, with offline-first entry that syncs automatically.</div>
+    <div class="more-tech">Laravel &middot; Vue &middot; Inertia.js &middot; Tailwind CSS</div>
+  </a>
+  <a href="https://masterlist-deduplication.abedubas.dev/" target="_blank" rel="noopener noreferrer" class="more-item">
+    <div class="more-name">Masterlist Deduplication System</div>
+    <div class="more-url">masterlist-deduplication.abedubas.dev</div>
+    <div class="more-desc">Finds duplicate records within and across uploaded masterlists, scores each match for staff to review, and exports the cleaned list.</div>
+    <div class="more-tech">Laravel &middot; Vue &middot; Inertia.js &middot; TypeScript</div>
+  </a>
+  <a href="https://akiip.abedubas.dev/" target="_blank" rel="noopener noreferrer" class="more-item">
+    <div class="more-name">AKIIP Caraga</div>
+    <div class="more-url">akiip.abedubas.dev &middot; staging</div>
+    <div class="more-desc">Phone-first directory and case-tracking system for DSWD Caraga's 4Ps Indigenous Peoples offices, from province down to barangay, in English and Filipino.</div>
+    <div class="more-tech">Vue &middot; Ionic &middot; Laravel &middot; Laravel Reverb</div>
+  </a>
+  <a href="https://leenaslist.abedubas.dev/" target="_blank" rel="noopener noreferrer" class="more-item">
+    <div class="more-name">Leena's List</div>
+    <div class="more-url">leenaslist.abedubas.dev &middot; staging</div>
+    <div class="more-desc">Parents keep one always-current care profile for their child and share a scoped, revocable link with caregivers, who open it without an account.</div>
+    <div class="more-tech">React &middot; Express &middot; PostgreSQL &middot; Drizzle</div>
+  </a>
+  <a href="https://javalava.abedubas.dev/" target="_blank" rel="noopener noreferrer" class="more-item">
+    <div class="more-name">Javalava</div>
+    <div class="more-url">javalava.abedubas.dev &middot; staging</div>
+    <div class="more-desc">Coded homepage concept for a volcanic coffee-liqueur brand, built as the reference for its Wix Studio rebuild.</div>
+    <div class="more-tech">HTML &middot; CSS &middot; JavaScript</div>
+  </a>
+  <a href="https://alchemydev-landing.abedubas.dev/" target="_blank" rel="noopener noreferrer" class="more-item">
+    <div class="more-name">Alchemy Dev Website Redesign</div>
+    <div class="more-url">alchemydev-landing.abedubas.dev &middot; staging</div>
+    <div class="more-desc">Redesign of an AI growth agency's site in three switchable variants: classic, light and an animated fancy version.</div>
+    <div class="more-tech">HTML &middot; Tailwind CSS &middot; JavaScript</div>
   </a>
 </div>
 

@@ -2,7 +2,8 @@ import type { Project } from "@/types";
 
 // The projects, strongest production work first. The home page's Projects
 // section renders them all. `featured` marks the subset that the "Selected
-// Projects" section of resume.html mirrors.
+// Projects" section of resume.html shows as cards; its "More Projects" lists
+// the rest, so a new or renamed project goes into resume.html too.
 //
 // Rules:
 // - One live link per project, and never a GitHub URL. The link is the
@@ -23,8 +24,8 @@ import type { Project } from "@/types";
 //   characters: the status strip shows one line, and at 1024px wide that's
 //   all that fits beside six dots.
 //
-// Every liveUrl was verified on 2026-10-30: 2xx after redirects, serving the
-// app named here.
+// Every liveUrl was verified on 2026-10-30 (LogisX Website on 2026-11-21):
+// 2xx after redirects, serving the app named here.
 export const projects: Project[] = [
   {
     slug: "logisx",
@@ -44,6 +45,24 @@ export const projects: Project[] = [
       { src: "/images/projects/logisx/06-sign-in.webp", caption: "Sign-in page", path: "/login" },
     ],
     featured: true,
+  },
+  {
+    slug: "logisx-website",
+    title: "LogisX Website",
+    description:
+      "Company site for the LogisX trucking carrier, rebuilt from Wix as a multi-page React site for shippers, carriers, drivers and Truck Fund investors.",
+    techStack: ["React", "TypeScript", "Vite", "Tailwind CSS", "Framer Motion"],
+    liveUrl: "https://logisx.com/",
+    stage: "production",
+    access: "public",
+    shots: [
+      { src: "/images/projects/logisx-website/01-home.webp", caption: "Home page: hiring drivers at $300 a day" },
+      { src: "/images/projects/logisx-website/02-platform.webp", caption: "Platform: the digital freight hub", path: "/platform" },
+      { src: "/images/projects/logisx-website/03-shippers.webp", caption: "Shippers: direct quotes, dedicated lanes", path: "/shippers" },
+      { src: "/images/projects/logisx-website/04-carriers.webp", caption: "Carriers: access to dedicated lanes", path: "/carriers" },
+      { src: "/images/projects/logisx-website/05-truck-fund.webp", caption: "LogisX Truck Fund for truck owners", path: "/truck-fund" },
+      { src: "/images/projects/logisx-website/06-invest.webp", caption: "Investor data-room request form", path: "/invest-in-logisx" },
+    ],
   },
   {
     slug: "lendyph",

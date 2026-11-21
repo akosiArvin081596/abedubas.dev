@@ -18,7 +18,7 @@ export interface Project {
   stage: ProjectStage; // 'staging' gets a badge in the UI
   access: 'public' | 'login'; // 'login' = a login-only system
   shots: ProjectShot[]; // the first is the cover; [] keeps the placeholder frame
-  featured?: boolean; // the subset that resume.html mirrors
+  featured?: boolean; // the subset resume.html shows as cards; the rest go under More Projects
 }
 
 export interface Skill {
