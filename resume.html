@@ -256,11 +256,15 @@
   .job li { margin-bottom: 1px; font-size: 8.8pt; line-height: 1.45; }
 
   /* ── Skills ── */
+  /* Six tracks: a category takes a third of the row, or half (.half) for
+     the two AI rows, whose long tags would stack one per line in a third. */
   .skills-section {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px 10px;
   }
+  .skills-section .skill-category { grid-column: span 2; }
+  .skills-section .skill-category.half { grid-column: span 3; }
   .skill-category {
     padding: 8px 10px;
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
@@ -539,6 +543,14 @@
       background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
     }
 
+    /* Eight skill categories and six project cards share page two, so the
+       printed skills run a little tighter than on screen. */
+    .skills-section { gap: 6px 10px; }
+    .skill-category { padding: 6px 10px; }
+    .skill-label { margin-bottom: 4px; }
+    .skill-tags { gap: 3px; }
+    .skill-tag { padding: 2px 7px; }
+
     .edu-block {
       background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
     }
@@ -645,11 +657,11 @@
 <div class="job">
   <div class="job-header">
     <span class="job-role"><span class="job-title">Software Developer (Contract, Project-Based)</span> <span class="job-company">Alchemy Dev</span></span>
-    <span class="job-date">2026 &ndash; Present</span>
+    <span class="job-date">April 2026 &ndash; October 2026</span>
   </div>
   <ul>
     <li>Project-based contractor building applications for Alchemy Dev and clients across finance, logistics, and e-commerce</li>
-    <li>Take each project from first scope through production</li>
+    <li>Took each project from first scope through production</li>
   </ul>
 </div>
 
@@ -816,6 +828,18 @@
     </div>
   </div>
   <div class="skill-category">
+    <div class="skill-label">AI Automation</div>
+    <div class="skill-tags">
+      <span class="skill-tag">n8n</span>
+      <span class="skill-tag">Workflow Automation</span>
+      <span class="skill-tag">Webhooks</span>
+      <span class="skill-tag">Scheduled Jobs</span>
+      <span class="skill-tag">BullMQ</span>
+      <span class="skill-tag">GitHub Actions</span>
+      <span class="skill-tag">Web Scraping</span>
+    </div>
+  </div>
+  <div class="skill-category half">
     <div class="skill-label">AI-Assisted Development</div>
     <div class="skill-tags">
       <span class="skill-tag">Claude Code (CLI)</span>
@@ -827,6 +851,23 @@
       <span class="skill-tag">AI-Assisted Refactoring</span>
       <span class="skill-tag">Edge-Case Discovery</span>
       <span class="skill-tag">AI-Assisted Documentation</span>
+    </div>
+  </div>
+  <div class="skill-category half">
+    <div class="skill-label">AI Engineering</div>
+    <div class="skill-tags">
+      <span class="skill-tag">LLM Integration</span>
+      <span class="skill-tag">Claude API</span>
+      <span class="skill-tag">Gemini API</span>
+      <span class="skill-tag">OpenAI API</span>
+      <span class="skill-tag">Prompt Engineering</span>
+      <span class="skill-tag">RAG</span>
+      <span class="skill-tag">Vector Search</span>
+      <span class="skill-tag">AI Data Extraction</span>
+      <span class="skill-tag">Speech-to-Text</span>
+      <span class="skill-tag">OCR</span>
+      <span class="skill-tag">Machine Learning</span>
+      <span class="skill-tag">scikit-learn</span>
     </div>
   </div>
 </div>

@@ -23,6 +23,20 @@ const glyphs: Record<string, GlyphName> = {
   "AI-Assisted Refactoring": "refactor",
   "Edge-Case Discovery": "alert",
   "AI-Assisted Documentation": "doc",
+  "LLM Integration": "nodes",
+  "OpenAI API": "sparkle",
+  "Prompt Engineering": "cursor",
+  RAG: "book",
+  "Vector Search": "layers",
+  "AI Data Extraction": "schema",
+  "Speech-to-Text": "chat",
+  OCR: "eye",
+  "Machine Learning": "gauge",
+  "Workflow Automation": "pipeline",
+  Webhooks: "bolt",
+  "Scheduled Jobs": "refactor",
+  BullMQ: "layers",
+  "Web Scraping": "globe",
 };
 
 // `path` is the category's folder in the card's mono path line
@@ -144,30 +158,72 @@ const skillCategories: {
       "Edge-Case Discovery",
       "AI-Assisted Documentation",
     ],
-    // Highlighted. It closes the grid's last row, beside Cybersecurity.
+    // Highlighted. It opens the AI cards on the grid's last row.
     featured: true,
+  },
+  {
+    category: "AI Engineering",
+    path: "ai-engineering",
+    icon: "nodes",
+    tone: "accent",
+    description:
+      "Building AI into products: LLM calls with structured output, retrieval, document extraction and models in production",
+    skills: [
+      "LLM Integration",
+      "Claude API",
+      "Gemini API",
+      "OpenAI API",
+      "Prompt Engineering",
+      "RAG",
+      "Vector Search",
+      "AI Data Extraction",
+      "Speech-to-Text",
+      "OCR",
+      "Machine Learning",
+      "scikit-learn",
+    ],
+  },
+  {
+    category: "AI Automation",
+    path: "automation",
+    icon: "bolt",
+    tone: "green",
+    description:
+      "Automating business workflows end to end with n8n, webhooks, queues and scheduled jobs, with AI steps where they help",
+    skills: [
+      "n8n",
+      "Workflow Automation",
+      "Webhooks",
+      "Scheduled Jobs",
+      "BullMQ",
+      "GitHub Actions",
+      "Web Scraping",
+    ],
   },
 ];
 
-// #stack (nav: Skills): the six skill categories as a 3x2 grid from lg,
-// with compact badges so the grid fits one screen (`short:` and `tight:`
-// trim the spacing on short screens). Each card has its own tone
+// #stack (nav: Skills): the eight skill categories as a 4x2 grid from lg,
+// the AI cards together on the second row, with compact badges so the grid
+// fits one screen (`short:` and `tight:` trim the spacing and the badges on
+// short screens). Each card has its own tone
 // (styles/tone.css): an icon tile, the category's mono path, and skill
 // chips that carry each brand's logo in monochrome, colored on hover
 // (SkillBadge). Each card, and the heading, gets its own `wipe` panel.
 //
 // In the snap layout (lg, at least 700px tall) the grid takes the height the
-// heading leaves, the two rows sharing what their content doesn't use, and
-// each card runs from its header down to a footer (the skill count) pinned
-// to its bottom edge. The rows stay auto, not 1fr: equal rows would all
-// match the tall AI card and push the section past one screen. `tight:`
-// screens have no height to spare for the footer, so there the count stays
-// a pill in the card's header, as it is below lg.
+// heading leaves, the two rows sharing what their content doesn't use. The
+// rows stay auto, not 1fr: equal rows would all match the tall AI cards and
+// push the section past one screen. Four columns make narrow cards, so the
+// extras need height: the description shows from 1080px tall, and the
+// footer (a ruled line ending in the skill count, pinned to the card's
+// bottom edge) from 960px. Below lg the count is a pill in the card's header
+// instead. Checked at 1024x700, 1280x720, 1366x768, 1440x900, 1760x720,
+// 1920x1080 and 2560x1440.
 //
 // `mid` covers narrow laptops (lg to xl, under 1280px wide) between
 // `short:` (820px) and 960px tall: too tall for `short:` and too narrow for
 // the full spacing, because the cards wrap their badges onto more rows
-// there. It takes `short:`'s spacing and `tight:`'s header pill.
+// there. It takes `short:`'s spacing.
 const mid = {
   head: "[@media(max-width:1279px)_and_(min-height:821px)_and_(max-height:959px)]:lg:mb-3",
   title: "[@media(max-width:1279px)_and_(min-height:821px)_and_(max-height:959px)]:lg:mt-1 [@media(max-width:1279px)_and_(min-height:821px)_and_(max-height:959px)]:lg:text-3xl",
@@ -175,21 +231,19 @@ const mid = {
   card: "[@media(max-width:1279px)_and_(min-height:821px)_and_(max-height:959px)]:lg:p-4",
   cardHead: "[@media(max-width:1279px)_and_(min-height:821px)_and_(max-height:959px)]:lg:mb-3",
   badges: "[@media(max-width:1279px)_and_(min-height:821px)_and_(max-height:959px)]:lg:gap-1.5",
-  pill: "[@media(max-width:1279px)_and_(min-height:821px)_and_(max-height:959px)]:lg:inline",
-  footer: "[@media(max-width:1279px)_and_(min-height:821px)_and_(max-height:959px)]:lg:hidden",
 };
 
 export function StackSection() {
   return (
-    <section id="stack" data-nav="skills" className="relative py-16 lg:py-6 tight:py-5">
+    <section id="stack" data-nav="skills" className="relative py-16 lg:py-6 short:py-5">
       <div className="container-site lg:flex lg:flex-1 lg:flex-col">
-        <div data-reveal="wipe" className={`relative mb-6 w-fit xl:mb-8 short:mb-4 tight:mb-3 ${mid.head}`}>
+        <div data-reveal="wipe" className={`relative mb-6 w-fit xl:mb-8 short:mb-3 ${mid.head}`}>
           <SectionLabel>technical skills</SectionLabel>
           <h2 className={`mt-2 text-3xl font-bold text-foreground sm:text-4xl short:mt-1 short:text-3xl tight:text-2xl ${mid.title}`}>
             Technical Skills
           </h2>
         </div>
-        <div className={`grid gap-5 md:grid-cols-2 lg:flex-1 lg:grid-cols-3 xl:gap-6 short:gap-4 tight:gap-3 ${mid.grid}`}>
+        <div className={`grid gap-5 md:grid-cols-2 lg:flex-1 lg:grid-cols-4 xl:gap-6 short:gap-3 ${mid.grid}`}>
           {skillCategories.map((category) => (
             <div
               key={category.category}
@@ -209,31 +263,28 @@ export function StackSection() {
                     <Glyph name={category.icon} className="h-5 w-5 tight:h-4 tight:w-4" />
                   </span>
                   <div className="min-w-0">
-                    <h3 className="text-lg font-semibold leading-snug text-card-foreground xl:text-xl tight:text-base">
+                    <h3 className="text-lg font-semibold leading-snug text-card-foreground xl:text-xl short:text-base">
                       {category.category}
                     </h3>
-                    <p aria-hidden="true" className="truncate font-mono text-[11px] leading-4 text-muted-foreground">
+                    <p aria-hidden="true" className="truncate font-mono text-[11px] leading-4 text-muted-foreground short:hidden">
                       <span className="tone-text">~/stack/</span>
                       {category.path}
                     </p>
                   </div>
                 </div>
-                {/* The count heads the card below lg, on the shortest
-                    screens and in the `mid` band, where the grid has no
-                    height to spare; from lg it's otherwise the card's
-                    footer. Only one of the two is ever displayed. */}
-                <span className={`shrink-0 rounded-md border border-border bg-background/50 px-2 py-0.5 font-mono text-xs text-muted-foreground lg:hidden tight:inline ${mid.pill}`}>
+                {/* The count heads the card below lg. From lg it's the
+                    card's footer, on screens tall enough for one. */}
+                <span className={`shrink-0 rounded-md border border-border bg-background/50 px-2 py-0.5 font-mono text-xs text-muted-foreground lg:hidden`}>
                   {category.skills.length} skills
                 </span>
               </div>
-              {/* On short screens only the badges show; screen readers
-                  still get the line. The line needs more height than
-                  `short:` allows for: the narrower the grid, the more the
-                  line and the badges wrap. */}
-              <p className="relative mb-4 text-sm text-muted-foreground short:sr-only [@media(max-height:869px),(max-width:1399px)_and_(max-height:959px),(max-width:1279px)_and_(max-height:1079px)]:lg:sr-only">
+              {/* Under 1080px tall only the badges show; screen readers
+                  still get the line. In four columns it wraps to three or
+                  four lines, more height than shorter screens have. */}
+              <p className="relative mb-4 text-sm text-muted-foreground [@media(max-height:1079px)]:lg:sr-only">
                 {category.description}
               </p>
-              <div className={`relative flex flex-wrap gap-2 short:gap-1.5 ${mid.badges}`}>
+              <div className={`relative flex flex-wrap gap-2 short:gap-1.5 tight:gap-1 ${mid.badges}`}>
                 {category.skills.map((skill) => (
                   <SkillBadge
                     key={skill}
@@ -246,7 +297,7 @@ export function StackSection() {
               </div>
               {/* The footer: a ruled line ending in the skill count, pinned
                   to the card's bottom when the grid stretches it. */}
-              <p className={`relative mt-auto hidden items-center gap-2 pt-4 font-mono text-[11px] leading-4 text-muted-foreground lg:flex short:pt-3 tight:hidden ${mid.footer}`}>
+              <p className={`relative mt-auto hidden items-center gap-2 pt-4 font-mono text-[11px] leading-4 text-muted-foreground lg:flex [@media(max-height:959px)]:lg:hidden`}>
                 <span aria-hidden="true" className="h-px flex-1 border-t border-dashed border-border" />
                 <span>
                   <span className="tone-text">{category.skills.length}</span> skills

@@ -43,7 +43,7 @@ export function SkillBadge({ name, revealItem = false, compact = false, glyph }:
       data-reveal-item={revealItem ? "" : undefined}
       style={style}
       className={`skill-badge inline-flex items-center rounded-lg border border-border bg-card font-medium text-card-foreground ${
-        compact ? "gap-1.5 px-2 py-1 text-xs short:py-0.5" : "gap-2 px-4 py-2 text-sm"
+        compact ? "gap-1.5 px-2 py-1 text-xs short:py-0.5 tight:gap-1 tight:px-1.5 tight:text-[11px]" : "gap-2 px-4 py-2 text-sm"
       } ${mark ? "skill-badge-brand" : ""}`}
     >
       {mark ? (
