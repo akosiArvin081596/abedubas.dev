@@ -256,8 +256,9 @@
   .job li { margin-bottom: 1px; font-size: 8.8pt; line-height: 1.45; }
 
   /* ── Skills ── */
-  /* Six tracks: a category takes a third of the row, or half (.half) for
-     the two AI rows, whose long tags would stack one per line in a third. */
+  /* Six tracks: a group takes a third of the row, half (.half) for the two
+     AI groups whose long tags would stack one per line in a third, or the
+     whole row (.full) for Cloud's fourteen services. */
   .skills-section {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
@@ -265,6 +266,7 @@
   }
   .skills-section .skill-category { grid-column: span 2; }
   .skills-section .skill-category.half { grid-column: span 3; }
+  .skills-section .skill-category.full { grid-column: 1 / -1; }
   .skill-category {
     padding: 8px 10px;
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
@@ -576,10 +578,18 @@
     /* Eight skill categories and six project cards share page two, so the
        printed skills run a little tighter than on screen. */
     .skills-section { gap: 6px 10px; }
-    .skill-category { padding: 6px 10px; }
+    .skill-category { padding: 5px 10px; }
     .skill-label { margin-bottom: 4px; }
     .skill-tags { gap: 3px; }
     .skill-tag { padding: 2px 7px; }
+
+    /* With nine skill groups, the six featured cards run a little tighter
+       too, so all three rows of them stay on page 2. */
+    .projects-grid { gap: 6px 14px; }
+    .project-card { padding: 7px 12px 8px; }
+    .project-desc { line-height: 1.35; }
+    .project-tech { margin-top: 5px; padding-top: 5px; }
+    .skills-section + h2 { margin-top: 10px; }
 
     .edu-block {
       background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
@@ -837,7 +847,6 @@
       <span class="skill-tag">Git</span>
       <span class="skill-tag">GitHub</span>
       <span class="skill-tag">Docker</span>
-      <span class="skill-tag">AWS</span>
       <span class="skill-tag">Vercel</span>
       <span class="skill-tag">CI/CD</span>
       <span class="skill-tag">Linux</span>
@@ -867,6 +876,25 @@
       <span class="skill-tag">BullMQ</span>
       <span class="skill-tag">GitHub Actions</span>
       <span class="skill-tag">Web Scraping</span>
+    </div>
+  </div>
+  <div class="skill-category full">
+    <div class="skill-label">Cloud</div>
+    <div class="skill-tags">
+      <span class="skill-tag">AWS</span>
+      <span class="skill-tag">EC2</span>
+      <span class="skill-tag">RDS</span>
+      <span class="skill-tag">ECS</span>
+      <span class="skill-tag">ECR</span>
+      <span class="skill-tag">Google Cloud</span>
+      <span class="skill-tag">Cloud Run</span>
+      <span class="skill-tag">GKE</span>
+      <span class="skill-tag">Cloud SQL</span>
+      <span class="skill-tag">Cloud Build</span>
+      <span class="skill-tag">Cloud Scheduler</span>
+      <span class="skill-tag">Secret Manager</span>
+      <span class="skill-tag">Cloud Storage</span>
+      <span class="skill-tag">Cloud IAP</span>
     </div>
   </div>
   <div class="skill-category half">
