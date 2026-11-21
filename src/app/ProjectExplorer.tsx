@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type KeyboardEvent } from "react";
+import { Fragment, useRef, useState, type KeyboardEvent } from "react";
 import { ProjectCard } from "@/components/ProjectCard";
 import { glideTo, HEADER } from "@/lib/glide";
 import type { Project } from "@/types";
@@ -102,50 +102,68 @@ export function ProjectExplorer({ projects }: ProjectExplorerProps) {
         >
           {projects.map((item, index) => {
             const isSelected = index === selected;
+            // The builds with no public link come after every live project,
+            // under a comment line, as a terminal would print it.
+            const firstRepo =
+              item.access === "repo" && projects[index - 1]?.access !== "repo";
             return (
-              <button
-                key={item.slug}
-                ref={(el) => {
-                  tabs.current[index] = el;
-                }}
-                type="button"
-                role="tab"
-                id={tabId(item.slug)}
-                aria-selected={isSelected}
-                aria-controls="project-panel"
-                tabIndex={isSelected ? 0 : -1}
-                onClick={() => {
-                  select(index);
-                  showCard();
-                }}
-                onKeyDown={onKeyDown}
-                className={`flex w-full items-center gap-3 rounded-lg px-2.5 py-1.5 text-left transition-colors ${
-                  isSelected
-                    ? "bg-primary/10 text-foreground ring-1 ring-inset ring-primary/40"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                <span
-                  aria-hidden="true"
-                  className={`w-3 shrink-0 ${isSelected ? "text-primary" : "text-transparent"}`}
-                >
-                  ›
-                </span>
-                <span className="min-w-0 flex-1 truncate">
-                  <span className="font-semibold text-sky-600 dark:text-sky-400">
-                    {item.slug}
-                  </span>
-                  <span aria-hidden="true" className="text-muted-foreground">
-                    /
-                  </span>
-                  <span className="sr-only">, {item.title}</span>
-                </span>
-                {item.stage === "staging" && (
-                  <span className="shrink-0 rounded border border-amber-500/40 bg-amber-500/10 px-1 text-[10px] leading-4 text-amber-700 dark:text-amber-300">
-                    staging
-                  </span>
+              <Fragment key={item.slug}>
+                {firstRepo && (
+                  <p
+                    aria-hidden="true"
+                    className="px-2.5 pb-1 pt-3 text-xs text-muted-foreground"
+                  >
+                    # in the repo, no public link
+                  </p>
                 )}
-              </button>
+                <button
+                  ref={(el) => {
+                    tabs.current[index] = el;
+                  }}
+                  type="button"
+                  role="tab"
+                  id={tabId(item.slug)}
+                  aria-selected={isSelected}
+                  aria-controls="project-panel"
+                  tabIndex={isSelected ? 0 : -1}
+                  onClick={() => {
+                    select(index);
+                    showCard();
+                  }}
+                  onKeyDown={onKeyDown}
+                  className={`flex w-full items-center gap-3 rounded-lg px-2.5 py-1.5 text-left transition-colors ${
+                    isSelected
+                      ? "bg-primary/10 text-foreground ring-1 ring-inset ring-primary/40"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`}
+                >
+                  <span
+                    aria-hidden="true"
+                    className={`w-3 shrink-0 ${isSelected ? "text-primary" : "text-transparent"}`}
+                  >
+                    ›
+                  </span>
+                  <span className="min-w-0 flex-1 truncate">
+                    <span className="font-semibold text-sky-600 dark:text-sky-400">
+                      {item.slug}
+                    </span>
+                    <span aria-hidden="true" className="text-muted-foreground">
+                      /
+                    </span>
+                    <span className="sr-only">, {item.title}</span>
+                  </span>
+                  {item.stage === "staging" && (
+                    <span className="shrink-0 rounded border border-amber-500/40 bg-amber-500/10 px-1 text-[10px] leading-4 text-amber-700 dark:text-amber-300">
+                      staging
+                    </span>
+                  )}
+                  {item.access === "repo" && (
+                    <span className="shrink-0 rounded border border-sky-500/40 bg-sky-500/10 px-1 text-[10px] leading-4 text-sky-700 dark:text-sky-300">
+                      repo
+                    </span>
+                  )}
+                </button>
+              </Fragment>
             );
           })}
         </div>

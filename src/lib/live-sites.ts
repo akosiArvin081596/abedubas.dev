@@ -1,5 +1,6 @@
 import { otherLiveSites } from "@/data/live-sites";
 import { projects } from "@/data/projects";
+import type { LiveProject } from "@/types";
 
 export interface LiveSite {
   name: string;
@@ -15,7 +16,10 @@ const withHost = (site: { name: string; url: string }): LiveSite => ({
 // The public production projects (no staging hosts, no login-only
 // systems), in the projects' order.
 const publicProjects = projects
-  .filter((project) => project.stage === "production" && project.access === "public")
+  .filter(
+    (project): project is LiveProject =>
+      project.stage === "production" && project.access === "public",
+  )
   .map((project) => withHost({ name: project.title, url: project.liveUrl }));
 
 const frontDoors = otherLiveSites.map(withHost);

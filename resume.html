@@ -350,6 +350,11 @@
   .more-url { font-size: 7pt; color: #3b82f6; line-height: 1.35; word-break: break-all; }
   .more-desc { font-size: 7.6pt; color: #64748b; line-height: 1.38; margin-top: 2px; }
   .more-tech { font-size: 7pt; font-weight: 600; color: #475569; line-height: 1.35; margin-top: 3px; }
+  .more-note { white-space: nowrap; color: #64748b; }
+  .repo-intro { font-size: 7.6pt; color: #64748b; margin: -4px 0 8px; }
+  .repo-item { border-left-color: #cbd5e1; }
+  /* From the Repos starts its own printed page, heading and all. */
+  @media print { .repo-section { break-before: page; } }
   .project-card {
     background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
     border: 1px solid #e2e8f0;
@@ -997,21 +1002,33 @@
   </a>
   <a href="https://ups.alchemydev.io/" target="_blank" rel="noopener noreferrer" class="more-item">
     <div class="more-name">Alchemydev CRM</div>
-    <div class="more-url">ups.alchemydev.io</div>
+    <div class="more-url">ups.alchemydev.io <span class="more-note">&middot; sign-in only</span></div>
     <div class="more-desc">Client delivery portal for a software studio. Clients follow their projects, comment, and send feature requests through an approval workflow.</div>
     <div class="more-tech">Next.js &middot; Better Auth &middot; Prisma &middot; PostgreSQL &middot; LiveKit</div>
   </a>
   <a href="https://screen-recorder.obsidianquantgroup.com/" target="_blank" rel="noopener noreferrer" class="more-item">
     <div class="more-name">The OQG Recorder</div>
-    <div class="more-url">screen-recorder.obsidianquantgroup.com</div>
+    <div class="more-url">screen-recorder.obsidianquantgroup.com <span class="more-note">&middot; sign-in only</span></div>
     <div class="more-desc">Loom-style screen recorder that runs in the browser: screen, camera bubble and mixed audio, with optional transcription and share links.</div>
     <div class="more-tech">Next.js &middot; React &middot; TypeScript &middot; Gemini</div>
   </a>
+  <a href="https://trading.obsidianquantgroup.com/" target="_blank" rel="noopener noreferrer" class="more-item">
+    <div class="more-name">OQG Desk</div>
+    <div class="more-url">trading.obsidianquantgroup.com <span class="more-note">&middot; sign-in only</span></div>
+    <div class="more-desc">Trading platform where quants upload Python models, backtest them, run them against a broker sandbox and promote them to live, with a C++ market-data engine and an order router that owns the risk checks.</div>
+    <div class="more-tech">Python &middot; C++ &middot; TypeScript &middot; Docker</div>
+  </a>
   <a href="https://sec-compliance-matrix.alchemydev.io/" target="_blank" rel="noopener noreferrer" class="more-item">
     <div class="more-name">SEC Compliance Matrix</div>
-    <div class="more-url">sec-compliance-matrix.alchemydev.io</div>
+    <div class="more-url">sec-compliance-matrix.alchemydev.io <span class="more-note">&middot; sign-in only</span></div>
     <div class="more-desc">Pipeline that turns SEC enforcement actions into a searchable compliance matrix. Gemini extracts the penalties, violated rules and remediation steps behind a dashboard.</div>
     <div class="more-tech">React &middot; FastAPI &middot; Gemini &middot; ECharts</div>
+  </a>
+  <a href="https://hydroboost.abedubas.dev/" target="_blank" rel="noopener noreferrer" class="more-item">
+    <div class="more-name">HydroBoost Order Automation</div>
+    <div class="more-url">hydroboost.abedubas.dev <span class="more-note">&middot; sign-in only</span></div>
+    <div class="more-desc">n8n automation that turns each paid Wix order into a ShippingEasy shipment exactly once, with Slack alerts on failure and a dashboard to trace, retry and replay orders.</div>
+    <div class="more-tech">n8n &middot; Node.js &middot; SQLite &middot; Wix &middot; ShippingEasy</div>
   </a>
   <a href="https://serum72.com/" target="_blank" rel="noopener noreferrer" class="more-item">
     <div class="more-name">Serum 72</div>
@@ -1033,46 +1050,114 @@
   </a>
   <a href="https://zoeybrinxx.alchemydev.io/" target="_blank" rel="noopener noreferrer" class="more-item">
     <div class="more-name">Zoey Binxx Expense Scanner</div>
-    <div class="more-url">zoeybrinxx.alchemydev.io</div>
+    <div class="more-url">zoeybrinxx.alchemydev.io <span class="more-note">&middot; sign-in only</span></div>
     <div class="more-desc">Expense tracker where a business's staff upload receipts and statements, then review the transactions and reports drawn from them.</div>
     <div class="more-tech">Next.js &middot; Prisma &middot; PostgreSQL &middot; NextAuth</div>
   </a>
   <a href="https://ect-beneficiary-validation.abedubas.dev/" target="_blank" rel="noopener noreferrer" class="more-item">
     <div class="more-name">ECT Beneficiaries Validation</div>
-    <div class="more-url">ect-beneficiary-validation.abedubas.dev</div>
+    <div class="more-url">ect-beneficiary-validation.abedubas.dev <span class="more-note">&middot; sign-in only</span></div>
     <div class="more-desc">DSWD Caraga system for collecting and validating Emergency Cash Transfer beneficiary data, with offline-first entry that syncs automatically.</div>
     <div class="more-tech">Laravel &middot; Vue &middot; Inertia.js &middot; Tailwind CSS</div>
   </a>
   <a href="https://masterlist-deduplication.abedubas.dev/" target="_blank" rel="noopener noreferrer" class="more-item">
     <div class="more-name">Masterlist Deduplication System</div>
-    <div class="more-url">masterlist-deduplication.abedubas.dev</div>
+    <div class="more-url">masterlist-deduplication.abedubas.dev <span class="more-note">&middot; sign-in only</span></div>
     <div class="more-desc">Finds duplicate records within and across uploaded masterlists, scores each match for staff to review, and exports the cleaned list.</div>
     <div class="more-tech">Laravel &middot; Vue &middot; Inertia.js &middot; TypeScript</div>
   </a>
   <a href="https://akiip.abedubas.dev/" target="_blank" rel="noopener noreferrer" class="more-item">
     <div class="more-name">AKIIP Caraga</div>
-    <div class="more-url">akiip.abedubas.dev &middot; staging</div>
+    <div class="more-url">akiip.abedubas.dev <span class="more-note">&middot; staging</span></div>
     <div class="more-desc">Phone-first directory and case-tracking system for DSWD Caraga's 4Ps Indigenous Peoples offices, from province down to barangay, in English and Filipino.</div>
     <div class="more-tech">Vue &middot; Ionic &middot; Laravel &middot; Laravel Reverb</div>
   </a>
   <a href="https://leenaslist.abedubas.dev/" target="_blank" rel="noopener noreferrer" class="more-item">
     <div class="more-name">Leena's List</div>
-    <div class="more-url">leenaslist.abedubas.dev &middot; staging</div>
+    <div class="more-url">leenaslist.abedubas.dev <span class="more-note">&middot; staging</span></div>
     <div class="more-desc">Parents keep one always-current care profile for their child and share a scoped, revocable link with caregivers, who open it without an account.</div>
     <div class="more-tech">React &middot; Express &middot; PostgreSQL &middot; Drizzle</div>
   </a>
+  <a href="https://lld-mockup.abedubas.dev/" target="_blank" rel="noopener noreferrer" class="more-item">
+    <div class="more-name">Liquid Legacy Distribution</div>
+    <div class="more-url">lld-mockup.abedubas.dev <span class="more-note">&middot; staging</span></div>
+    <div class="more-desc">Landing page, logo suite and brand book for a new wine and spirits distributor, with an age gate, a scroll-driven story of how a bottle travels and a contact form.</div>
+    <div class="more-tech">Next.js &middot; TypeScript &middot; Tailwind CSS &middot; Zod</div>
+  </a>
   <a href="https://javalava.abedubas.dev/" target="_blank" rel="noopener noreferrer" class="more-item">
     <div class="more-name">Javalava</div>
-    <div class="more-url">javalava.abedubas.dev &middot; staging</div>
+    <div class="more-url">javalava.abedubas.dev <span class="more-note">&middot; staging</span></div>
     <div class="more-desc">Coded homepage concept for a volcanic coffee-liqueur brand, built as the reference for its Wix Studio rebuild.</div>
     <div class="more-tech">HTML &middot; CSS &middot; JavaScript</div>
   </a>
   <a href="https://alchemydev-landing.abedubas.dev/" target="_blank" rel="noopener noreferrer" class="more-item">
     <div class="more-name">Alchemy Dev Website Redesign</div>
-    <div class="more-url">alchemydev-landing.abedubas.dev &middot; staging</div>
+    <div class="more-url">alchemydev-landing.abedubas.dev <span class="more-note">&middot; staging</span></div>
     <div class="more-desc">Redesign of an AI growth agency's site in three switchable variants: classic, light and an animated fancy version.</div>
     <div class="more-tech">HTML &middot; Tailwind CSS &middot; JavaScript</div>
   </a>
+</div>
+
+<div class="repo-section">
+<h2><span class="accent"></span> From the Repos</h2>
+<p class="repo-intro">Tools, apps and internal systems that live in private repositories, with no public link.</p>
+<div class="more-grid">
+  <div class="more-item repo-item">
+    <div class="more-name">Mesa Festival Sponsor Search</div>
+    <div class="more-desc">Finds and enriches likely sponsors for a city music festival with the Claude API, live web search and page fetching, streaming its progress as it works.</div>
+    <div class="more-tech">Next.js &middot; TypeScript &middot; Claude API &middot; Prisma</div>
+  </div>
+  <div class="more-item repo-item">
+    <div class="more-name">Obsidian LLM</div>
+    <div class="more-desc">Document assistant for Obsidian Quant Group that reads the firm's Word, Excel and web documents and answers questions with cited sources.</div>
+    <div class="more-tech">Next.js &middot; TypeScript &middot; PostgreSQL &middot; Prisma &middot; Better Auth</div>
+  </div>
+  <div class="more-item repo-item">
+    <div class="more-name">OQG Options Research Console</div>
+    <div class="more-desc">Research console for replicating a 0DTE options strategy: data pipeline, models and backtests, plus a Claude research assistant limited to approved models.</div>
+    <div class="more-tech">Python &middot; TypeScript &middot; Claude API</div>
+  </div>
+  <div class="more-item repo-item">
+    <div class="more-name">Email Extractor</div>
+    <div class="more-desc">Finds a domain's public email addresses through several data providers, its own site crawler and OSINT, records where each came from, and can verify deliverability.</div>
+    <div class="more-tech">Python &middot; FastAPI &middot; SQLAlchemy &middot; Next.js</div>
+  </div>
+  <div class="more-item repo-item">
+    <div class="more-name">FavFan</div>
+    <div class="more-desc">Analytics and engagement overlay for YouTube creators: scores fan loyalty from comments, Super Chats and memberships, ranks superfans and flashes them on a live OBS overlay.</div>
+    <div class="more-tech">Next.js &middot; NestJS &middot; BullMQ &middot; Socket.IO &middot; Prisma</div>
+  </div>
+  <div class="more-item repo-item">
+    <div class="more-name">Shared Payments Widget</div>
+    <div class="more-desc">One Stripe integration that several sites share through an embeddable checkout widget and a single webhook.</div>
+    <div class="more-tech">Next.js &middot; TypeScript &middot; Stripe &middot; Prisma</div>
+  </div>
+  <div class="more-item repo-item">
+    <div class="more-name">Driver Route Module</div>
+    <div class="more-desc">Turn-by-turn navigation from pickup to drop-off, with traffic, elevation and weather-aware routing for motorcycles and cars.</div>
+    <div class="more-tech">Next.js &middot; TypeScript &middot; Google Maps &middot; Turf.js</div>
+  </div>
+  <div class="more-item repo-item">
+    <div class="more-name">Music Festival App</div>
+    <div class="more-desc">Monorepo for a music festival: a React Native mobile app, a NestJS API, BullMQ workers and Solidity contracts on Polygon.</div>
+    <div class="more-tech">React Native &middot; NestJS &middot; BullMQ &middot; Solidity</div>
+  </div>
+  <div class="more-item repo-item">
+    <div class="more-name">Azul ResiBOOTH Prints</div>
+    <div class="more-desc">Android photo-booth app that shoots a strip of photos and prints it on a 58 mm Bluetooth thermal receipt printer.</div>
+    <div class="more-tech">React Native &middot; Expo &middot; TypeScript</div>
+  </div>
+  <div class="more-item repo-item">
+    <div class="more-name">WikiBotanica</div>
+    <div class="more-desc">Plant identification and data management platform.</div>
+    <div class="more-tech">Python &middot; Flask &middot; React &middot; Vite</div>
+  </div>
+  <div class="more-item repo-item">
+    <div class="more-name">Team Workflow Pack</div>
+    <div class="more-desc">The starting point for every new team project: a Claude Code plugin marketplace, reusable GitHub Actions workflows and ops scripts.</div>
+    <div class="more-tech">Claude Code &middot; GitHub Actions &middot; Shell</div>
+  </div>
+</div>
 </div>
 
 </div><!-- end page-two -->

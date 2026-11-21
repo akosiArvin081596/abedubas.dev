@@ -11,8 +11,13 @@ import type { Project } from "@/types";
 // - Staging is allowed, marked `stage: "staging"`, and labeled in the UI.
 //   Staging hosts stay off the home stats band's Live Projects card, as do
 //   login-only systems (`access: "login"`).
-// - A project with no working live URL stays out: no APIs, raw IPs, admin
-//   paths, local-only tools or systems that hold client data.
+// - Live projects come first: each has a working live URL on its own domain
+//   or a subdomain. No APIs, raw IPs or admin paths as links.
+// - Then the builds with no public link (`access: "repo"`): tools, apps and
+//   internal systems that live only in a repository. They have no liveUrl and
+//   no screenshots, the explorer lists them under "# in the repo", and the
+//   resume lists them under "From the Repos". Never a GitHub URL, and never
+//   any client data in the text.
 // - `shots` are 1600x900 viewport screenshots of pages on `liveUrl`
 //   (public/images/projects/<slug>/<nn>-<view>.webp), each with a caption and
 //   the page's path. The first is the cover, and the card shows them as a
@@ -24,8 +29,10 @@ import type { Project } from "@/types";
 //   characters: the status strip shows one line, and at 1024px wide that's
 //   all that fits beside six dots.
 //
-// Every liveUrl was verified on 2026-10-30 (LogisX Website on 2026-11-21):
-// 2xx after redirects, serving the app named here.
+// Every liveUrl was verified on 2026-10-30 (LogisX Website, HydroBoost, OQG
+// Desk and Liquid Legacy on 2026-11-21): 2xx after redirects, serving the
+// app named here. HydroBoost's dashboard answers 401 until you sign in, by
+// design, and OQG Desk sends you to Google sign-in.
 export const projects: Project[] = [
   {
     slug: "logisx",
@@ -239,6 +246,19 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: "oqg-desk",
+    title: "OQG Desk",
+    description:
+      "Trading platform where quants upload Python models, backtest them, run them against a broker sandbox and promote them to live, with a C++ market-data engine and an order router that owns the risk checks.",
+    techStack: ["Python", "C++", "TypeScript", "Docker"],
+    liveUrl: "https://trading.obsidianquantgroup.com/",
+    stage: "production",
+    access: "login",
+    // Behind Google sign-in, and every screen shows client trading data, so
+    // the card keeps the placeholder frame.
+    shots: [],
+  },
+  {
     slug: "sec-compliance-matrix",
     title: "SEC Compliance Matrix",
     description:
@@ -254,6 +274,26 @@ export const projects: Project[] = [
       { src: "/images/projects/sec-compliance-matrix/04-heatmap.webp", caption: "Risk heatmap and the bad-actor watchlist", path: "/cco" },
       { src: "/images/projects/sec-compliance-matrix/05-individual.webp", caption: "An individual's risk breakdown and filings", path: "/cco" },
       { src: "/images/projects/sec-compliance-matrix/06-sign-in.webp", caption: "Sign-in page", path: "/login" },
+    ],
+  },
+  {
+    slug: "hydroboost",
+    title: "HydroBoost Order Automation",
+    description:
+      "n8n automation that turns each paid Wix order into a ShippingEasy shipment exactly once, with Slack alerts on failure and a dashboard to trace, retry and replay orders.",
+    techStack: ["n8n", "Node.js", "SQLite", "Wix", "ShippingEasy"],
+    liveUrl: "https://hydroboost.abedubas.dev/",
+    stage: "production",
+    access: "login",
+    // The dashboard asks for Basic Auth (a 401 until you sign in), so these
+    // come from it run locally against a mock n8n with invented orders.
+    shots: [
+      { src: "/images/projects/hydroboost/01-overview.webp", caption: "Order KPIs and live pipeline map" },
+      { src: "/images/projects/hydroboost/02-executions.webp", caption: "Execution history with archived orders" },
+      { src: "/images/projects/hydroboost/03-order-stages.webp", caption: "One order traced stage by stage" },
+      { src: "/images/projects/hydroboost/04-push-failure-map.webp", caption: "Failed push routed to a Slack alert" },
+      { src: "/images/projects/hydroboost/05-push-failure-alert.webp", caption: "Push error detail and Slack alert sent" },
+      { src: "/images/projects/hydroboost/06-replay-bypass.webp", caption: "Replay of a failed order skips dedupe" },
     ],
   },
   {
@@ -392,6 +432,24 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: "liquid-legacy",
+    title: "Liquid Legacy Distribution",
+    description:
+      "Landing page, logo suite and brand book for a new wine and spirits distributor, with an age gate, a scroll-driven story of how a bottle travels and a contact form.",
+    techStack: ["Next.js", "TypeScript", "Tailwind CSS", "Zod"],
+    liveUrl: "https://lld-mockup.abedubas.dev/",
+    stage: "staging",
+    access: "public",
+    shots: [
+      { src: "/images/projects/liquid-legacy/01-home.webp", caption: "Home page: the crest over a cellar video" },
+      { src: "/images/projects/liquid-legacy/02-legacy.webp", caption: "About: a distributor built around the bottle", path: "/#legacy" },
+      { src: "/images/projects/liquid-legacy/03-services.webp", caption: "Services, from sales to delivery", path: "/#services" },
+      { src: "/images/projects/liquid-legacy/04-process.webp", caption: "Process: how a bottle travels", path: "/#process" },
+      { src: "/images/projects/liquid-legacy/05-reach.webp", caption: "Reach: a national coverage map", path: "/#reach" },
+      { src: "/images/projects/liquid-legacy/06-contact.webp", caption: "Contact form for producers and accounts", path: "/#contact" },
+    ],
+  },
+  {
     slug: "javalava",
     title: "Javalava",
     description:
@@ -423,5 +481,106 @@ export const projects: Project[] = [
       { src: "/images/projects/alchemydev-site/03-pricing.webp", caption: "Pricing plans", path: "/#pricing" },
       { src: "/images/projects/alchemydev-site/04-light-variant.webp", caption: "Light variant", path: "/index-light.html" },
     ],
+  },
+  // In the repo, no public link: tools, apps and internal systems, listed
+  // after every live project.
+  {
+    slug: "mesa-sponsor-search",
+    title: "Mesa Festival Sponsor Search",
+    description:
+      "Finds and enriches likely sponsors for a city music festival with the Claude API, live web search and page fetching, streaming its progress as it works.",
+    techStack: ["Next.js", "TypeScript", "Claude API", "Prisma"],
+    access: "repo",
+    shots: [],
+  },
+  {
+    slug: "obsidian-llm",
+    title: "Obsidian LLM",
+    description:
+      "Document assistant for Obsidian Quant Group that reads the firm's Word, Excel and web documents and answers questions with cited sources.",
+    techStack: ["Next.js", "TypeScript", "PostgreSQL", "Prisma", "Better Auth"],
+    access: "repo",
+    shots: [],
+  },
+  {
+    slug: "oqg-research-console",
+    title: "OQG Options Research Console",
+    description:
+      "Research console for replicating a 0DTE options strategy: data pipeline, models and backtests, plus a Claude research assistant limited to approved models.",
+    techStack: ["Python", "TypeScript", "Claude API"],
+    access: "repo",
+    shots: [],
+  },
+  {
+    slug: "email-extractor",
+    title: "Email Extractor",
+    description:
+      "Finds a domain's public email addresses through several data providers, its own site crawler and OSINT, records where each came from, and can verify deliverability.",
+    techStack: ["Python", "FastAPI", "SQLAlchemy", "Next.js"],
+    access: "repo",
+    shots: [],
+  },
+  {
+    slug: "favfan",
+    title: "FavFan",
+    description:
+      "Analytics and engagement overlay for YouTube creators: scores fan loyalty from comments, Super Chats and memberships, ranks superfans and flashes them on a live OBS overlay.",
+    techStack: ["Next.js", "NestJS", "BullMQ", "Socket.IO", "Prisma"],
+    access: "repo",
+    shots: [],
+  },
+  {
+    slug: "shared-payments-widget",
+    title: "Shared Payments Widget",
+    description:
+      "One Stripe integration that several sites share through an embeddable checkout widget and a single webhook.",
+    techStack: ["Next.js", "TypeScript", "Stripe", "Prisma"],
+    access: "repo",
+    shots: [],
+  },
+  {
+    slug: "driver-route-module",
+    title: "Driver Route Module",
+    description:
+      "Turn-by-turn navigation from pickup to drop-off, with traffic, elevation and weather-aware routing for motorcycles and cars.",
+    techStack: ["Next.js", "TypeScript", "Google Maps", "Turf.js"],
+    access: "repo",
+    shots: [],
+  },
+  {
+    slug: "music-festival-app",
+    title: "Music Festival App",
+    description:
+      "Monorepo for a music festival: a React Native mobile app, a NestJS API, BullMQ workers and Solidity contracts on Polygon.",
+    techStack: ["React Native", "NestJS", "BullMQ", "Solidity"],
+    access: "repo",
+    shots: [],
+  },
+  {
+    slug: "azul-resibooth",
+    title: "Azul ResiBOOTH Prints",
+    description:
+      "Android photo-booth app that shoots a strip of photos and prints it on a 58 mm Bluetooth thermal receipt printer.",
+    techStack: ["React Native", "Expo", "TypeScript"],
+    access: "repo",
+    shots: [],
+  },
+  {
+    slug: "wikibotanica",
+    title: "WikiBotanica",
+    description:
+      "Plant identification and data management platform.",
+    techStack: ["Python", "Flask", "React", "Vite"],
+    access: "repo",
+    shots: [],
+  },
+  {
+    slug: "team-workflow-pack",
+    title: "Team Workflow Pack",
+    description:
+      "The starting point for every new team project: a Claude Code plugin marketplace, reusable GitHub Actions workflows and ops scripts.",
+    techStack: ["Claude Code", "GitHub Actions", "Shell"],
+    access: "repo",
+    shots: [],
   },
 ];
