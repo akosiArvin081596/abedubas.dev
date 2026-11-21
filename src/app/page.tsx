@@ -21,11 +21,11 @@ import { PhilosophySection } from "./PhilosophySection";
 import { ProjectsSection } from "./ProjectsSection";
 import { SkillsSection } from "./SkillsSection";
 import { Spotlight } from "./Spotlight";
-import { StackSection } from "./StackSection";
+import { AISkillsSection, StackSection } from "./StackSection";
 
-// The hero's stack, DevOps and security lists (its fastfetch readout and
-// engineer.ts): the stack runs frontend, backend, then databases; DevOps
-// and security match their categories in the Technical Skills section.
+// The hero's stack, DevOps, cloud and security lists (its fastfetch readout
+// and engineer.ts): the stack runs frontend, backend, then databases; DevOps,
+// cloud and security match their categories in the Technical Skills section.
 const techStack = [
   "Vue",
   "Nuxt",
@@ -43,7 +43,9 @@ const techStack = [
   "MongoDB",
 ];
 
-const devOps = ["Docker", "CI/CD", "Linux", "Nginx", "AWS", "Vercel"];
+const devOps = ["Docker", "CI/CD", "Linux", "Nginx", "Vercel"];
+
+const cloud = ["AWS", "Google Cloud"];
 
 const security = [
   "Secure Coding",
@@ -335,6 +337,9 @@ const engineerTs: Token[][] = [
   [["  "], ["devops", "property"], [": ["]],
   ...arrayRows(devOps),
   [["  ],"]],
+  [["  "], ["cloud", "property"], [": ["]],
+  ...arrayRows(cloud),
+  [["  ],"]],
   [["  "], ["security", "property"], [": ["]],
   ...arrayRows(security),
   [["  ],"]],
@@ -434,7 +439,9 @@ const fetchRows: { key: string; value: ReactNode }[] = [
     value: `${yearsOfExperience()} years, since ${WEB_DEV_SINCE}`,
   },
   { key: "stack", value: dotted(techStack) },
-  { key: "devops", value: dotted(devOps) },
+  // Cloud rides on the devops line, short names, so the readout keeps its
+  // height: a row of its own pushed the hero past one screen at 1280x720.
+  { key: "devops", value: dotted([...devOps, "AWS", "GCP"]) },
   { key: "security", value: dotted(security) },
   { key: "ai peers", value: <AiPeers /> },
 ];
@@ -1086,6 +1093,7 @@ export default function HomePage() {
       <ExperienceSection />
       <SkillsSection />
       <StackSection />
+      <AISkillsSection />
       <ProjectsSection />
       <BlogSection />
       <ContactSection />
